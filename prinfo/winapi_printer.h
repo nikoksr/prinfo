@@ -191,5 +191,5 @@ class Printer {
   */
   std::wstring status;
 
-}; /** class Printer */
+};  // class Printer
 }  // namespace WinApi
