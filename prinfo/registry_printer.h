@@ -3,33 +3,54 @@
 #include <Windows.h>
 #include <iostream>
 
-constexpr DWORD max_key_length = 255;
-constexpr DWORD max_value_name = 16383;
+namespace Registry {
+class Printer {
+ public:
+  /**
+   Streams data found under LocalMachine to specified output.
 
-// DsDriver Werte
-const static std::wstring list_dsdriver[] = {L"printLanguage", L"printBinNames",
-                                             L"printMediaReady",
-                                             L"printOrientationsSupported"};
+   @param &stream Reference of stream which should be used for data output.
+ */
+  void show_lm_printers(std::wostream &stream = std::wcout);
 
-// DsSpooler Werte
-const static std::wstring list_dsspooler[] = {
-    L"printerName", L"printShareName",  L"portName", L"driverName",
-    L"serverName",  L"shortServerName", L"uNCName",  L"url",
-    L"description"};
+  /**
+    Streams data found under CurrentUser to specified output.
 
-// PNPData Werte
-const static std::wstring list_pnpdata[] = {L"Manufacturer", L"HardwareID"};
+    @param &stream Reference of stream which should be used for data output.
+  */
+  void show_cu_printers(std::wostream &stream = std::wcout);
 
-// PrinterDriverData Werte
-const static std::wstring list_printerdriverdata[] = {
-    L"Model", L"TrayFormQueueProp", L"TrayFormTable"};
+ private:
+  /**
+    Defines max length of registry key.
+  */
+  const static DWORD max_key_length = 255;
 
-// Key auslesen
-std::wstring read_key(HKEY hkey, std::wstring printer_name, std::wstring subkey,
-                      const std::wstring *subkey_list, int list_size);
+  /**
+    Defines max length of registry-entry name.
+  */
+  const static DWORD max_value_name = 16383;
 
-// HKEY LOCAL_MACHINE
-void show_lm_printers(std::wostream &stream = std::wcout);
+  /**
+    Defines values-names to search for in specific registry-entry.
+  */
+  const static std::wstring dsdriver_values_names[];
+  const static std::wstring dsspooler_values_names[];
+  const static std::wstring pnpdata_values_names[];
+  const static std::wstring printerdriverdata_values_names[];
 
-// HKEY CURRENT_USER
-void show_cu_printers(std::wostream &stream = std::wcout);
+  /**
+    Reads specified registry key and filters out the results for
+    the specified subkey_values_names (e.g pnpdata_values_names).
+
+    @param hkey Handle for registry-key.
+    @param printer_name Name of the printer to look for.
+    @param subkey Path of the subkey in which to look for printer.
+    @param subkey_list List of values to look for in subkey.
+    @pararm list_size Size of the subkey_values_names.
+  */
+  std::wstring read_key(HKEY hkey, std::wstring printer_name,
+                        std::wstring subkey, const std::wstring *subkey_list,
+                        int list_size);
+};  // class Printer
+}  // namespace Registry
