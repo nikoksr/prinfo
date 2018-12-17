@@ -15,16 +15,40 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="prinfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="console.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="format.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="information.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="winapi_printer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="console.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="format.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="information.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="winapi_printer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
