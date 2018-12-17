@@ -1,5 +1,4 @@
-#ifndef MENU_H
-#define MENU_H
+#pragma once
 
 #include <string>
 
@@ -18,5 +17,3 @@ std::wstring get_separator_thin();
 void save_request(void (*function_to_save)(std::wostream &stream),
                   const wchar_t user_input);
 void undo_back_command(wchar_t *user_input);
-
-#endif  // MENU_H

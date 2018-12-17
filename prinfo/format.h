@@ -1,5 +1,4 @@
-#ifndef FORMAT_H
-#define FORMAT_H
+#pragma once
 
 #include <Windows.h>
 #include <iostream>
@@ -14,5 +13,3 @@ std::wstring format_multi_sz_key(HKEY hkey, std::wstring name,
 std::wstring format_size_of_job(DWORD job_size);
 std::wstring general_error_message(DWORD error_message_id);
 void handle_exception(std::exception_ptr exception_pointer);
-
-#endif  // FORMAT_H
