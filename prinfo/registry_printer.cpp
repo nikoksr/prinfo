@@ -108,7 +108,7 @@ void Printer::show_lm_printers(std::wostream &stream) {
   /**
     Print header.
   */
-  stream << get_separator_thick() << L"\n\n"
+  stream << Helper::Menu::get_separator_thick() << L"\n\n"
          << L" REGISTRY\n"
          << L" HKEY_LOCAL_MACHINE\\" << registry_pfad << L"\n";
 
@@ -127,7 +127,7 @@ void Printer::show_lm_printers(std::wostream &stream) {
 
     if (result_reg_enum_key != ERROR_SUCCESS) {
       stream << general_error_message(result_reg_enum_key)
-             << get_separator_thick() << "\n";
+             << Helper::Menu::get_separator_thick() << "\n";
       continue;
     }
 
@@ -150,9 +150,9 @@ void Printer::show_lm_printers(std::wostream &stream) {
     /**
       Print body.
     */
-    stream << get_separator_thin() << L"\n\n"
+    stream << Helper::Menu::get_separator_thin() << L"\n\n"
            << L" Drucker: " << name << L"\n"
-           << get_separator_thin() << L"\n\n"
+           << Helper::Menu::get_separator_thin() << L"\n\n"
            << dsdriver << L"\n"
            << dsspooler << L"\n"
            << pnpdata << L"\n"
@@ -184,10 +184,10 @@ void Printer::show_cu_printers(std::wostream &stream) {
   /**
     Print header.
   */
-  stream << get_separator_thick() << L"\n\n"
+  stream << Helper::Menu::get_separator_thick() << L"\n\n"
          << L" REGISTRY\n"
          << L" HKEY_CURRENT_USER\\" << registry_pfad << L"\n"
-         << get_separator_thin() << L"\n\n";
+         << Helper::Menu::get_separator_thin() << L"\n\n";
 
   /**
     Read value_data from subkey.

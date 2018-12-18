@@ -47,9 +47,9 @@ void show_system_info(std::wostream &stream) {
       mem_virtual_in_use;
   auto result_get_ram = get_memory(&mem_physical_total, &mem_physical_in_use);
 
-  stream << get_separator_thick() << L"\n\n"
+  stream << Helper::Menu::get_separator_thick() << L"\n\n"
          << L" Systeminformationen\n"
-         << get_separator_thin() << L"\n\n"
+         << Helper::Menu::get_separator_thin() << L"\n\n"
          << format_name_and_value(L"Username", username) << L"\n"
          << format_name_and_value(L"Computername", computer_name) << L"\n"
          << format_name_and_value(L"Domain", domain) << L"\n\n"

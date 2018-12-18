@@ -11,7 +11,7 @@ std::wstring get_program_head() {
 
 // Hilfe anzeigen
 std::wstring get_help() {
-  return get_separator_thick() +
+  return Helper::Menu::get_separator_thick() +
          L"\n\n"
          L" Wichtige Hinweise:\n\n"
          L"     * Bei fehlerhaften Programm-/ Funktionsabläufen sollte das "
