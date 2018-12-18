@@ -8,59 +8,57 @@
 #include <fstream>
 #include <iostream>
 
-// Hauptmenu
-void main_menu() {
-  // main-loop
+namespace Helper {
+void Menu::main_menu() {
   wchar_t user_input;
 
+  /**
+    Main loop.
+  */
   do {
-    // Titel
     clear_console_screen();
-
-    // User input
     std::wcout << get_program_head() << L"\n\n"
                << get_separator_thick() << L"\n\n"
                << L" [1] Ausgabe aller gefundenen Informationen\n"
                << L" [2] Funktionen\n"
                << L" [3] Hilfe\n\n";
     user_input = submenu_quit();
-
-    // Console leeren und Titel neu ausgeben
     clear_console_screen();
     std::wcout << get_program_head() << L"\n\n";
 
-    // Auswertung und Ausführung von user-input
+    /**
+      Interpret user input.
+        * 1: Default functions
+        * 2: Functions menu
+        * 3: Help
+    */
     switch (user_input) {
-      // Standard Funktionen ausführen
       case L'1':
         // run_default_functions();
         user_input = submenu_save_back_quit();
         // save_request(&run_default_functions, user_input);
         break;
-      // Funktionsmenü
       case L'2':
         user_input = functions_menu();
         break;
-      // Hilfe
       case L'3':
         // run_help();
         user_input = submenu_back_quit();
         break;
-      // Ungültige Eingabe
       default:
         break;
     }
   } while (user_input != L'b');
 }
 
-// Functions menu
-wchar_t functions_menu() {
+wchar_t Menu::functions_menu() {
   wchar_t user_input;
 
+  /**
+    Second main loop.
+  */
   do {
-    // Titel
     clear_console_screen();
-
     std::wcout << get_program_head() << L"\n\n"
                << get_separator_thick() << L"\n\n"
                << L" [1] Win-API Drucker\n"
@@ -69,45 +67,46 @@ wchar_t functions_menu() {
                << L" [4] Speichern aller gefundenen Infos\n"
                << L" [5] Löschen aller Druckaufträge (Admin-Rechte)\n\n";
     user_input = submenu_back_quit();
-
     clear_console_screen();
     std::wcout << get_program_head() << L"\n\n";
 
+    /**
+      Interpret user input.
+        * 1: WinApi data
+        * 2: Registry data
+        * 3: System data
+        * 4: Save all data
+        * 5: Delete all printjobs
+    */
     switch (user_input) {
-      // Win-Api
       case L'1':
         // run_winapi_printer();
         user_input = submenu_save_back_quit();
         // save_request(&run_winapi_printer, user_input);
         undo_back_command(&user_input);
         break;
-      // Registry
       case L'2':
         // run_registry_printer();
         user_input = submenu_save_back_quit();
         // save_request(&run_registry_printer, user_input);
         undo_back_command(&user_input);
         break;
-      // Systeminfo
       case L'3':
         // run_system_info();
         user_input = submenu_save_back_quit();
         // save_request(&run_system_info, user_input);
         undo_back_command(&user_input);
         break;
-      // Speichern aller Infos
       case L'4':
         // save_request(&run_default_functions, L's');
         user_input = submenu_back_quit();
         undo_back_command(&user_input);
         break;
-      // Löschen aller Druckaufträge
       case L'5':
         // delete_print_jobs();
         user_input = submenu_back_quit();
         undo_back_command(&user_input);
         break;
-      // Ungültige Eingabe
       default:
         break;
     }
@@ -116,7 +115,7 @@ wchar_t functions_menu() {
   return user_input;
 }
 
-wchar_t submenu_quit() {
+wchar_t Menu::submenu_quit() {
   std::wcout << get_separator_thick() << L"\n [B]eenden";
 
   wchar_t temp_input;
@@ -126,7 +125,7 @@ wchar_t submenu_quit() {
   return temp_input;
 }
 
-wchar_t submenu_back_quit() {
+wchar_t Menu::submenu_back_quit() {
   std::wcout << get_separator_thick() << L"\n [Z]urück  [B]eenden";
 
   wchar_t temp_input;
@@ -136,7 +135,7 @@ wchar_t submenu_back_quit() {
   return temp_input;
 }
 
-wchar_t submenu_save_back_quit() {
+wchar_t Menu::submenu_save_back_quit() {
   std::wcout << get_separator_thick() << L"\n [S]peichern  [Z]urück  [B]eenden";
 
   wchar_t temp_input;
@@ -146,31 +145,30 @@ wchar_t submenu_save_back_quit() {
   return temp_input;
 }
 
-std::wstring get_separator_thick() {
+std::wstring Menu::get_separator_thick() {
   return L"===================================================================="
          L"=================================================";
 }
 
-std::wstring get_separator_thin() {
+std::wstring Menu::get_separator_thin() {
   return L"____________________________________________________________________"
          L"_________________________________________________";
 }
 
-void save_request(void (*function_to_save)(std::wostream &stream),
+void Menu::save_request(void (*function_to_save)(std::wostream &stream),
                   const wchar_t user_input) {
   if (user_input != L's') {
     return;
   }
 
-  // Titel
   clear_console_screen();
-
-  // User input
   std::wcout << get_program_head() << L"\n\n"
              << get_separator_thick() << L"\n\n Speichern\n"
              << get_separator_thin() << L"\n\n";
 
-  // Dateiname
+  /**
+    Ask for filename and comment.
+  */
   std::wstring file_name;
   std::wcout << " Dateiname: ";
   std::getline(std::wcin, file_name);
@@ -179,7 +177,6 @@ void save_request(void (*function_to_save)(std::wostream &stream),
     file_name = L"prinfo.txt";
   }
 
-  // Kommentar
   std::wstring comment;
   std::wcout << " Kommentar: ";
   std::getline(std::wcin, comment);
@@ -189,7 +186,9 @@ void save_request(void (*function_to_save)(std::wostream &stream),
     comment = L"-";
   }
 
-  // Stream erstellen
+  /**
+    Stream data to file.
+  */
   std::wofstream save_file(file_name, std::ios::out);
 
   if (!save_file.is_open()) {
@@ -197,24 +196,19 @@ void save_request(void (*function_to_save)(std::wostream &stream),
                << L"\n\n";
   }
 
-  // Header
   save_file << get_program_head() << L"\n\n";
-
-  // Kommentar in Datei schreiben
   save_file << get_separator_thick() << L"\n\n"
             << format_name_and_value(L"Kommentar", comment) << L"\n\n";
-
-  // Daten der Funktion in Datei schreiben
   function_to_save(save_file);
 
-  // Stream schließen
   if (save_file.is_open()) {
     save_file.close();
   }
 }
 
-void undo_back_command(wchar_t *user_input) {
+void Menu::undo_back_command(wchar_t *user_input) {
   if (*user_input == L'z') {
     *user_input = L' ';
   }
 }
+}  // namespace Helper
