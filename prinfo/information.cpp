@@ -3,15 +3,15 @@
 
 #include <iostream>
 
-// Programm Info/ Copyright ausgeben
-std::wstring get_program_head() {
+namespace Helper {
+
+std::wstring Snippets::program_head() {
   return L"\n Prinfo\u00A9        20.11.2016        Niko Köser        "
          L"koeserniko@gmail.com";
 }
 
-// Hilfe anzeigen
-std::wstring get_help() {
-  return Helper::Menu::get_separator_thick() +
+std::wstring Snippets::help() {
+  return Menu::get_separator_thick() +
          L"\n\n"
          L" Wichtige Hinweise:\n\n"
          L"     * Bei fehlerhaften Programm-/ Funktionsabläufen sollte das "
@@ -24,3 +24,4 @@ std::wstring get_help() {
          L"und Schriftgröße auf '11' umstellen.\n\n"
          L"     * Getestete Systeme: Windows 10\n\n";
 }
+}  // namespace Helper

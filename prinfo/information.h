@@ -2,6 +2,18 @@
 
 #include <string>
 
-// Programm Infos
-std::wstring get_program_head();
-std::wstring get_help();
+namespace Helper {
+class Snippets {
+ public:
+  /**
+    Returns the default console screen header.
+    Includes Copyright, Edit date, Creator, Contact email.
+  */
+  static std::wstring program_head();
+
+  /**
+    Returns a help text.
+  */
+  static std::wstring help();
+};  // class Information
+}  // namespace Helper
