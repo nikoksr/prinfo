@@ -17,14 +17,14 @@ void Menu::main_menu() {
   */
   do {
     Console::clear_screen();
-    std::wcout << get_program_head() << L"\n\n"
+    std::wcout << Snippets::program_head() << L"\n\n"
                << get_separator_thick() << L"\n\n"
                << L" [1] Ausgabe aller gefundenen Informationen\n"
                << L" [2] Funktionen\n"
                << L" [3] Hilfe\n\n";
     user_input = submenu_quit();
     Console::clear_screen();
-    std::wcout << get_program_head() << L"\n\n";
+    std::wcout << Snippets::program_head() << L"\n\n";
 
     /**
       Interpret user input.
@@ -59,7 +59,7 @@ wchar_t Menu::functions_menu() {
   */
   do {
     Console::clear_screen();
-    std::wcout << get_program_head() << L"\n\n"
+    std::wcout << Snippets::program_head() << L"\n\n"
                << get_separator_thick() << L"\n\n"
                << L" [1] Win-API Drucker\n"
                << L" [2] Registry Drucker\n"
@@ -68,7 +68,7 @@ wchar_t Menu::functions_menu() {
                << L" [5] Löschen aller Druckaufträge (Admin-Rechte)\n\n";
     user_input = submenu_back_quit();
     Console::clear_screen();
-    std::wcout << get_program_head() << L"\n\n";
+    std::wcout << Snippets::program_head() << L"\n\n";
 
     /**
       Interpret user input.
@@ -162,7 +162,7 @@ void Menu::save_request(void (*function_to_save)(std::wostream &stream),
   }
 
   Console::clear_screen();
-  std::wcout << get_program_head() << L"\n\n"
+  std::wcout << Snippets::program_head() << L"\n\n"
              << get_separator_thick() << L"\n\n Speichern\n"
              << get_separator_thin() << L"\n\n";
 
@@ -196,7 +196,7 @@ void Menu::save_request(void (*function_to_save)(std::wostream &stream),
                << L"\n\n";
   }
 
-  save_file << get_program_head() << L"\n\n";
+  save_file << Snippets::program_head() << L"\n\n";
   save_file << get_separator_thick() << L"\n\n"
             << format_name_and_value(L"Kommentar", comment) << L"\n\n";
   function_to_save(save_file);
