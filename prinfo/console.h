@@ -1,7 +1,12 @@
 #pragma once
 
-constexpr auto console_width = 120;
-constexpr auto console_height = 60;
-
-// Konsolen-Fenster anpassen
-void clear_console_screen();
+namespace Helper {
+class Console {
+ public:
+  /**
+    Clears the console screen by filling it with blanks
+    and resetting the cursor to it's original position.
+  */
+  static void clear_screen();
+};  // class Console
+}  // namespace Helper

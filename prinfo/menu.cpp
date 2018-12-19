@@ -16,14 +16,14 @@ void Menu::main_menu() {
     Main loop.
   */
   do {
-    clear_console_screen();
+    Console::clear_screen();
     std::wcout << get_program_head() << L"\n\n"
                << get_separator_thick() << L"\n\n"
                << L" [1] Ausgabe aller gefundenen Informationen\n"
                << L" [2] Funktionen\n"
                << L" [3] Hilfe\n\n";
     user_input = submenu_quit();
-    clear_console_screen();
+    Console::clear_screen();
     std::wcout << get_program_head() << L"\n\n";
 
     /**
@@ -58,7 +58,7 @@ wchar_t Menu::functions_menu() {
     Second main loop.
   */
   do {
-    clear_console_screen();
+    Console::clear_screen();
     std::wcout << get_program_head() << L"\n\n"
                << get_separator_thick() << L"\n\n"
                << L" [1] Win-API Drucker\n"
@@ -67,7 +67,7 @@ wchar_t Menu::functions_menu() {
                << L" [4] Speichern aller gefundenen Infos\n"
                << L" [5] Löschen aller Druckaufträge (Admin-Rechte)\n\n";
     user_input = submenu_back_quit();
-    clear_console_screen();
+    Console::clear_screen();
     std::wcout << get_program_head() << L"\n\n";
 
     /**
@@ -161,7 +161,7 @@ void Menu::save_request(void (*function_to_save)(std::wostream &stream),
     return;
   }
 
-  clear_console_screen();
+  Console::clear_screen();
   std::wcout << get_program_head() << L"\n\n"
              << get_separator_thick() << L"\n\n Speichern\n"
              << get_separator_thin() << L"\n\n";
