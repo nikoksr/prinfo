@@ -69,15 +69,14 @@ std::wstring Printer::read_key(HKEY hkey, std::wstring printer_name,
 
     std::wstring value_data;
 
-    // REG_SZ value_data
+    // REG_SZ
     if (type != REG_MULTI_SZ) {
       value_data = std::wstring(data);
     }
-    // REG_MULTI_SZ value_data
+    // REG_MULTI_SZ
     else {
-      value_data = Helper::Format::multi_sz_key(hkey, printer_name, subkey,
-                                                subkey_list[i]);
-    }
+      value_data = Helper::Format::multi_sz_key(data);
+    }       
 
     if (value_data.length() < 1) {
       value_data = L"-";
