@@ -156,7 +156,7 @@ std::wstring Menu::get_separator_thin() {
 }
 
 void Menu::save_request(void (*function_to_save)(std::wostream &stream),
-                  const wchar_t user_input) {
+                        const wchar_t user_input) {
   if (user_input != L's') {
     return;
   }
@@ -192,13 +192,13 @@ void Menu::save_request(void (*function_to_save)(std::wostream &stream),
   std::wofstream save_file(file_name, std::ios::out);
 
   if (!save_file.is_open()) {
-    std::wcout << L" Fehler: " << general_error_message(GetLastError())
+    std::wcout << L" Fehler: " << Format::error_message(GetLastError())
                << L"\n\n";
   }
 
   save_file << Snippets::program_head() << L"\n\n";
   save_file << get_separator_thick() << L"\n\n"
-            << format_name_and_value(L"Kommentar", comment) << L"\n\n";
+            << Format::name_and_value(L"Kommentar", comment) << L"\n\n";
   function_to_save(save_file);
 
   if (save_file.is_open()) {

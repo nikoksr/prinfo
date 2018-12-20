@@ -41,7 +41,8 @@ std::wstring Printer::read_key(HKEY hkey, std::wstring printer_name,
 
   if (result_reg_open_key != ERROR_SUCCESS) {
     full_key_output += L"\\" + subkey + L" - " +
-                       general_error_message(result_reg_open_key) + L"\n";
+                       Helper::Format::error_message(result_reg_open_key) +
+                       L"\n";
     RegCloseKey(hkey_copy);
     return full_key_output;
   } else {
@@ -61,8 +62,8 @@ std::wstring Printer::read_key(HKEY hkey, std::wstring printer_name,
                      RRF_RT_ANY, &type, data, &size);
 
     if (result_get_value != ERROR_SUCCESS) {
-      full_key_output += format_name_and_value(
-          subkey_list[i], general_error_message(result_get_value));
+      full_key_output += Helper::Format::name_and_value(
+          subkey_list[i], Helper::Format::error_message(result_get_value));
       continue;
     }
 
@@ -74,8 +75,8 @@ std::wstring Printer::read_key(HKEY hkey, std::wstring printer_name,
     }
     // REG_MULTI_SZ value_data
     else {
-      value_data =
-          format_multi_sz_key(hkey, printer_name, subkey, subkey_list[i]);
+      value_data = Helper::Format::multi_sz_key(hkey, printer_name, subkey,
+                                                subkey_list[i]);
     }
 
     if (value_data.length() < 1) {
@@ -83,7 +84,7 @@ std::wstring Printer::read_key(HKEY hkey, std::wstring printer_name,
     }
 
     full_key_output +=
-        format_name_and_value(subkey_list[i], value_data) + L"\n";
+        Helper::Format::name_and_value(subkey_list[i], value_data) + L"\n";
   }
 
   RegCloseKey(hkey_copy);
@@ -101,7 +102,7 @@ void Printer::show_lm_printers(std::wostream &stream) {
       HKEY_LOCAL_MACHINE, registry_pfad.c_str(), NULL, KEY_READ, &hkey);
 
   if (result_reg_open_key != ERROR_SUCCESS) {
-    stream << general_error_message(result_reg_open_key) << "\n";
+    stream << Helper::Format::error_message(result_reg_open_key) << "\n";
     return;
   }
 
@@ -126,7 +127,7 @@ void Printer::show_lm_printers(std::wostream &stream) {
                                              nullptr, nullptr, nullptr);
 
     if (result_reg_enum_key != ERROR_SUCCESS) {
-      stream << general_error_message(result_reg_enum_key)
+      stream << Helper::Format::error_message(result_reg_enum_key)
              << Helper::Menu::get_separator_thick() << "\n";
       continue;
     }
@@ -173,7 +174,7 @@ void Printer::show_cu_printers(std::wostream &stream) {
       HKEY_CURRENT_USER, registry_pfad.c_str(), NULL, KEY_READ, &hkey);
 
   if (result_reg_open_key != ERROR_SUCCESS) {
-    stream << general_error_message(result_reg_open_key) << L"\n";
+    stream << Helper::Format::error_message(result_reg_open_key) << L"\n";
     return;
   }
 
@@ -207,11 +208,12 @@ void Printer::show_cu_printers(std::wostream &stream) {
       Print body.
     */
     if (result_reg_enum_value != ERROR_SUCCESS) {
-      stream << general_error_message(result_reg_enum_value) << L"\n";
+      stream << Helper::Format::error_message(result_reg_enum_value) << L"\n";
       continue;
     }
 
-    stream << format_name_and_value(value_name_buffer, value_data_buffer)
+    stream << Helper::Format::name_and_value(value_name_buffer,
+                                             value_data_buffer)
            << L"\n";
   }
 

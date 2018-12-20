@@ -41,7 +41,7 @@ void System::set_username() {
   auto result_username = GetUserNameW(temp_username, &username_buffer_size);
 
   if (result_username == 0) {
-    user_name = general_error_message(GetLastError());
+    user_name = Helper::Format::error_message(GetLastError());
   } else {
     user_name = std::wstring(temp_username);
   }
@@ -53,7 +53,7 @@ void System::set_workstation() {
       NetWkstaGetInfo(nullptr, 102, reinterpret_cast<LPBYTE *>(&wksta_info));
 
   if (result_wksta != NERR_Success) {
-    auto err = general_error_message(result_wksta);
+    auto err = Helper::Format::error_message(result_wksta);
     machine_name = err;
     domain = err;
   } else {
@@ -72,7 +72,7 @@ void System::set_default_printer() {
       GetDefaultPrinterW(temp_default_printer, &default_printer_buffer_size);
 
   if (result_default_printer == 0) {
-    default_printer = general_error_message(GetLastError());
+    default_printer = Helper::Format::error_message(GetLastError());
   } else {
     default_printer = std::wstring(temp_default_printer);
   }
@@ -84,7 +84,7 @@ void System::set_offline_files() {
       OfflineFilesQueryStatus(&offline_files_active, nullptr);
 
   if (result_offline_files != ERROR_SUCCESS) {
-    offline_files = general_error_message(result_offline_files);
+    offline_files = Helper::Format::error_message(result_offline_files);
   } else {
     switch (offline_files_active) {
       case TRUE:
@@ -295,7 +295,7 @@ void System::set_memory() {
     memory_total = std::to_wstring(mpt);
     memory_in_use = std::to_wstring(mpiu);
   } else {
-    auto err = general_error_message(GetLastError());
+    auto err = Helper::Format::error_message(GetLastError());
     memory_total = err;
     memory_in_use = err;
   }
@@ -311,7 +311,7 @@ void System::print_system_info(std::wostream &stream) {
     stream << Helper::Menu::get_separator_thick() << L"\n\n"
            << L" Systeminformationen\n"
            << Helper::Menu::get_separator_thin() << L"\n\n"
-           << format_name_and_value(L"Fehler", err_message) << L"\n\n";
+           << Helper::Format::name_and_value(L"Fehler", err_message) << L"\n\n";
     return;
   }
 
@@ -326,17 +326,21 @@ void System::print_system_info(std::wostream &stream) {
   stream << Helper::Menu::get_separator_thick() << L"\n\n"
          << L" Systeminformationen\n"
          << Helper::Menu::get_separator_thin() << L"\n\n"
-         << format_name_and_value(L"Username", user_name) << L"\n"
-         << format_name_and_value(L"Computername", machine_name) << L"\n"
-         << format_name_and_value(L"Domain", domain) << L"\n\n"
-         << format_name_and_value(L"Standarddrucker", default_printer) << L"\n"
-         << format_name_and_value(L"Offlinedateien", offline_files) << L"\n\n"
-         << format_name_and_value(L"Betriebssystem", os_name) << L"\n"
-         << format_name_and_value(L"Version", os_version) << L"\n"
-         << format_name_and_value(L"Architektur", os_architecture) << L"\n\n"
-         << format_name_and_value(L"Prozessor", processor) << L"\n"
-         << format_name_and_value(L"RAM Physical",
-                                  (memory_in_use + L"/" + memory_total))
+         << Helper::Format::name_and_value(L"Username", user_name) << L"\n"
+         << Helper::Format::name_and_value(L"Computername", machine_name)
+         << L"\n"
+         << Helper::Format::name_and_value(L"Domain", domain) << L"\n\n"
+         << Helper::Format::name_and_value(L"Standarddrucker", default_printer)
+         << L"\n"
+         << Helper::Format::name_and_value(L"Offlinedateien", offline_files)
+         << L"\n\n"
+         << Helper::Format::name_and_value(L"Betriebssystem", os_name) << L"\n"
+         << Helper::Format::name_and_value(L"Version", os_version) << L"\n"
+         << Helper::Format::name_and_value(L"Architektur", os_architecture)
+         << L"\n\n"
+         << Helper::Format::name_and_value(L"Prozessor", processor) << L"\n"
+         << Helper::Format::name_and_value(
+                L"RAM Physical", (memory_in_use + L"/" + memory_total))
          << L" MB\n\n";
 }
 }  // namespace WinApi
