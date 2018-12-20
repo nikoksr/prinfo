@@ -11,14 +11,14 @@ class Printer {
 
    @param &stream Reference of stream which should be used for data output.
  */
-  void show_lm_printers(std::wostream &stream = std::wcout);
+  static void show_lm_printers(std::wostream &stream = std::wcout);
 
   /**
     Streams data found under CurrentUser to specified output.
 
     @param &stream Reference of stream which should be used for data output.
   */
-  void show_cu_printers(std::wostream &stream = std::wcout);
+  static void show_cu_printers(std::wostream &stream = std::wcout);
 
  private:
   /**
@@ -49,8 +49,8 @@ class Printer {
     @param subkey_list List of values to look for in subkey.
     @pararm list_size Size of the subkey_values_names.
   */
-  std::wstring read_key(HKEY hkey, std::wstring printer_name,
-                        std::wstring subkey, const std::wstring *subkey_list,
-                        int list_size);
+  static std::wstring read_key(HKEY hkey, std::wstring printer_name,
+                               std::wstring subkey,
+                               const std::wstring *subkey_list, int list_size);
 };  // class Printer
 }  // namespace Registry
