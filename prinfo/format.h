@@ -22,8 +22,7 @@ class Format {
     If we would simlpy print this string to console we would only see 'String1'.
     We have to replace the null-terminations ('\0') with blanks (" ").
   */
-  static std::wstring multi_sz_key(HKEY hkey, std::wstring name,
-                                   std::wstring subkey, std::wstring value);
+  static std::wstring multi_sz_key(TCHAR multi_sz_data[]);
 
   /**
     Converts bytes in more readable size units like KB, MB...
@@ -39,7 +38,8 @@ class Format {
   */
   static std::wstring error_message(DWORD error_message_id);
 
-  /**      Handle an exception, print out the exception.
+  /**  
+    Handle an exception, print out the exception.
 
     @param exception_pointer Pointer to the previously occured exception.
   */

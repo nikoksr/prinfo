@@ -49,58 +49,19 @@ std::vector<std::wstring> Format::line_wrap(std::wstring line,
   return lines;
 }
 
-std::wstring Format::multi_sz_key(HKEY hkey, std::wstring name,
-                                  std::wstring subkey, std::wstring value) {
-  std::wstring pfad = name + L"\\" + subkey;
-  DWORD size;
-  auto result_get_value = RegGetValueW(hkey, pfad.c_str(), value.c_str(),
-                                       RRF_RT_ANY, nullptr, nullptr, &size);
-
-  if (result_get_value != ERROR_SUCCESS) {
-    return error_message(GetLastError());
-  }
-
-  /**
-    Read data.
-  */
-  auto multisz_data = new TCHAR[size / sizeof(TCHAR)];
-  result_get_value = RegGetValueW(hkey, pfad.c_str(), value.c_str(), RRF_RT_ANY,
-                                  nullptr, multisz_data, &size);
-
-  if (result_get_value != ERROR_SUCCESS) {
-    delete[] multisz_data;
-    return error_message(GetLastError());
-  }
-
-  /**
-  auto multisz = std::wstring(multisz_data);
-
-  for (auto c : multisz) {
-    if (c == '\0') {
-      c = L'\n';
-    }
-  }
-
-  auto l = multisz.length;
-  multisz[l - 1] = L'\0';
-  */
-
-  /**
-    Concat multi_sz_key.
-  */
-  std::wstring multisz_string = L"";
-  auto multisz_string_length = wcslen(multisz_data);
+std::wstring Format::multi_sz_key(TCHAR multi_sz_data[]) {
+  std::wstring multi_sz_string = L"";
+  auto multi_sz_string_length = wcslen(multi_sz_data);
   auto index = 0;
 
-  while (multisz_string_length > 0) {
-    multisz_string += &multisz_data[index];
-    multisz_string += L" ";
-    index += multisz_string_length + 1;  // '\0' -> + 1
-    multisz_string_length = wcslen(&multisz_data[index]);
+  while (multi_sz_string_length > 0) {
+    multi_sz_string += &multi_sz_data[index];
+    multi_sz_string += L" ";
+    index += multi_sz_string_length + 1;  // '\0' -> + 1
+    multi_sz_string_length = wcslen(&multi_sz_data[index]);
   }
-
-  delete[] multisz_data;
-  return multisz_string;
+  
+  return multi_sz_string;
 }
 
 std::wstring Format::byte_conversion(const double job_size) {
