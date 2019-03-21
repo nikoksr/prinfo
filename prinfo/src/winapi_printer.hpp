@@ -47,7 +47,7 @@ namespace WinApi {
         /**
           Fills the printer_list vector with printer objects.
         */
-        static std::vector<Printer*> load_printers();
+        static const std::vector<std::unique_ptr<Printer>>& load_printers();
 
         void display(std::wostream& stream);
 
@@ -96,7 +96,7 @@ namespace WinApi {
         /**
           Vector of printer objects
         */
-        static std::vector<Printer*> printer_list;
+        static std::vector<std::unique_ptr<Printer>> printer_list;
 
         /**
           Pointer to array of printer_info structures.
@@ -194,7 +194,7 @@ namespace WinApi {
 
         std::wstring m_number_printjobs;
 
-        std::vector<Printjob*> m_printjobs;
+        std::vector<std::unique_ptr<Printjob>> m_printjobs;
 
     };  // class Printer
 }  // namespace WinApi

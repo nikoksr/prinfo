@@ -3,6 +3,8 @@
 
 #include <clocale>
 #include <iostream>
+#include <memory>
+#include <string>
 
 int wmain() {
     using namespace WinApi;
@@ -10,14 +12,13 @@ int wmain() {
     // Set local to german
     std::setlocale(LC_ALL, "de_DE.UTF-8");
 
-    std::vector<Printer*> printers = Printer::load_printers();
+    auto& printers = Printer::load_printers();
 
-    for (Printer* printer : printers) {
+    for (auto& printer : printers) {
         printer->display(std::wcout);
     }
 
     std::cin.get();
-
 
     // Helper::Menu::main_menu();
 }

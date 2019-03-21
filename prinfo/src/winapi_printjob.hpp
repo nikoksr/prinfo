@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace WinApi {
     class Printjob
@@ -11,15 +12,15 @@ namespace WinApi {
         Printjob(const JOB_INFO_2& job_info);
         ~Printjob();
 
-        static std::vector<Printjob*>& load_jobs(const _PRINTER_INFO_2W& printer_info);
-        static DWORD get_job_count();
+        static const std::vector<std::unique_ptr<Printjob>>& load_jobs(const _PRINTER_INFO_2W& printer_info);
+        static unsigned get_job_count();
         void display(std::wostream &stream);
 
     private:
         static unsigned obj_counter;
         static DWORD job_count;
         static JOB_INFO_2* jobs_info_list;
-        static std::vector<Printjob*> job_list;
+        static std::vector<std::unique_ptr<Printjob>> job_list;
 
         JOB_INFO_2 m_job_info;
         std::wstring m_document_name;

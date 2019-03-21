@@ -13,11 +13,11 @@ namespace WinApi {
     }
 
     Printjob::~Printjob() {
-        if (obj_counter < 2 && jobs_info_list) {
+        obj_counter--;
+
+        if (obj_counter < 1 && jobs_info_list) {
             delete[] jobs_info_list;
         }
-
-        obj_counter--;
     }
 
     /**
@@ -26,18 +26,22 @@ namespace WinApi {
     unsigned Printjob::obj_counter = 0;
     DWORD Printjob::job_count = 0;
     JOB_INFO_2* (Printjob::jobs_info_list) = nullptr;
-    std::vector<Printjob*> Printjob::job_list(0);
+    std::vector<std::unique_ptr<Printjob>> Printjob::job_list(0);
 
     /**
      Function definitions
     */
-    std::vector<Printjob*>& Printjob::load_jobs(const _PRINTER_INFO_2W& printer_info) {
+    const std::vector<std::unique_ptr<Printjob>>& Printjob::load_jobs(const _PRINTER_INFO_2W& printer_info) {
         if (set_jobs_info_list(printer_info) == FALSE) {
             return job_list;
         }
 
-        for (DWORD i = 0; i < job_count; ++i) {
-            job_list.push_back(new Printjob(jobs_info_list[i]));
+        // Reserve space for printjobs in vector
+        job_list.reserve(job_count);
+
+        // Fill vector with printjobs
+        for (unsigned i = 0; i < job_count; ++i) {
+            job_list.push_back(std::make_unique<Printjob>(jobs_info_list[i]));
         }
 
         return job_list;
@@ -48,6 +52,9 @@ namespace WinApi {
         HANDLE printer_handle;
 
         if (OpenPrinterW(printer_info.pPrinterName, &printer_handle, NULL) == FALSE) {
+            if (printer_handle) {
+                CloseHandle(printer_handle);
+            }
             return FALSE;
         }
 
@@ -61,22 +68,24 @@ namespace WinApi {
         const unsigned size = static_cast<unsigned>(static_cast<double>(needed_buffer) / sizeof(JOB_INFO_2));
         jobs_info_list = new JOB_INFO_2[size];
 
-        return EnumJobsW(printer_handle, NULL, printer_info.cJobs, 2,
+        BOOL res = EnumJobsW(printer_handle, NULL, printer_info.cJobs, 2,
             reinterpret_cast<LPBYTE>(jobs_info_list),
             needed_buffer, &needed_buffer, &job_count);
+
+        return res;
     }
 
     void Printjob::display(std::wostream &stream) {
         using namespace Helper;
 
-        stream << Format::name_and_value(L"Dokument: ", m_document_name)
-            << Format::name_and_value(L"User: ", m_user_name)
-            << Format::name_and_value(L"Maschine: ", m_machine_name)
-            << Format::name_and_value(L"Zeit: ", m_submitted)
-            << Format::name_and_value(L"Datentyp: ", m_datatype)
-            << Format::name_and_value(L"Größe: ", m_size)
-            << Format::name_and_value(L"Seitenanzahl: ", m_page_count)
-            << Format::name_and_value(L"Status: ", m_status);
+        stream << Format::name_and_value(L"Dokument: ", m_document_name) << '\n'
+            << Format::name_and_value(L"User: ", m_user_name) << '\n'
+            << Format::name_and_value(L"Maschine: ", m_machine_name) << '\n'
+            << Format::name_and_value(L"Zeit: ", m_submitted) << '\n'
+            << Format::name_and_value(L"Datentyp: ", m_datatype) << '\n'
+            << Format::name_and_value(L"Größe: ", m_size) << '\n'
+            << Format::name_and_value(L"Seitenanzahl: ", m_page_count) << '\n'
+            << Format::name_and_value(L"Status: ", m_status) << '\n';
     }
 
     void Printjob::set_document_name() {
@@ -96,7 +105,7 @@ namespace WinApi {
     }
 
     void Printjob::set_size() {
-        m_size = std::wstring(Helper::Format::byte_conversion(m_job_info.Size));
+        m_size = std::wstring(Helper::Format::data_unit_conversion(m_job_info.Size));
     }
 
     void Printjob::set_page_count() {
@@ -167,7 +176,7 @@ namespace WinApi {
         set_page_count();
     }
 
-    DWORD Printjob::get_job_count() {
-        return job_count;
+    unsigned Printjob::get_job_count() {
+        return static_cast<unsigned>(job_count);
     }
 }  // namespace WinApi

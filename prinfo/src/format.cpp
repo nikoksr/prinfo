@@ -4,6 +4,9 @@
 #include <string>
 
 namespace Helper {
+    // Static member
+    data_units Format::m_data_units;
+
     std::wstring Format::name_and_value(std::wstring name, std::wstring value) {
         const int max_length = 50;
 
@@ -64,24 +67,34 @@ namespace Helper {
         return multi_sz_string;
     }
 
-    std::wstring Format::byte_conversion(const double job_size) {
-        if (job_size < 1024) {
-            return std::to_wstring(job_size) + L" B";
+    // Size in bytes
+    std::wstring Format::data_unit_conversion(const long double size) {
+        // String that specifies data unit 
+        std::wstring data_unit = L"B";
+        unsigned converted_size = 0.0;
+
+        // Bigger than 1 TB
+        if (size > m_data_units.TB) {
+            converted_size = static_cast<unsigned>(size / m_data_units.TB);
+            data_unit = L"TB";
         }
-        if (job_size < pow(1024, 2)) {
-            return std::to_wstring(job_size / 1024) + L" KB";
+        // Bigger than 1 GB
+        else if (size > m_data_units.GB) {
+            converted_size = static_cast<unsigned>(size / m_data_units.GB);
+            data_unit = L"GB";
         }
-        if (job_size < pow(1024, 3)) {
-            return std::to_wstring(job_size / pow(1024, 2)) + L" MB";
+        // Bigger than 1 MB
+        else if (size > m_data_units.MB) {
+            converted_size = static_cast<unsigned>(size / m_data_units.MB);
+            data_unit = L"MB";
         }
-        if (job_size < pow(1024, 4)) {
-            return std::to_wstring(job_size / pow(1024, 3)) + L" GB";
-        }
-        if (job_size < pow(1024, 5)) {
-            return std::to_wstring(job_size / pow(1024, 4)) + L" TB";
+        // Bigger than 1 KB
+        else if (size > m_data_units.KB) {
+            converted_size = static_cast<unsigned>(size / m_data_units.KB);
+            data_unit = L"KB";
         }
 
-        return L"Zu groß";
+        return std::to_wstring(converted_size) + L" " + data_unit;
     }
 
     std::wstring Format::error_message(DWORD error_message_id) {

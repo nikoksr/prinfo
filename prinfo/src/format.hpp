@@ -5,6 +5,13 @@
 #include <vector>
 
 namespace Helper {
+    typedef const struct _data_units {
+        const double KB = 1024.0;
+        const double MB = pow(1024, 2);
+        const double GB = pow(1024, 3);
+        const double TB = pow(1024, 4);
+    } data_units;
+
     class Format {
     public:
         /**
@@ -29,7 +36,7 @@ namespace Helper {
 
           @param job_size The number to be converted.
         */
-        static std::wstring byte_conversion(double job_size);
+        static std::wstring data_unit_conversion(const long double size);
 
         /**
           Formats a system error code in a readable error string.
@@ -56,5 +63,7 @@ namespace Helper {
         */
         static std::vector<std::wstring> line_wrap(std::wstring line,
             const unsigned max_line_length);
+
+        static data_units m_data_units;
     };  // class Format
 }  // namespace Helper

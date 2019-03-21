@@ -10,7 +10,7 @@ namespace WinApi {
      */
     unsigned Printer::obj_counter = 0;
     int Printer::number_printers = 0;
-    std::vector<Printer *> Printer::printer_list(0);
+    std::vector<std::unique_ptr<Printer>> Printer::printer_list(0);
     _PRINTER_INFO_2W *(Printer::printer_info_list) = nullptr;
 
     /**
@@ -22,7 +22,7 @@ namespace WinApi {
     }
 
     Printer::~Printer() {
-        if (obj_counter < 2 && printer_info_list) {
+        if (obj_counter < 1 && printer_info_list) {
             delete[] printer_info_list;
         }
 
@@ -32,14 +32,17 @@ namespace WinApi {
     /**
       Functions
     */
-    std::vector<Printer*> Printer::load_printers() {
+    const std::vector<std::unique_ptr<Printer>>& Printer::load_printers() {
         if (set_printer_info_list() == FALSE) {
-            return {};
+            return printer_list;
         }
 
+        // Reserve space for printers in vector
+        printer_list.reserve(number_printers);
+
+        // Fill vector with printers
         for (int i = 0; i < number_printers; ++i) {
-            Printer* new_printer = new Printer(printer_info_list[i]);
-            printer_list.push_back(new_printer);
+            printer_list.push_back(std::make_unique<Printer>(printer_info_list[i]));
         }
 
         return printer_list;
@@ -76,7 +79,7 @@ namespace WinApi {
         set_duplex();
         set_keep_printjobs();
         set_status();
-        set_printjobs();
+        // set_printjobs();
     }
 
     void Printer::display(std::wostream &stream) {
@@ -97,11 +100,11 @@ namespace WinApi {
             << Format::name_and_value(L"Datentyp", m_datatype) << L"\n"
             << Format::name_and_value(L"Duplex", m_duplex) << L"\n\n"
             << Format::name_and_value(L"Druckaufträge", m_keep_printjobs) << L"\n"
-            << Format::name_and_value(L"Anzahl Druckaufträge", m_number_printjobs) << L"\n"
+            << Format::name_and_value(L"Anzahl Druckaufträge", std::to_wstring(Printjob::get_job_count())) << L"\n"
             << Format::name_and_value(L"Druckaufträge", L"") << L"\n";
 
-        for (unsigned i = 0; i < m_printjobs.size(); ++i) {
-            m_printjobs.at(i)->display(stream);
+        for (auto& job : Printjob::load_jobs(m_printer_info)) {
+            job->display(stream);
         }
     }
 
@@ -285,8 +288,8 @@ namespace WinApi {
     }
 
     void Printer::set_printjobs() {
-        // Load printjobs
-        m_printjobs = Printjob::load_jobs(m_printer_info);
+        // Load printjobs        
+        // m_printjobs = Printjob::load_jobs(m_printer_info);
 
         // Set number of printjobs
         m_number_printjobs = Printjob::get_job_count();
@@ -295,7 +298,9 @@ namespace WinApi {
     /**
       Getter functions
     */
-    int Printer::get_number_printers() { return number_printers; }
+    int Printer::get_number_printers() {
+        return number_printers;
+    }
 
     std::wstring Printer::get_name() {
         return m_name;
