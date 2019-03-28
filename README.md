@@ -1,5 +1,5 @@
 # Prinfo
-Hier entsteht die Consolen-Version des Druckertools Prinfo.
+Aktive Entwicklung der Consolen-Version des Druckertools Prinfo.
 
 # Todo
 * Replace c-style arrays with cpp arrays
