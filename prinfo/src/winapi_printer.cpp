@@ -228,7 +228,6 @@ namespace WinApi {
         stream << Menu::get_separator_thin() << L"\n\n"
             << L" " << printer.m_name << L"\n"
             << Menu::get_separator_thin() << L"\n\n"
-            << Format::name_and_value(L"Status", printer.m_status) << L"\n\n"
             << Format::name_and_value(L"Typ", printer.m_type) << L"\n"
             << Format::name_and_value(L"Port", printer.m_port) << L"\n"
             << Format::name_and_value(L"Freigabe", printer.m_is_shared) << L"\n"
@@ -239,12 +238,13 @@ namespace WinApi {
             << Format::name_and_value(L"Printprocessor", printer.m_printprocessor) << L"\n"
             << Format::name_and_value(L"Datentyp", printer.m_datatype) << L"\n"
             << Format::name_and_value(L"Duplex", printer.m_duplex) << L"\n"
+            << Format::name_and_value(L"Status", printer.m_status) << L"\n"
             << Format::name_and_value(L"Druckaufträge", printer.m_keep_printjobs) << L"\n"
             << Format::name_and_value(L"Anzahl Druckaufträge", printer.m_number_printjobs) << L"\n"
             << Format::name_and_value(L"Druckaufträge", L"") << L"\n";
 
         for (auto& job : *(printer.m_printjobs)) {
-            stream << *job;
+            stream << '\n' << *job;
         }
 
         return stream;

@@ -18,7 +18,7 @@ int wmain() {
         std::wcout << *printer;
     }
 
-    std::cin.get();
+    std::wcin.get();
 
     // Helper::Menu::main_menu();
 }

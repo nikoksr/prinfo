@@ -130,7 +130,7 @@ namespace Helper {
             std::wcout << L" Ein unerwarteter Fehler ist aufgetreten: \"" << exc.what()
                 << L"\"\n\n"
                 << L" Beliebige Taste drücken...";
-            _getwch();
+            std::wcin.get();
         }
     }
 }  // namespace Helper
