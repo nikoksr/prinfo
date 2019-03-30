@@ -71,7 +71,7 @@ namespace Helper {
     std::wstring Format::data_unit_conversion(const long double size) {
         // String that specifies data unit 
         std::wstring data_unit = L"B";
-        unsigned converted_size = 0.0;
+        unsigned converted_size = 0;
 
         // Bigger than 1 TB
         if (size > m_data_units.TB) {

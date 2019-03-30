@@ -58,13 +58,13 @@ namespace WinApi {
         /**
           Getter functions
         */
-        std::wstring get_user_name;
-        std::wstring get_workstation_name;
-        std::wstring get_offline_files;
-        std::wstring get_default_printer;
-        std::wstring get_operating_system;
-        std::wstring get_processor;
-        std::wstring get_memory;
+        const std::wstring& get_user_name();
+        const std::wstring& get_workstation_name();
+        const std::wstring& get_offline_files();
+        const std::wstring& get_default_printer();
+        const std::wstring& get_operating_system();
+        const std::wstring& get_processor();
+        const std::wstring& get_memory();
 
     private:
         /**
@@ -72,16 +72,16 @@ namespace WinApi {
         */
         HRESULT prepare_wmi();
 
-        std::wstring user_name;
-        std::wstring machine_name;
-        std::wstring domain;
-        std::wstring offline_files;
-        std::wstring default_printer;
-        std::wstring os_name;
-        std::wstring os_version;
-        std::wstring os_architecture;
-        std::wstring processor;
-        std::wstring memory_in_use;
-        std::wstring memory_total;
+        std::wstring m_user_name;
+        std::wstring m_machine_name;
+        std::wstring m_domain;
+        std::wstring m_offline_files;
+        std::wstring m_default_printer;
+        std::wstring m_os_name;
+        std::wstring m_os_version;
+        std::wstring m_os_architecture;
+        std::wstring m_processor;
+        std::wstring m_memory_in_use;
+        std::wstring m_memory_total;
     };  // class System
 }  // namespace WinApi

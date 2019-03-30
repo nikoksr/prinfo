@@ -15,7 +15,7 @@ int wmain() {
     auto& printers = Printer::load_printers();
 
     for (auto& printer : printers) {
-        printer->display(std::wcout);
+        std::wcout << *printer;
     }
 
     std::cin.get();

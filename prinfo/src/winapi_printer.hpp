@@ -49,24 +49,25 @@ namespace WinApi {
         */
         static const std::vector<std::unique_ptr<Printer>>& load_printers();
 
-        void display(std::wostream& stream);
-
         /**
           Getter functions
         */
-        std::wstring get_name();
-        std::wstring get_type();
-        std::wstring get_port();
-        std::wstring get_is_shared();
-        std::wstring get_sharename();
-        std::wstring get_server_name();
-        std::wstring get_terminalserver();
-        std::wstring get_driver();
-        std::wstring get_printprocessor();
-        std::wstring get_datatype();
-        std::wstring get_duplex();
-        std::wstring get_keep_printjobs();
-        std::wstring get_status();
+        const _PRINTER_INFO_2W& get_printer_info() const;
+        const std::wstring& get_name() const;
+        const std::wstring& get_type() const;
+        const std::wstring& get_port() const;
+        const std::wstring& get_is_shared() const;
+        const std::wstring& get_sharename() const;
+        const std::wstring& get_server_name() const;
+        const std::wstring& get_terminalserver() const;
+        const std::wstring& get_driver() const;
+        const std::wstring& get_printprocessor() const;
+        const std::wstring& get_datatype() const;
+        const std::wstring& get_duplex() const;
+        const std::wstring& get_keep_printjobs() const;
+        const std::wstring& get_status() const;
+
+        friend std::wostream& operator<<(std::wostream& stream, const WinApi::Printer& printer);
 
     private:
         /**
@@ -86,22 +87,22 @@ namespace WinApi {
         /**
          Object counter
         */
-        static unsigned obj_counter;
+        static unsigned m_obj_counter;
 
         /**
           Total number of printers
         */
-        static int number_printers;
+        static int m_number_printers;
 
         /**
           Vector of printer objects
         */
-        static std::vector<std::unique_ptr<Printer>> printer_list;
+        static std::vector<std::unique_ptr<Printer>> m_printer_list;
 
         /**
           Pointer to array of printer_info structures.
         */
-        static _PRINTER_INFO_2W *printer_info_list;
+        static _PRINTER_INFO_2W *m_printer_info_list;
 
         /**
           printer_info2w structure containing all informations
@@ -194,7 +195,7 @@ namespace WinApi {
 
         std::wstring m_number_printjobs;
 
-        std::vector<std::unique_ptr<Printjob>> m_printjobs;
+        std::vector<std::unique_ptr<Printjob>>* m_printjobs = nullptr;
 
     };  // class Printer
 }  // namespace WinApi

@@ -41,10 +41,10 @@ namespace WinApi {
         BOOL result_username = GetUserNameW(temp_username, &username_buffer_size);
 
         if (result_username == 0) {
-            user_name = Helper::Format::error_message(GetLastError());
+            m_user_name = Helper::Format::error_message(GetLastError());
         }
         else {
-            user_name = std::wstring(temp_username);
+            m_user_name = std::wstring(temp_username);
         }
     }
 
@@ -55,12 +55,12 @@ namespace WinApi {
 
         if (result_wksta != NERR_Success) {
             std::wstring err = Helper::Format::error_message(result_wksta);
-            machine_name = err;
-            domain = err;
+            m_machine_name = err;
+            m_domain = err;
         }
         else {
-            machine_name = std::wstring(wksta_info->wki102_computername);
-            domain = std::wstring(wksta_info->wki102_langroup);
+            m_machine_name = std::wstring(wksta_info->wki102_computername);
+            m_domain = std::wstring(wksta_info->wki102_langroup);
         }
 
         NetApiBufferFree(wksta_info);
@@ -74,10 +74,10 @@ namespace WinApi {
             GetDefaultPrinterW(temp_default_printer, &default_printer_buffer_size);
 
         if (result_default_printer == 0) {
-            default_printer = Helper::Format::error_message(GetLastError());
+            m_default_printer = Helper::Format::error_message(GetLastError());
         }
         else {
-            default_printer = std::wstring(temp_default_printer);
+            m_default_printer = std::wstring(temp_default_printer);
         }
     }
 
@@ -87,18 +87,18 @@ namespace WinApi {
             OfflineFilesQueryStatus(&offline_files_active, nullptr);
 
         if (result_offline_files != ERROR_SUCCESS) {
-            offline_files = Helper::Format::error_message(result_offline_files);
+            m_offline_files = Helper::Format::error_message(result_offline_files);
         }
         else {
             switch (offline_files_active) {
             case TRUE:
-                offline_files = L"Aktiviert";
+                m_offline_files = L"Aktiviert";
                 break;
             case FALSE:
-                offline_files = L"Offlinedateien oder CSC-Treiber deaktiviert";
+                m_offline_files = L"Offlinedateien oder CSC-Treiber deaktiviert";
                 break;
             default:
-                offline_files = L"Status unbekannt";
+                m_offline_files = L"Status unbekannt";
                 break;
             }
         }
@@ -115,9 +115,9 @@ namespace WinApi {
         if (!SUCCEEDED(result_create_instance)) {
             _com_error err(result_create_instance);
             const TCHAR* err_message = err.ErrorMessage();
-            os_name = err_message;
-            os_version = err_message;
-            os_architecture = err_message;
+            m_os_name = err_message;
+            m_os_version = err_message;
+            m_os_architecture = err_message;
             wbem_locator->Release();
         }
 
@@ -134,9 +134,9 @@ namespace WinApi {
         if (!SUCCEEDED(result_connect_server)) {
             _com_error err(result_connect_server);
             std::wstring err_message = err.ErrorMessage();
-            os_name = err_message;
-            os_version = err_message;
-            os_architecture = err_message;
+            m_os_name = err_message;
+            m_os_version = err_message;
+            m_os_architecture = err_message;
             wbem_service->Release();
         }
 
@@ -154,9 +154,9 @@ namespace WinApi {
         if (!SUCCEEDED(result_exec_query)) {
             _com_error err(result_exec_query);
             const TCHAR* err_message = err.ErrorMessage();
-            os_name = err_message;
-            os_version = err_message;
-            os_architecture = err_message;
+            m_os_name = err_message;
+            m_os_version = err_message;
+            m_os_architecture = err_message;
         }
 
         /**
@@ -172,30 +172,30 @@ namespace WinApi {
             HRESULT result_get_name = wbem_object->Get(L"Name", 0, &value, NULL, NULL);
 
             if (SUCCEEDED(result_get_name) && value.vt == VT_BSTR) {
-                os_name = value.bstrVal;
+                m_os_name = value.bstrVal;
             }
             else {
-                os_name = L"Nicht identifizierbar";
+                m_os_name = L"Nicht identifizierbar";
             }
 
             HRESULT result_get_version =
                 wbem_object->Get(L"Version", 0, &value, NULL, NULL);
 
             if (SUCCEEDED(result_get_version) && value.vt == VT_BSTR) {
-                os_version = value.bstrVal;
+                m_os_version = value.bstrVal;
             }
             else {
-                os_version = L"Nicht identifizierbar";
+                m_os_version = L"Nicht identifizierbar";
             }
 
             HRESULT result_get_architecture =
                 wbem_object->Get(L"OSArchitecture", 0, &value, NULL, NULL);
 
             if (SUCCEEDED(result_get_architecture) && value.vt == VT_BSTR) {
-                os_architecture = value.bstrVal;
+                m_os_architecture = value.bstrVal;
             }
             else {
-                os_architecture = L"Nicht identifizierbar";
+                m_os_architecture = L"Nicht identifizierbar";
             }
         }
 
@@ -221,7 +221,7 @@ namespace WinApi {
         if (!SUCCEEDED(result_create_instance)) {
             _com_error err(result_create_instance);
             const TCHAR* err_message = err.ErrorMessage();
-            processor = err_message;
+            m_processor = err_message;
             wbem_locator->Release();
         }
 
@@ -238,7 +238,7 @@ namespace WinApi {
         if (!SUCCEEDED(result_connect_server)) {
             _com_error err(result_connect_server);
             const TCHAR* err_message = err.ErrorMessage();
-            processor = err_message;
+            m_processor = err_message;
             wbem_service->Release();
         }
 
@@ -255,7 +255,7 @@ namespace WinApi {
         if (!SUCCEEDED(result_exec_query)) {
             _com_error err(result_exec_query);
             const TCHAR* err_message = err.ErrorMessage();
-            processor = err_message;
+            m_processor = err_message;
             wbem_object_enum->Release();
         }
 
@@ -273,10 +273,10 @@ namespace WinApi {
                 wbem_object->Get(L"Name", 0, &value, NULL, NULL);
 
             if (SUCCEEDED(result_wbem_object_get) && value.vt == VT_BSTR) {
-                processor = value.bstrVal;
+                m_processor = value.bstrVal;
             }
             else {
-                processor = L"Nicht identifizierbar";
+                m_processor = L"Nicht identifizierbar";
             }
         }
 
@@ -300,13 +300,13 @@ namespace WinApi {
         if (result_get_ram != 0) {
             unsigned long long mpt = statex.ullTotalPhys / mebibyte;
             unsigned long long mpiu = mpt - (statex.ullAvailPhys / mebibyte);
-            memory_total = std::to_wstring(mpt);
-            memory_in_use = std::to_wstring(mpiu);
+            m_memory_total = std::to_wstring(mpt);
+            m_memory_in_use = std::to_wstring(mpiu);
         }
         else {
             std::wstring err = Helper::Format::error_message(GetLastError());
-            memory_total = err;
-            memory_in_use = err;
+            m_memory_total = err;
+            m_memory_in_use = err;
         }
     }
 
@@ -335,21 +335,32 @@ namespace WinApi {
         stream << Helper::Menu::get_separator_thick() << L"\n\n"
             << L" Systeminformationen\n"
             << Helper::Menu::get_separator_thin() << L"\n\n"
-            << Helper::Format::name_and_value(L"Username", user_name) << L"\n"
-            << Helper::Format::name_and_value(L"Computername", machine_name)
+            << Helper::Format::name_and_value(L"Username", m_user_name) << L"\n"
+            << Helper::Format::name_and_value(L"Computername", m_machine_name)
             << L"\n"
-            << Helper::Format::name_and_value(L"Domain", domain) << L"\n\n"
-            << Helper::Format::name_and_value(L"Standarddrucker", default_printer)
+            << Helper::Format::name_and_value(L"Domain", m_domain) << L"\n\n"
+            << Helper::Format::name_and_value(L"Standarddrucker", m_default_printer)
             << L"\n"
-            << Helper::Format::name_and_value(L"Offlinedateien", offline_files)
+            << Helper::Format::name_and_value(L"Offlinedateien", m_offline_files)
             << L"\n\n"
-            << Helper::Format::name_and_value(L"Betriebssystem", os_name) << L"\n"
-            << Helper::Format::name_and_value(L"Version", os_version) << L"\n"
-            << Helper::Format::name_and_value(L"Architektur", os_architecture)
+            << Helper::Format::name_and_value(L"Betriebssystem", m_os_name) << L"\n"
+            << Helper::Format::name_and_value(L"Version", m_os_version) << L"\n"
+            << Helper::Format::name_and_value(L"Architektur", m_os_architecture)
             << L"\n\n"
-            << Helper::Format::name_and_value(L"Prozessor", processor) << L"\n"
+            << Helper::Format::name_and_value(L"Prozessor", m_processor) << L"\n"
             << Helper::Format::name_and_value(
-                L"RAM Physical", (memory_in_use + L"/" + memory_total))
+                L"RAM Physical", (m_memory_in_use + L"/" + m_memory_total))
             << L" MB\n\n";
     }
+
+    /**
+     Getter functions
+    */
+    const std::wstring& System::get_user_name() { return m_user_name; }
+    const std::wstring& System::get_workstation_name() { return m_machine_name; }
+    const std::wstring& System::get_offline_files() { return m_offline_files; }
+    const std::wstring& System::get_default_printer() { return m_default_printer; }
+    const std::wstring& System::get_operating_system() { return m_os_name; }
+    const std::wstring& System::get_processor() { return m_processor; }
+    const std::wstring& System::get_memory() { return m_memory_total; }
 }  // namespace WinApi
