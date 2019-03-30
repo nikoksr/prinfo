@@ -12,7 +12,7 @@ namespace Helper {
 
         if (value.length() < max_length) {
             const std::wstring space(max_length - name.length() - 2, L' ');
-            return (L" " + name + L":" + space + value);
+            return (L" " + name + space + value);
         }
 
         std::vector<std::wstring> lines = line_wrap(value, max_length);
@@ -31,7 +31,7 @@ namespace Helper {
         }
 
         space = std::wstring(max_length - name.length() - 2, L' ');
-        return (L" " + name + L":" + space + formatted_value);
+        return (L" " + name + space + formatted_value);
     }
 
     std::vector<std::wstring> Format::line_wrap(std::wstring line,

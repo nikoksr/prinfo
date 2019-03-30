@@ -2,31 +2,33 @@
 #include "format.hpp"
 #include "menu.hpp"
 #include <stdexcept>
+#include <math.h>
 
 namespace WinApi {
 
     /**
       Init static attributes
-     */
-    unsigned Printer::m_obj_counter = 0;
-    int Printer::m_number_printers = -1;
+    */
+    // unsigned Printer::m_obj_counter = 0;
+    int Printer::m_number_printers = 0;
+    // _PRINTER_INFO_2W *(Printer::m_printer_info_list) = nullptr;
+    std::unique_ptr<_PRINTER_INFO_2W[]> Printer::m_printer_info_list;
     std::vector<std::unique_ptr<Printer>> Printer::m_printer_list(0);
-    _PRINTER_INFO_2W *(Printer::m_printer_info_list) = nullptr;
 
     /**
       Constructor and Destructor
     */
     Printer::Printer(const _PRINTER_INFO_2W& printer_info) : m_printer_info(printer_info) {
-        m_obj_counter++;
+        //m_obj_counter++;
         init();
     }
 
     Printer::~Printer() {
-        m_obj_counter--;
+        // m_obj_counter--;
 
-        if (m_obj_counter < 1 && m_printer_info_list) {
+        /*if (m_obj_counter < 1 && m_printer_info_list) {
             delete[] m_printer_info_list;
-        }
+        }*/
     }
 
     /**
@@ -55,11 +57,16 @@ namespace WinApi {
             nullptr, 2, nullptr, NULL, &needed_buffer,
             reinterpret_cast<LPDWORD>(&m_number_printers));
 
-        const unsigned size = static_cast<unsigned>(static_cast<double>(needed_buffer) / sizeof(_PRINTER_INFO_2W));
-        m_printer_info_list = new _PRINTER_INFO_2W[size];
+        const unsigned size = static_cast<const unsigned>(ceil(static_cast<double>(needed_buffer) / sizeof(_PRINTER_INFO_2W)));
+
+        if (m_printer_info_list.get()) {
+            m_printer_info_list.reset();
+        }
+
+        m_printer_info_list = std::make_unique<_PRINTER_INFO_2W[]>(size);
 
         BOOL result = EnumPrintersW(PRINTER_ENUM_LOCAL | PRINTER_ENUM_CONNECTIONS | PRINTER_ENUM_CATEGORY_ALL,
-            nullptr, 2, reinterpret_cast<LPBYTE>(m_printer_info_list), needed_buffer,
+            nullptr, 2, reinterpret_cast<LPBYTE>(m_printer_info_list.get()), needed_buffer,
             &needed_buffer, reinterpret_cast<LPDWORD>(&m_number_printers));
 
         return result;

@@ -87,7 +87,7 @@ namespace WinApi {
         /**
          Object counter
         */
-        static unsigned m_obj_counter;
+        // static unsigned m_obj_counter;
 
         /**
           Total number of printers
@@ -102,7 +102,8 @@ namespace WinApi {
         /**
           Pointer to array of printer_info structures.
         */
-        static _PRINTER_INFO_2W *m_printer_info_list;
+        // static _PRINTER_INFO_2W *m_printer_info_list;
+        static std::unique_ptr<_PRINTER_INFO_2W[]> m_printer_info_list;
 
         /**
           printer_info2w structure containing all informations

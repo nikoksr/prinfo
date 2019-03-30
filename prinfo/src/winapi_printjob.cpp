@@ -1,8 +1,18 @@
 #include "winapi_printjob.hpp"
 
 #include "format.hpp"
+#include <math.h>
 
 namespace WinApi {
+
+    /**
+     Static members
+    */
+    unsigned Printjob::m_obj_counter = 0;
+    DWORD Printjob::m_job_count = 0;
+    // JOB_INFO_2* (Printjob::m_jobs_info_list) = nullptr;
+    std::unique_ptr<JOB_INFO_2[]> Printjob::m_jobs_info_list;
+    std::vector<std::unique_ptr<Printjob>> Printjob::m_job_list(0);
 
     /**
      Constructor and Destructor
@@ -13,20 +23,12 @@ namespace WinApi {
     }
 
     Printjob::~Printjob() {
-        m_obj_counter--;
+        // m_obj_counter--;
 
-        if (m_obj_counter < 1 && m_jobs_info_list) {
+        /*if (m_obj_counter < 1 && m_jobs_info_list) {
             delete[] m_jobs_info_list;
-        }
+        }*/
     }
-
-    /**
-     Static members
-    */
-    unsigned Printjob::m_obj_counter = 0;
-    DWORD Printjob::m_job_count = -1;
-    JOB_INFO_2* (Printjob::m_jobs_info_list) = nullptr;
-    std::vector<std::unique_ptr<Printjob>> Printjob::m_job_list(0);
 
     /**
      Function definitions
@@ -65,11 +67,12 @@ namespace WinApi {
             &needed_buffer, &m_job_count);
 
         // Job_info Array anhand von Buffer erstellen
-        const unsigned size = static_cast<unsigned>(static_cast<double>(needed_buffer) / sizeof(JOB_INFO_2));
-        m_jobs_info_list = new JOB_INFO_2[size];
+        const unsigned size = static_cast<const unsigned>(ceil(static_cast<double>(needed_buffer) / sizeof(_PRINTER_INFO_2W)));
+        // m_jobs_info_list = new JOB_INFO_2[size];
+        m_jobs_info_list = std::make_unique<JOB_INFO_2[]>(size);
 
         BOOL res = EnumJobsW(printer_handle, NULL, printer_info.cJobs, 2,
-            reinterpret_cast<LPBYTE>(m_jobs_info_list),
+            reinterpret_cast<LPBYTE>(m_jobs_info_list.get()),
             needed_buffer, &needed_buffer, &m_job_count);
 
         return res;
@@ -131,14 +134,14 @@ namespace WinApi {
     std::wostream& operator<<(std::wostream& stream, const WinApi::Printjob& job) {
         using namespace Helper;
 
-        stream << Format::name_and_value(L"Dokument: ", job.m_document_name) << '\n'
-            << Format::name_and_value(L"User: ", job.m_user_name) << '\n'
-            << Format::name_and_value(L"Maschine: ", job.m_machine_name) << '\n'
-            << Format::name_and_value(L"Zeit: ", job.m_submitted) << '\n'
-            << Format::name_and_value(L"Datentyp: ", job.m_datatype) << '\n'
-            << Format::name_and_value(L"Größe: ", job.m_size) << '\n'
-            << Format::name_and_value(L"Seitenanzahl: ", job.m_page_count) << '\n'
-            << Format::name_and_value(L"Status: ", job.m_status) << '\n';
+        stream << Format::name_and_value(L"Dokument", job.m_document_name) << '\n'
+            << Format::name_and_value(L"User", job.m_user_name) << '\n'
+            << Format::name_and_value(L"Maschine", job.m_machine_name) << '\n'
+            << Format::name_and_value(L"Zeit", job.m_submitted) << '\n'
+            << Format::name_and_value(L"Datentyp", job.m_datatype) << '\n'
+            << Format::name_and_value(L"Größe", job.m_size) << '\n'
+            << Format::name_and_value(L"Seitenanzahl", job.m_page_count) << '\n'
+            << Format::name_and_value(L"Status", job.m_status) << '\n';
 
         return stream;
     }
