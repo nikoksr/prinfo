@@ -17,3 +17,7 @@
 - Idee 1
 - Idee 2
 - ...
+
+**Screenshots**
+
+(Eventuell hier Screenshots einfügen, welche die Vorstellung des Features unterstützen.)
