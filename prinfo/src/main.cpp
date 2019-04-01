@@ -8,6 +8,7 @@
 #include "winapi_printer.hpp"
 #include "registry_printer.hpp"
 #include "menu.hpp"
+#include "snippets.hpp"
 
 #include <clocale>
 #include <iostream>
@@ -20,7 +21,14 @@ int wmain() {
     std::setlocale(LC_ALL, "de_DE.UTF-8");
     // std::ios_base::sync_with_stdio(false); can increase cout performance
 
-    // #if 0
+    std::wcout << "\n"
+        << Helper::Snippets::program_head
+        << "\n"
+        << Helper::Snippets::separator_thin
+        << "\n\n"
+        << Helper::Snippets::help;
+
+#if 0
     auto& printers = WinApi::Printer::load_printers();
 
     std::wostringstream oss;
@@ -31,7 +39,7 @@ int wmain() {
 
     std::wcout << oss.str();
 
-    // #endif
+#endif
 
     //Registry::Printer::show_lm_printers(std::wcout);
     std::wcin.get();
