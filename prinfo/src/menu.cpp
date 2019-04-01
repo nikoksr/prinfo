@@ -1,7 +1,7 @@
 ﻿#include "menu.hpp"
 #include "console.hpp"
 #include "format.hpp"
-#include "information.hpp"
+#include "snippets.hpp"
 
 #include <conio.h>
 #include <cctype>
@@ -9,6 +9,9 @@
 #include <iostream>
 
 namespace Helper {
+
+
+
     void Menu::main_menu() {
         wchar_t user_input;
 
@@ -17,14 +20,14 @@ namespace Helper {
         */
         do {
             Console::clear_screen();
-            std::wcout << Snippets::program_head() << L"\n\n"
-                << get_separator_thick() << L"\n\n"
+            std::wcout << Snippets::program_head << L"\n\n"
+                << Snippets::separator_thick << L"\n\n"
                 << L" [1] Ausgabe aller gefundenen Informationen\n"
                 << L" [2] Funktionen\n"
                 << L" [3] Hilfe\n\n";
             user_input = submenu_quit();
             Console::clear_screen();
-            std::wcout << Snippets::program_head() << L"\n\n";
+            std::wcout << Snippets::program_head << L"\n\n";
 
             /**
               Interpret user input.
@@ -59,8 +62,8 @@ namespace Helper {
         */
         do {
             Console::clear_screen();
-            std::wcout << Snippets::program_head() << L"\n\n"
-                << get_separator_thick() << L"\n\n"
+            std::wcout << Snippets::program_head << L"\n\n"
+                << Snippets::separator_thick << L"\n\n"
                 << L" [1] Win-API Drucker\n"
                 << L" [2] Registry Drucker\n"
                 << L" [3] Systeminfo\n"
@@ -68,7 +71,7 @@ namespace Helper {
                 << L" [5] Löschen aller Druckaufträge (Admin-Rechte)\n\n";
             user_input = submenu_back_quit();
             Console::clear_screen();
-            std::wcout << Snippets::program_head() << L"\n\n";
+            std::wcout << Snippets::program_head << L"\n\n";
 
             /**
               Interpret user input.
@@ -116,28 +119,18 @@ namespace Helper {
     }
 
     wchar_t Menu::submenu_quit() {
-        std::wcout << get_separator_thick() << L"\n [B]eenden";
+        std::wcout << Snippets::separator_thick << L"\n [B]eenden";
         return tolower(_getwch());
     }
 
     wchar_t Menu::submenu_back_quit() {
-        std::wcout << get_separator_thick() << L"\n [Z]urück  [B]eenden";
+        std::wcout << Snippets::separator_thick << L"\n [Z]urück  [B]eenden";
         return tolower(_getwch());
     }
 
     wchar_t Menu::submenu_save_back_quit() {
-        std::wcout << get_separator_thick() << L"\n [S]peichern  [Z]urück  [B]eenden";
+        std::wcout << Snippets::separator_thick << L"\n [S]peichern  [Z]urück  [B]eenden";
         return tolower(_getwch());
-    }
-
-    std::wstring Menu::get_separator_thick() {
-        return L"===================================================================="
-            L"=================================================";
-    }
-
-    std::wstring Menu::get_separator_thin() {
-        return L"____________________________________________________________________"
-            L"_________________________________________________";
     }
 
     void Menu::save_request(void(*function_to_save)(std::wostream &stream),
@@ -147,9 +140,9 @@ namespace Helper {
         }
 
         Console::clear_screen();
-        std::wcout << Snippets::program_head() << L"\n\n"
-            << get_separator_thick() << L"\n\n Speichern\n"
-            << get_separator_thin() << L"\n\n";
+        std::wcout << Snippets::program_head << L"\n\n"
+            << Snippets::separator_thick << L"\n\n Speichern\n"
+            << Snippets::separator_thin << L"\n\n";
 
         /**
           Ask for filename and comment.
@@ -181,8 +174,8 @@ namespace Helper {
                 << L"\n\n";
         }
 
-        save_file << Snippets::program_head() << L"\n\n";
-        save_file << get_separator_thick() << L"\n\n"
+        save_file << Snippets::program_head << L"\n\n";
+        save_file << Snippets::separator_thick << L"\n\n"
             << Format::name_and_value(L"Kommentar", comment) << L"\n\n";
         function_to_save(save_file);
 

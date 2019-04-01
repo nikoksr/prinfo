@@ -2,6 +2,7 @@
 
 #include <string>
 
+
 namespace Helper {
     class Menu {
     public:
@@ -22,12 +23,8 @@ namespace Helper {
         static wchar_t submenu_back_quit();
         static wchar_t submenu_save_back_quit();
 
-        /**
-          Visual separator lines.
-          Draws different lines in console to separate content.
-        */
-        static std::wstring get_separator_thick();
-        static std::wstring get_separator_thin();
+
+
 
         /**
           Save functionality.
