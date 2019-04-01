@@ -21,7 +21,7 @@ namespace Helper {
           @param name The name to be put in formatted string.
           @param value The value to be put in formatted string.
         */
-        static std::wstring name_and_value(std::wstring name, std::wstring value);
+        static std::wstring name_and_value(const std::wstring& name, const std::wstring& value);
 
         /**
           Multi_sz keys are a sequence of null-terminated strings terminated by an
@@ -61,8 +61,7 @@ namespace Helper {
           @param line The line to split.
           @param max_line_length Defines the maximum allowed number of chars per line.
         */
-        static std::vector<std::wstring> line_wrap(std::wstring line,
-            const unsigned max_line_length);
+        static std::vector<std::wstring> line_wrap(const std::wstring& line, const std::size_t max_line_length);
 
         static data_units m_data_units;
     };  // class Format

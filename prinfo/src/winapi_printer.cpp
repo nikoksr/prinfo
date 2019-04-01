@@ -222,7 +222,7 @@ namespace WinApi {
     const std::wstring& Printer::get_status() const { return m_status; }
 
 
-    std::wostream& operator<<(std::wostream& stream, const WinApi::Printer& printer) {
+    std::wostream& operator<<(std::wostream& stream, WinApi::Printer& printer) {
         using namespace Helper;
 
         stream << Menu::get_separator_thin() << L"\n\n"

@@ -1,12 +1,5 @@
 #pragma once
 
-// Set minimum Windows version(Windows Header Files)
-// https://docs.microsoft.com/en-us/windows/desktop/api/winreg/nf-winreg-reggetvaluew
-// https://docs.microsoft.com/de-de/windows/desktop/WinProg/using-the-windows-headers
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0600 
-#endif
-
 #include <Windows.h>
 #include <iostream>
 #include <array>
