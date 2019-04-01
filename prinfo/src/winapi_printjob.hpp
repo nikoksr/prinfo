@@ -27,9 +27,7 @@ namespace WinApi {
         friend std::wostream& operator<<(std::wostream& stream, const WinApi::Printjob& job);
 
     private:
-        static unsigned m_obj_counter;
         static DWORD m_job_count;
-        // static JOB_INFO_2* m_jobs_info_list;
         static std::unique_ptr<JOB_INFO_2[]> m_jobs_info_list;
         static std::vector<std::unique_ptr<Printjob>> m_job_list;
 
