@@ -15,10 +15,10 @@
 #include <string>
 
 int wmain() {
-    using namespace WinApi;
-
     // Set local to german
     std::setlocale(LC_ALL, "de_DE.UTF-8");
+
+    using namespace WinApi;
 
     // #if 0
     auto& printers = Printer::load_printers();

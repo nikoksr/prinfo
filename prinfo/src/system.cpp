@@ -18,7 +18,7 @@ namespace WinApi {
         /**
           Initialize the COM library.
         */
-        HRESULT result_com_init = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+        HRESULT result_com_init = CoInitializeEx(nullptr, COINIT_MULTITHREADED | COINIT_SPEED_OVER_MEMORY);
 
         if (!SUCCEEDED(result_com_init)) {
             return result_com_init;
