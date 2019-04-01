@@ -18,6 +18,4 @@
 
 (Füge Bug relevante Logs und/oder Screenshots ein.)
 
-/label ~bug ~reproduced ~needs-investigation
-/cc @project-manager
-/assign @qa-tester
+/label ~bug

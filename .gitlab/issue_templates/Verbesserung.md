@@ -6,10 +6,12 @@
 
 (Was funktioniert nicht ausreichend gut?)
 
-**Wie soll das Problem verbessert werden?**
+**Vorschlag zur Verbesserung des Problems**
 
 (Beschreibung, wie die vorgeschlagene Verbesserung das Problem behebt bzw. verkleinert.)
 
 **Screenshots**
 
 (Hier eventuell Screenshots einfügen, welche das Problem verdeutlichen.)
+
+/label ~verbesserung

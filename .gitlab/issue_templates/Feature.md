@@ -21,3 +21,5 @@
 **Screenshots**
 
 (Eventuell hier Screenshots einfügen, welche die Vorstellung des Features unterstützen.)
+
+/label ~feature
