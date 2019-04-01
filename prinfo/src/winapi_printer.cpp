@@ -233,7 +233,7 @@ namespace WinApi {
             << Format::name_and_value(L"Status", printer.m_status) << L"\n"
             << Format::name_and_value(L"Druckaufträge", printer.m_keep_printjobs) << L"\n"
             << Format::name_and_value(L"Anzahl Druckaufträge", printer.m_number_printjobs) << L"\n"
-            << Format::name_and_value(L"Druckaufträge", L"") << L"\n";
+            << Format::name_and_value(L"Druckaufträge", L"", L' ') << L"\n";
 
         for (auto& job : *(printer.m_printjobs)) {
             stream << '\n' << *job;

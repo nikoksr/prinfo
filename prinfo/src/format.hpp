@@ -21,7 +21,7 @@ namespace Helper {
           @param name The name to be put in formatted string.
           @param value The value to be put in formatted string.
         */
-        static std::wstring name_and_value(const std::wstring& name, const std::wstring& value);
+        static std::wstring name_and_value(const std::wstring& name, const std::wstring& value, const wchar_t replace_empty_with = L'-');
 
         /**
           Multi_sz keys are a sequence of null-terminated strings terminated by an
