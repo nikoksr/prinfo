@@ -1,6 +1,6 @@
 ﻿#include "registry_printer.hpp"
 #include "format.hpp"
-#include "menu.hpp"
+#include "snippets.hpp"
 
 namespace Registry {
 
@@ -108,7 +108,7 @@ namespace Registry {
         /**
           Print header.
         */
-        stream << Helper::Menu::get_separator_thick() << L"\n\n"
+        stream << Helper::Snippets::separator_thick << L"\n\n"
             << L" REGISTRY\n"
             << L" HKEY_LOCAL_MACHINE\\" << localmachine_reg_path << L"\n";
 
@@ -127,7 +127,7 @@ namespace Registry {
 
             if (result_reg_enum_key != ERROR_SUCCESS) {
                 stream << Helper::Format::error_message(result_reg_enum_key)
-                    << Helper::Menu::get_separator_thick() << "\n";
+                    << Helper::Snippets::separator_thick << "\n";
                 continue;
             }
 
@@ -142,9 +142,9 @@ namespace Registry {
             /**
               Print body.
             */
-            stream << Helper::Menu::get_separator_thin() << L"\n\n"
+            stream << Helper::Snippets::separator_thin << L"\n\n"
                 << L" Drucker: " << name << L"\n"
-                << Helper::Menu::get_separator_thin() << L"\n\n"
+                << Helper::Snippets::separator_thin << L"\n\n"
                 << dsdriver << L"\n"
                 << dsspooler << L"\n"
                 << pnpdata << L"\n"
@@ -174,10 +174,10 @@ namespace Registry {
         /**
           Print header.
         */
-        stream << Helper::Menu::get_separator_thick() << L"\n\n"
+        stream << Helper::Snippets::separator_thick << L"\n\n"
             << L" REGISTRY\n"
             << L" HKEY_CURRENT_USER\\" << currentuser_reg_path << L"\n"
-            << Helper::Menu::get_separator_thin() << L"\n\n";
+            << Helper::Snippets::separator_thin << L"\n\n";
 
         /**
           Read value_data from subkey.

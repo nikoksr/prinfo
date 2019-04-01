@@ -1,17 +1,15 @@
 #include "winapi_printer.hpp"
 #include "format.hpp"
-#include "menu.hpp"
+#include "snippets.hpp"
 #include <stdexcept>
 #include <math.h>
 
 namespace WinApi {
 
     /**
-      Init static attributes
+    * Static member initialization
     */
-    // unsigned Printer::m_obj_counter = 0;
     int Printer::m_number_printers = 0;
-    // _PRINTER_INFO_2W *(Printer::m_printer_info_list) = nullptr;
     std::unique_ptr<_PRINTER_INFO_2W[]> Printer::m_printer_info_list;
     std::vector<std::unique_ptr<Printer>> Printer::m_printer_list(0);
 
@@ -19,16 +17,10 @@ namespace WinApi {
       Constructor and Destructor
     */
     Printer::Printer(const _PRINTER_INFO_2W& printer_info) : m_printer_info(printer_info) {
-        //m_obj_counter++;
         init();
     }
 
     Printer::~Printer() {
-        // m_obj_counter--;
-
-        /*if (m_obj_counter < 1 && m_printer_info_list) {
-            delete[] m_printer_info_list;
-        }*/
     }
 
     /**
@@ -225,9 +217,9 @@ namespace WinApi {
     std::wostream& operator<<(std::wostream& stream, WinApi::Printer& printer) {
         using namespace Helper;
 
-        stream << Menu::get_separator_thin() << L"\n\n"
+        stream << Snippets::separator_thin << L"\n\n"
             << L" " << printer.m_name << L"\n"
-            << Menu::get_separator_thin() << L"\n\n"
+            << Snippets::separator_thin << L"\n\n"
             << Format::name_and_value(L"Typ", printer.m_type) << L"\n"
             << Format::name_and_value(L"Port", printer.m_port) << L"\n"
             << Format::name_and_value(L"Freigabe", printer.m_is_shared) << L"\n"

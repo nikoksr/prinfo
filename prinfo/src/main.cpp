@@ -13,22 +13,27 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <sstream>
 
 int wmain() {
     // Set local to german
     std::setlocale(LC_ALL, "de_DE.UTF-8");
-
-    using namespace WinApi;
+    // std::ios_base::sync_with_stdio(false); can increase cout performance
 
     // #if 0
-    auto& printers = Printer::load_printers();
+    auto& printers = WinApi::Printer::load_printers();
+
+    std::wostringstream oss;
 
     for (auto& printer : printers) {
-        std::wcout << *printer;
+        oss << *printer;
     }
+
+    std::wcout << oss.str();
+
     // #endif
 
-        //Registry::Printer::show_lm_printers(std::wcout);
+    //Registry::Printer::show_lm_printers(std::wcout);
     std::wcin.get();
 
     // Helper::Menu::main_menu();

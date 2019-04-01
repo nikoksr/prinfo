@@ -1,6 +1,6 @@
 ﻿#include "system.hpp"
 #include "format.hpp"
-#include "menu.hpp"
+#include "snippets.hpp"
 
 #include <LM.h>
 #include <WbemCli.h>
@@ -317,9 +317,9 @@ namespace WinApi {
             _com_error err(result_prepare_wmi);
             const TCHAR* err_message = err.ErrorMessage();
 
-            stream << Helper::Menu::get_separator_thick() << L"\n\n"
+            stream << Helper::Snippets::separator_thick << L"\n\n"
                 << L" Systeminformationen\n"
-                << Helper::Menu::get_separator_thin() << L"\n\n"
+                << Helper::Snippets::separator_thin << L"\n\n"
                 << Helper::Format::name_and_value(L"Fehler", err_message) << L"\n\n";
             return;
         }
@@ -332,9 +332,9 @@ namespace WinApi {
         set_processor();
         set_memory();
 
-        stream << Helper::Menu::get_separator_thick() << L"\n\n"
+        stream << Helper::Snippets::separator_thick << L"\n\n"
             << L" Systeminformationen\n"
-            << Helper::Menu::get_separator_thin() << L"\n\n"
+            << Helper::Snippets::separator_thin << L"\n\n"
             << Helper::Format::name_and_value(L"Username", m_user_name) << L"\n"
             << Helper::Format::name_and_value(L"Computername", m_machine_name)
             << L"\n"
