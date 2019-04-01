@@ -7,12 +7,14 @@ namespace Helper {
     // Static member
     data_units Format::m_data_units;
 
-    std::wstring Format::name_and_value(const std::wstring& name, const std::wstring& value) {
+    std::wstring Format::name_and_value(const std::wstring& name, const std::wstring& value, const wchar_t replace_empty_with) {
         constexpr std::size_t max_length = 50;
 
         if (value.length() < max_length) {
-            const std::wstring space(max_length - name.length() - 2, L' ');
-            return (L" " + name + space + value);
+            if (value == L"" || value == L" ") {
+                return (L" " + name + std::wstring(max_length - name.length() - 2, L' ') + replace_empty_with);
+            }
+            return (L" " + name + std::wstring(max_length - name.length() - 2, L' ') + value);
         }
 
         std::vector<std::wstring> lines = line_wrap(value, max_length);
