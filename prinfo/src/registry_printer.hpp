@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <iostream>
+#include <array>
 
 namespace Registry {
     class Printer {
@@ -11,33 +12,36 @@ namespace Registry {
 
          @param &stream Reference of stream which should be used for data output.
        */
-        static void show_lm_printers(std::wostream &stream = std::wcout);
+        static void show_lm_printers(std::wostream &stream);
 
         /**
           Streams data found under CurrentUser to specified output.
 
           @param &stream Reference of stream which should be used for data output.
         */
-        static void show_cu_printers(std::wostream &stream = std::wcout);
+        static void show_cu_printers(std::wostream &stream);
 
     private:
         /**
           Defines max length of registry key.
         */
-        const static DWORD max_key_length = 255;
+        constexpr static DWORD m_max_key_length = 255;
 
         /**
           Defines max length of registry-entry name.
         */
-        const static DWORD max_value_name = 16383;
+        constexpr static DWORD m_max_value_name = 16383;
 
         /**
           Defines values-names to search for in specific registry-entry.
         */
-        const static std::wstring dsdriver_values_names[];
-        const static std::wstring dsspooler_values_names[];
-        const static std::wstring pnpdata_values_names[];
-        const static std::wstring printerdriverdata_values_names[];
+        static const std::array<std::wstring, 4> m_dsdriver_values_names;
+        static const std::array<std::wstring, 9> m_dsspooler_values_names;
+        static const std::array<std::wstring, 2> m_pnpdata_values_names;
+        static const std::array<std::wstring, 3> m_printerdriverdata_values_names;
+
+        static constexpr wchar_t localmachine_reg_path[] = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Print\\Printers\\";
+        static constexpr wchar_t currentuser_reg_path[] = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\PrinterPorts";
 
         /**
           Reads specified registry key and filters out the results for
@@ -49,8 +53,8 @@ namespace Registry {
           @param subkey_list List of values to look for in subkey.
           @pararm list_size Size of the subkey_values_names.
         */
-        static std::wstring read_key(HKEY hkey, std::wstring printer_name,
-            std::wstring subkey,
-            const std::wstring *subkey_list, unsigned list_size);
+        template<std::size_t SIZE>
+        static std::wstring read_key(HKEY hkey, const std::wstring& printer_name,
+            const std::wstring& subkey, const std::array<std::wstring, SIZE>& subkey_list);
     };  // class Printer
 }  // namespace Registry

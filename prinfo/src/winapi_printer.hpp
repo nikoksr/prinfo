@@ -67,7 +67,7 @@ namespace WinApi {
         const std::wstring& get_keep_printjobs() const;
         const std::wstring& get_status() const;
 
-        friend std::wostream& operator<<(std::wostream& stream, const WinApi::Printer& printer);
+        friend std::wostream& operator<<(std::wostream& stream, WinApi::Printer& printer);
 
     private:
         /**

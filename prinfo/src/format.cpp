@@ -7,8 +7,8 @@ namespace Helper {
     // Static member
     data_units Format::m_data_units;
 
-    std::wstring Format::name_and_value(std::wstring name, std::wstring value) {
-        const int max_length = 50;
+    std::wstring Format::name_and_value(const std::wstring& name, const std::wstring& value) {
+        constexpr std::size_t max_length = 50;
 
         if (value.length() < max_length) {
             const std::wstring space(max_length - name.length() - 2, L' ');
@@ -17,37 +17,37 @@ namespace Helper {
 
         std::vector<std::wstring> lines = line_wrap(value, max_length);
         std::wstring formatted_value = L"";
-        std::wstring space(max_length, L' ');
-        unsigned index = 0;
+        std::wstring white_space(max_length, L' ');
+        unsigned idx = 0;
 
         for (const std::wstring& line : lines) {
-            if (index == lines.size() - 1) {
+            if (idx == lines.size() - 1) {
                 formatted_value += line;
                 break;
             }
 
-            formatted_value += (line + L"\n" + space);
-            ++index;
+            formatted_value += (line + L'\n' + white_space);
+            idx++;
         }
 
-        space = std::wstring(max_length - name.length() - 2, L' ');
-        return (L" " + name + space + formatted_value);
+        white_space = std::wstring(max_length - name.length() - 2, L' ');
+        return (L' ' + name + white_space + formatted_value);
     }
 
-    std::vector<std::wstring> Format::line_wrap(std::wstring line,
-        const unsigned max_line_length) {
-        std::vector<std::wstring> lines;
-
+    std::vector<std::wstring> Format::line_wrap(const std::wstring& line, const std::size_t max_line_length) {
         if (line.length() < 1) {
-            return lines;
+            return {};
         }
 
-        while (line.length() > max_line_length) {
-            lines.push_back(line.substr(0, max_line_length));
-            line = line.substr(max_line_length, line.length());
+        std::vector<std::wstring> lines;
+        std::wstring line_copy = line;
+
+        while (line_copy.length() > max_line_length) {
+            lines.emplace_back(line_copy.substr(0, max_line_length));
+            line_copy = line_copy.substr(max_line_length, line_copy.length());
         }
 
-        lines.push_back(line.substr(0, max_line_length));
+        lines.emplace_back(line_copy.substr(0, max_line_length));
 
         return lines;
     }
@@ -55,13 +55,13 @@ namespace Helper {
     std::wstring Format::multi_sz_key(TCHAR multi_sz_data[]) {
         std::wstring multi_sz_string = L"";
         size_t multi_sz_string_length = wcslen(multi_sz_data);
-        unsigned index = 0;
+        unsigned idx = 0;
 
         while (multi_sz_string_length > 0) {
-            multi_sz_string += &multi_sz_data[index];
+            multi_sz_string += &multi_sz_data[idx];
             multi_sz_string += L" ";
-            index += multi_sz_string_length + 1;  // '\0' -> + 1
-            multi_sz_string_length = wcslen(&multi_sz_data[index]);
+            idx += multi_sz_string_length + 1;  // '\0' -> + 1
+            multi_sz_string_length = wcslen(&multi_sz_data[idx]);
         }
 
         return multi_sz_string;
@@ -98,11 +98,8 @@ namespace Helper {
     }
 
     std::wstring Format::error_message(DWORD error_message_id) {
-        /**
-          Check if is error.
-        */
         if (error_message_id == 0) {
-            return std::wstring();
+            return L"";
         }
 
         /**
@@ -112,7 +109,7 @@ namespace Helper {
         const DWORD size = FormatMessageW(
             FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
             FORMAT_MESSAGE_IGNORE_INSERTS,
-            NULL, error_message_id, LANG_USER_DEFAULT,
+            NULL, error_message_id, LOCALE_USER_DEFAULT,
             reinterpret_cast<LPWSTR>(&error_message_buffer), 0, NULL);
 
         std::wstring error_message(error_message_buffer, size);
