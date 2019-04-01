@@ -8,9 +8,7 @@ namespace WinApi {
     /**
      Static members
     */
-    unsigned Printjob::m_obj_counter = 0;
     DWORD Printjob::m_job_count = 0;
-    // JOB_INFO_2* (Printjob::m_jobs_info_list) = nullptr;
     std::unique_ptr<JOB_INFO_2[]> Printjob::m_jobs_info_list;
     std::vector<std::unique_ptr<Printjob>> Printjob::m_job_list(0);
 
@@ -18,16 +16,10 @@ namespace WinApi {
      Constructor and Destructor
     */
     Printjob::Printjob(const JOB_INFO_2& job_info) : m_job_info(job_info) {
-        m_obj_counter++;
         init();
     }
 
     Printjob::~Printjob() {
-        // m_obj_counter--;
-
-        /*if (m_obj_counter < 1 && m_jobs_info_list) {
-            delete[] m_jobs_info_list;
-        }*/
     }
 
     /**
@@ -87,7 +79,11 @@ namespace WinApi {
 
     void Printjob::set_submitted() {
         SYSTEMTIME submitted_time = m_job_info.Submitted;
-        m_submitted = std::to_wstring(submitted_time.wHour) + L":" + std::to_wstring(submitted_time.wMinute);
+        m_submitted = std::to_wstring(submitted_time.wDay) + L"." +
+            std::to_wstring(submitted_time.wMonth) + L"." +
+            std::to_wstring(submitted_time.wYear) + L' ' +
+            std::to_wstring(submitted_time.wHour) + L":" +
+            std::to_wstring(submitted_time.wMinute);
     }
 
     void Printjob::set_status() {
