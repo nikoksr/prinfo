@@ -2,7 +2,7 @@
 
 (Fasse den Bug kurz zusammen)
 
-**Schritte um den Bug zureproduzieren**
+**Schritte um den Bug zu reproduzieren**
 
 (Wie kann ich den Bug reproduzieren?)
 
