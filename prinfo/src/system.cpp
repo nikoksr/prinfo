@@ -356,11 +356,11 @@ namespace WinApi {
     /**
      Getter functions
     */
-    const std::wstring& System::get_user_name() { return m_user_name; }
-    const std::wstring& System::get_workstation_name() { return m_machine_name; }
-    const std::wstring& System::get_offline_files() { return m_offline_files; }
-    const std::wstring& System::get_default_printer() { return m_default_printer; }
-    const std::wstring& System::get_operating_system() { return m_os_name; }
-    const std::wstring& System::get_processor() { return m_processor; }
-    const std::wstring& System::get_memory() { return m_memory_total; }
+    const std::wstring& System::get_user_name() const { return m_user_name; }
+    const std::wstring& System::get_workstation_name() const { return m_machine_name; }
+    const std::wstring& System::get_offline_files() const { return m_offline_files; }
+    const std::wstring& System::get_default_printer() const { return m_default_printer; }
+    const std::wstring& System::get_operating_system() const { return m_os_name; }
+    const std::wstring& System::get_processor() const { return m_processor; }
+    const std::wstring& System::get_memory() const { return m_memory_total; }
 }  // namespace WinApi
