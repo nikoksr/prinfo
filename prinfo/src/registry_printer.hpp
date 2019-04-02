@@ -40,7 +40,7 @@ namespace Registry {
         static const std::array<std::wstring, 2> m_pnpdata_values_names;
         static const std::array<std::wstring, 3> m_printerdriverdata_values_names;
 
-        static constexpr wchar_t localmachine_reg_path[] = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Print\\Printers\\";
+        static constexpr wchar_t localmachine_reg_path[] = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Print\\Printers";
         static constexpr wchar_t currentuser_reg_path[] = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\PrinterPorts";
 
         /**
@@ -54,7 +54,7 @@ namespace Registry {
           @pararm list_size Size of the subkey_values_names.
         */
         template<std::size_t SIZE>
-        static std::wstring read_key(HKEY hkey, const std::wstring& printer_name,
-            const std::wstring& subkey, const std::array<std::wstring, SIZE>& subkey_list);
+        static std::wstring read_key(const HKEY& hkey_origin, const std::wstring& printer_name,
+            const std::wstring& subkey, const std::array<std::wstring, SIZE>& value_name_list);
     };  // class Printer
 }  // namespace Registry

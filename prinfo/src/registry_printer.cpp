@@ -31,14 +31,15 @@ namespace Registry {
       Functions
     */
     template<std::size_t SIZE>
-    static std::wstring Printer::read_key(HKEY hkey, const std::wstring& printer_name,
-        const std::wstring& subkey, const std::array<std::wstring, SIZE>& subkey_list) {
+    static std::wstring Printer::read_key(const HKEY& hkey_origin, const std::wstring& printer_name,
+        const std::wstring& subkey, const std::array<std::wstring, SIZE>& value_name_list) {
         /**
           Check if key is openable and open it if so.
         */
+        HKEY hkey_copy = hkey_origin;
         const std::wstring subkeypfad = printer_name + L"\\" + subkey;
         const LSTATUS result_reg_open_key =
-            RegOpenKeyExW(hkey, subkeypfad.c_str(), NULL, KEY_READ, &hkey);
+            RegOpenKeyExW(hkey_copy, subkeypfad.c_str(), NULL, KEY_READ, &hkey_copy);
         std::wstring full_key_output = L"";
 
         if (result_reg_open_key != ERROR_SUCCESS) {
@@ -58,15 +59,15 @@ namespace Registry {
             DWORD type = 0;
             DWORD size = m_max_value_name;
             TCHAR data[m_max_value_name] = L"";
-            const std::wstring& subkey = subkey_list.at(i);
+            std::wstring value_name = value_name_list.at(i);
 
             const LSTATUS result_get_value =
-                RegGetValueW(hkey, subkeypfad.c_str(), subkey.c_str(),
+                RegGetValueW(hkey_origin, subkeypfad.c_str(), value_name.c_str(),
                     RRF_RT_ANY, &type, data, &size);
 
             if (result_get_value != ERROR_SUCCESS) {
                 full_key_output += Helper::Format::name_and_value(
-                    subkey, Helper::Format::error_message(result_get_value));
+                    value_name, Helper::Format::error_message(result_get_value));
                 continue;
             }
 
@@ -86,7 +87,7 @@ namespace Registry {
             }
 
             full_key_output +=
-                Helper::Format::name_and_value(subkey, value_data) + L"\n";
+                Helper::Format::name_and_value(value_name, value_data) + L"\n";
         }
 
         return full_key_output;
@@ -112,17 +113,19 @@ namespace Registry {
             << L" REGISTRY\n"
             << L" HKEY_LOCAL_MACHINE\\" << localmachine_reg_path << L"\n";
 
-        DWORD num_sub_keys;
-        RegQueryInfoKeyW(hkey, nullptr, nullptr, nullptr, &num_sub_keys, nullptr,
+        // Number of entries/printers
+        DWORD num_printers;
+        RegQueryInfoKeyW(hkey, nullptr, nullptr, nullptr, &num_printers, nullptr,
             nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
 
         /**
           Read value_data from all subkeys.
         */
-        for (unsigned index = 0; index < num_sub_keys; ++index) {
+        for (DWORD idx = 0; idx < num_printers; ++idx) {
             TCHAR name[m_max_key_length];
             DWORD size = m_max_key_length;
-            LSTATUS result_reg_enum_key = RegEnumKeyExW(hkey, index, name, &size, nullptr,
+
+            LSTATUS result_reg_enum_key = RegEnumKeyExW(hkey, idx, name, &size, nullptr,
                 nullptr, nullptr, nullptr);
 
             if (result_reg_enum_key != ERROR_SUCCESS) {
@@ -136,7 +139,7 @@ namespace Registry {
             */
             std::wstring dsdriver = read_key(hkey, name, L"DsDriver", m_dsdriver_values_names);
             std::wstring dsspooler = read_key(hkey, name, L"DsSpooler", m_dsspooler_values_names);
-            std::wstring pnpdata = read_key(hkey, name, L"PNPData", m_pnpdata_values_names);
+            std::wstring pnpdata = read_key(hkey, name, L"PnPData", m_pnpdata_values_names);
             std::wstring printerdriverdata = read_key(hkey, name, L"PrinterDriverData", m_printerdriverdata_values_names);
 
             /**
@@ -182,14 +185,14 @@ namespace Registry {
         /**
           Read value_data from subkey.
         */
-        for (unsigned index = 0; index < num_values; ++index) {
+        for (DWORD idx = 0; idx < num_values; ++idx) {
             TCHAR value_name_buffer[m_max_value_name];
             DWORD value_name_buffer_size = m_max_value_name;
             TCHAR value_data_buffer[m_max_value_name];
             DWORD value_data_buffer_size = m_max_value_name;
 
             LSTATUS result_reg_enum_value = RegEnumValueW(
-                hkey, index, value_name_buffer, &value_name_buffer_size, nullptr,
+                hkey, idx, value_name_buffer, &value_name_buffer_size, nullptr,
                 nullptr, reinterpret_cast<LPBYTE>(value_data_buffer),
                 &value_data_buffer_size);
 
