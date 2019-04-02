@@ -157,7 +157,7 @@ namespace Registry {
         RegCloseKey(hkey);
     }
 
-    void Printer::show_cu_printers(std::wostream &stream) {
+    void Printer::show_cu_printers(std::wostream& stream) {
         /**
           Check if key is openable.
         */
