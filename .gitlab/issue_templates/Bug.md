@@ -2,7 +2,7 @@
 
 (Fasse den Bug kurz zusammen)
 
-**Schritte um den Bug zureproduzieren**
+**Schritte um den Bug zu reproduzieren**
 
 (Wie kann ich den Bug reproduzieren?)
 
@@ -18,6 +18,4 @@
 
 (Füge Bug relevante Logs und/oder Screenshots ein.)
 
-/label ~bug ~reproduced ~needs-investigation
-/cc @project-manager
-/assign @qa-tester
+/label ~bug
