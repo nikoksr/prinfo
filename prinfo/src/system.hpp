@@ -12,7 +12,7 @@ namespace WinApi {
 
          @param stream Stream that receives the data.
         */
-        void print_system_info(std::wostream &stream = std::wcout);
+        void print_system_info(std::wostream &stream);
 
         /**
           Sets member user_name. Retrieves data from
@@ -58,13 +58,13 @@ namespace WinApi {
         /**
           Getter functions
         */
-        const std::wstring& get_user_name();
-        const std::wstring& get_workstation_name();
-        const std::wstring& get_offline_files();
-        const std::wstring& get_default_printer();
-        const std::wstring& get_operating_system();
-        const std::wstring& get_processor();
-        const std::wstring& get_memory();
+        const std::wstring& get_user_name() const;
+        const std::wstring& get_workstation_name() const;
+        const std::wstring& get_offline_files() const;
+        const std::wstring& get_default_printer() const;
+        const std::wstring& get_operating_system() const;
+        const std::wstring& get_processor() const;
+        const std::wstring& get_memory() const;
 
     private:
         /**

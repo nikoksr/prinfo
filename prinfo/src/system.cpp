@@ -1,6 +1,6 @@
 ﻿#include "system.hpp"
 #include "format.hpp"
-#include "menu.hpp"
+#include "snippets.hpp"
 
 #include <LM.h>
 #include <WbemCli.h>
@@ -18,7 +18,7 @@ namespace WinApi {
         /**
           Initialize the COM library.
         */
-        HRESULT result_com_init = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+        HRESULT result_com_init = CoInitializeEx(nullptr, COINIT_MULTITHREADED | COINIT_SPEED_OVER_MEMORY);
 
         if (!SUCCEEDED(result_com_init)) {
             return result_com_init;
@@ -317,9 +317,9 @@ namespace WinApi {
             _com_error err(result_prepare_wmi);
             const TCHAR* err_message = err.ErrorMessage();
 
-            stream << Helper::Menu::get_separator_thick() << L"\n\n"
+            stream << Helper::Snippets::separator_thick << L"\n\n"
                 << L" Systeminformationen\n"
-                << Helper::Menu::get_separator_thin() << L"\n\n"
+                << Helper::Snippets::separator_thin << L"\n\n"
                 << Helper::Format::name_and_value(L"Fehler", err_message) << L"\n\n";
             return;
         }
@@ -332,9 +332,9 @@ namespace WinApi {
         set_processor();
         set_memory();
 
-        stream << Helper::Menu::get_separator_thick() << L"\n\n"
+        stream << Helper::Snippets::separator_thick << L"\n\n"
             << L" Systeminformationen\n"
-            << Helper::Menu::get_separator_thin() << L"\n\n"
+            << Helper::Snippets::separator_thin << L"\n\n"
             << Helper::Format::name_and_value(L"Username", m_user_name) << L"\n"
             << Helper::Format::name_and_value(L"Computername", m_machine_name)
             << L"\n"
@@ -356,11 +356,11 @@ namespace WinApi {
     /**
      Getter functions
     */
-    const std::wstring& System::get_user_name() { return m_user_name; }
-    const std::wstring& System::get_workstation_name() { return m_machine_name; }
-    const std::wstring& System::get_offline_files() { return m_offline_files; }
-    const std::wstring& System::get_default_printer() { return m_default_printer; }
-    const std::wstring& System::get_operating_system() { return m_os_name; }
-    const std::wstring& System::get_processor() { return m_processor; }
-    const std::wstring& System::get_memory() { return m_memory_total; }
+    const std::wstring& System::get_user_name() const { return m_user_name; }
+    const std::wstring& System::get_workstation_name() const { return m_machine_name; }
+    const std::wstring& System::get_offline_files() const { return m_offline_files; }
+    const std::wstring& System::get_default_printer() const { return m_default_printer; }
+    const std::wstring& System::get_operating_system() const { return m_os_name; }
+    const std::wstring& System::get_processor() const { return m_processor; }
+    const std::wstring& System::get_memory() const { return m_memory_total; }
 }  // namespace WinApi

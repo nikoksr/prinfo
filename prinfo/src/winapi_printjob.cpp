@@ -8,9 +8,7 @@ namespace WinApi {
     /**
      Static members
     */
-    unsigned Printjob::m_obj_counter = 0;
     DWORD Printjob::m_job_count = 0;
-    // JOB_INFO_2* (Printjob::m_jobs_info_list) = nullptr;
     std::unique_ptr<JOB_INFO_2[]> Printjob::m_jobs_info_list;
     std::vector<std::unique_ptr<Printjob>> Printjob::m_job_list(0);
 
@@ -18,16 +16,10 @@ namespace WinApi {
      Constructor and Destructor
     */
     Printjob::Printjob(const JOB_INFO_2& job_info) : m_job_info(job_info) {
-        m_obj_counter++;
         init();
     }
 
     Printjob::~Printjob() {
-        // m_obj_counter--;
-
-        /*if (m_obj_counter < 1 && m_jobs_info_list) {
-            delete[] m_jobs_info_list;
-        }*/
     }
 
     /**
@@ -87,26 +79,31 @@ namespace WinApi {
 
     void Printjob::set_submitted() {
         SYSTEMTIME submitted_time = m_job_info.Submitted;
-        m_submitted = std::to_wstring(submitted_time.wHour) + L":" + std::to_wstring(submitted_time.wMinute);
+        m_submitted = std::to_wstring(submitted_time.wDay) + L"." +
+            std::to_wstring(submitted_time.wMonth) + L"." +
+            std::to_wstring(submitted_time.wYear) + L' ' +
+            std::to_wstring(submitted_time.wHour) + L":" +
+            std::to_wstring(submitted_time.wMinute) + L":" +
+            std::to_wstring(submitted_time.wSecond);
     }
 
     void Printjob::set_status() {
         m_status = L"";
 
-        if (m_job_info.Status & JOB_STATUS_BLOCKED_DEVQ) { m_status += L"The driver cannot print the job."; }
-        if (m_job_info.Status & JOB_STATUS_DELETED) { m_status += L"Job has been deleted."; }
-        if (m_job_info.Status & JOB_STATUS_DELETING) { m_status += L"Job is being deleted."; }
-        if (m_job_info.Status & JOB_STATUS_ERROR) { m_status += L"An error is associated with the job."; }
-        if (m_job_info.Status & JOB_STATUS_OFFLINE) { m_status += L"Printer is offline."; }
-        if (m_job_info.Status & JOB_STATUS_PAPEROUT) { m_status += L"Printer is out of paper."; }
-        if (m_job_info.Status & JOB_STATUS_PAUSED) { m_status += L"Job is paused."; }
-        if (m_job_info.Status & JOB_STATUS_PRINTED) { m_status += L"Job has printed."; }
-        if (m_job_info.Status & JOB_STATUS_PRINTING) { m_status += L"Job is printing."; }
-        if (m_job_info.Status & JOB_STATUS_RESTART) { m_status += L"Job has been restarted."; }
-        if (m_job_info.Status & JOB_STATUS_SPOOLING) { m_status += L"Job is spooling."; }
-        if (m_job_info.Status & JOB_STATUS_USER_INTERVENTION) { m_status += L"Printer has an error that requires the user to do something."; }
-        if (m_job_info.Status & JOB_STATUS_COMPLETE) { m_status += L"The job is sent to the printer, but may not be printed yet."; }
-        if (m_job_info.Status & JOB_STATUS_RETAINED) { m_status += L"The job has been retained in the print queue following printing."; }
+        if (m_job_info.Status& JOB_STATUS_BLOCKED_DEVQ) { m_status += L"Der Treiber kann den Auftrag nicht drucken.\n"; }
+        if (m_job_info.Status& JOB_STATUS_DELETED) { m_status += L"Auftrag wurde gelöscht.\n"; }
+        if (m_job_info.Status& JOB_STATUS_DELETING) { m_status += L"Auftrag wird gelöscht.\n"; }
+        if (m_job_info.Status& JOB_STATUS_ERROR) { m_status += L"In dem Auftrag ist ein Fehler aufgetreten.\n"; }
+        if (m_job_info.Status& JOB_STATUS_OFFLINE) { m_status += L"Drucker ist offline.\n"; }
+        if (m_job_info.Status& JOB_STATUS_PAPEROUT) { m_status += L"Drucker hat kein Papier mehr.\n"; }
+        if (m_job_info.Status& JOB_STATUS_PAUSED) { m_status += L"Auftrag wurde pausiert.\n"; }
+        if (m_job_info.Status& JOB_STATUS_PRINTED) { m_status += L"Auftrag wurde gedruckt.\n"; }
+        if (m_job_info.Status& JOB_STATUS_PRINTING) { m_status += L"Auftrag wird gedruckt.\n"; }
+        if (m_job_info.Status& JOB_STATUS_RESTART) { m_status += L"Auftrag wurde neugestartet.\n"; }
+        if (m_job_info.Status& JOB_STATUS_SPOOLING) { m_status += L"Auftrag wird gespoolt.\n"; }
+        if (m_job_info.Status& JOB_STATUS_USER_INTERVENTION) { m_status += L"Drucker hat einen Fehler der eine Benutzer Intervention benötigt.\n"; }
+        if (m_job_info.Status& JOB_STATUS_COMPLETE) { m_status += L"Auftrag wurde an Drucker gesendet; wohlmöglich noch nicht gedruckt.\n"; }
+        if (m_job_info.Status& JOB_STATUS_RETAINED) { m_status += L"Auftrag wurde nach dem Drucken in der Warteschlange behalten.\n"; }
     }
 
     void Printjob::init() {

@@ -1,39 +1,42 @@
 ﻿#include "registry_printer.hpp"
 #include "format.hpp"
-#include "menu.hpp"
+#include "snippets.hpp"
 
 namespace Registry {
 
     /**
       Define static members
     */
-
-    const std::wstring Printer::dsdriver_values_names[] = {
+    const std::array<std::wstring, 4> Printer::m_dsdriver_values_names = {
         L"printLanguage", L"printBinNames", L"printMediaReady",
         L"printOrientationsSupported" };
 
-    const std::wstring Printer::dsspooler_values_names[] = {
+    const std::array<std::wstring, 9> Printer::m_dsspooler_values_names = {
         L"printerName", L"printShareName",  L"portName", L"driverName",
         L"serverName",  L"shortServerName", L"uNCName",  L"url",
         L"description" };
 
-    const std::wstring Printer::pnpdata_values_names[] = { L"Manufacturer",
+    const std::array<std::wstring, 2> Printer::m_pnpdata_values_names = { L"Manufacturer",
                                                           L"HardwareID" };
 
-    const std::wstring Printer::printerdriverdata_values_names[] = {
+    const std::array<std::wstring, 3> Printer::m_printerdriverdata_values_names = {
         L"Model", L"TrayFormQueueProp", L"TrayFormTable" };
+
+    constexpr DWORD Printer::m_max_key_length;
+    constexpr DWORD Printer::m_max_value_name;
+    constexpr wchar_t Printer::localmachine_reg_path[];
+    constexpr wchar_t Printer::currentuser_reg_path[];
 
     /**
       Functions
     */
-
-    std::wstring Printer::read_key(HKEY hkey, std::wstring printer_name,
-        std::wstring subkey,
-        const std::wstring *subkey_list, unsigned list_size) {
+    template<std::size_t SIZE>
+    static std::wstring Printer::read_key(const HKEY& hkey_origin, const std::wstring& printer_name,
+        const std::wstring& subkey, const std::array<std::wstring, SIZE>& value_name_list) {
         /**
           Check if key is openable and open it if so.
         */
-        HKEY hkey_copy = hkey;
+        HKEY hkey_copy = hkey_origin;
         const std::wstring subkeypfad = printer_name + L"\\" + subkey;
         const LSTATUS result_reg_open_key =
             RegOpenKeyExW(hkey_copy, subkeypfad.c_str(), NULL, KEY_READ, &hkey_copy);
@@ -43,7 +46,6 @@ namespace Registry {
             full_key_output += L"\\" + subkey + L" - " +
                 Helper::Format::error_message(result_reg_open_key) +
                 L"\n";
-            RegCloseKey(hkey_copy);
             return full_key_output;
         }
         else {
@@ -53,41 +55,41 @@ namespace Registry {
         /**
           Read all data from subkey.
         */
-        for (unsigned i = 0; i < list_size; ++i) {
-            DWORD type;
-            DWORD size = max_value_name;
-            TCHAR data[max_value_name];
+        for (std::size_t i = 0; i < SIZE; ++i) {
+            DWORD type = 0;
+            DWORD size = m_max_value_name;
+
+            std::wstring value_name = value_name_list.at(i);
+            auto data = std::make_unique<TCHAR[]>(m_max_value_name);
 
             const LSTATUS result_get_value =
-                RegGetValueW(hkey, subkeypfad.c_str(), subkey_list[i].c_str(),
-                    RRF_RT_ANY, &type, data, &size);
+                RegGetValueW(hkey_origin, subkeypfad.c_str(), value_name.c_str(),
+                    RRF_RT_ANY, &type, data.get(), &size);
 
             if (result_get_value != ERROR_SUCCESS) {
                 full_key_output += Helper::Format::name_and_value(
-                    subkey_list[i], Helper::Format::error_message(result_get_value));
+                    value_name, Helper::Format::error_message(result_get_value));
                 continue;
             }
 
-            std::wstring value_data;
+            std::wstring value_data = L"";
 
             // REG_SZ
             if (type != REG_MULTI_SZ) {
-                value_data = std::wstring(data);
+                value_data = std::wstring(data.get());
             }
             // REG_MULTI_SZ
             else {
-                value_data = Helper::Format::multi_sz_key(data);
+                value_data = Helper::Format::multi_sz_key(data.get());
             }
 
             if (value_data.length() < 1) {
                 value_data = L"-";
             }
 
-            full_key_output +=
-                Helper::Format::name_and_value(subkey_list[i], value_data) + L"\n";
+            full_key_output += Helper::Format::name_and_value(value_name, value_data) + L"\n";
         }
 
-        RegCloseKey(hkey_copy);
         return full_key_output;
     }
 
@@ -96,10 +98,8 @@ namespace Registry {
           Check if key is openable.
         */
         HKEY hkey;
-        const std::wstring registry_pfad =
-            L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Print\\Printers\\";
         LSTATUS result_reg_open_key = RegOpenKeyExW(
-            HKEY_LOCAL_MACHINE, registry_pfad.c_str(), NULL, KEY_READ, &hkey);
+            HKEY_LOCAL_MACHINE, localmachine_reg_path, NULL, KEY_READ, &hkey);
 
         if (result_reg_open_key != ERROR_SUCCESS) {
             stream << Helper::Format::error_message(result_reg_open_key) << "\n";
@@ -109,51 +109,45 @@ namespace Registry {
         /**
           Print header.
         */
-        stream << Helper::Menu::get_separator_thick() << L"\n\n"
+        stream << Helper::Snippets::separator_thick << L"\n\n"
             << L" REGISTRY\n"
-            << L" HKEY_LOCAL_MACHINE\\" << registry_pfad << L"\n";
+            << L" HKEY_LOCAL_MACHINE\\" << localmachine_reg_path << L"\n";
 
-        DWORD num_sub_keys;
-        RegQueryInfoKeyW(hkey, nullptr, nullptr, nullptr, &num_sub_keys, nullptr,
+        // Number of entries/printers
+        DWORD num_printers;
+        RegQueryInfoKeyW(hkey, nullptr, nullptr, nullptr, &num_printers, nullptr,
             nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
 
         /**
           Read value_data from all subkeys.
         */
-        for (unsigned index = 0; index < num_sub_keys; ++index) {
-            TCHAR name[max_key_length];
-            DWORD size = max_key_length;
-            LSTATUS result_reg_enum_key = RegEnumKeyExW(hkey, index, name, &size, nullptr,
+        for (DWORD idx = 0; idx < num_printers; ++idx) {
+            TCHAR name[m_max_key_length];
+            DWORD size = m_max_key_length;
+
+            LSTATUS result_reg_enum_key = RegEnumKeyExW(hkey, idx, name, &size, nullptr,
                 nullptr, nullptr, nullptr);
 
             if (result_reg_enum_key != ERROR_SUCCESS) {
                 stream << Helper::Format::error_message(result_reg_enum_key)
-                    << Helper::Menu::get_separator_thick() << "\n";
+                    << Helper::Snippets::separator_thick << "\n";
                 continue;
             }
 
             /**
               Store value_data.
             */
-            std::wstring dsdriver =
-                read_key(hkey, name, L"DsDriver", dsdriver_values_names,
-                (sizeof(dsdriver_values_names) / sizeof(std::wstring)));
-            std::wstring dsspooler =
-                read_key(hkey, name, L"DsSpooler", dsspooler_values_names,
-                (sizeof(dsspooler_values_names) / sizeof(std::wstring)));
-            std::wstring pnpdata =
-                read_key(hkey, name, L"PNPData", pnpdata_values_names,
-                (sizeof(pnpdata_values_names) / sizeof(std::wstring)));
-            std::wstring printerdriverdata = read_key(
-                hkey, name, L"PrinterDriverData", printerdriverdata_values_names,
-                (sizeof(printerdriverdata_values_names) / sizeof(std::wstring)));
+            std::wstring dsdriver = read_key(hkey, name, L"DsDriver", m_dsdriver_values_names);
+            std::wstring dsspooler = read_key(hkey, name, L"DsSpooler", m_dsspooler_values_names);
+            std::wstring pnpdata = read_key(hkey, name, L"PnPData", m_pnpdata_values_names);
+            std::wstring printerdriverdata = read_key(hkey, name, L"PrinterDriverData", m_printerdriverdata_values_names);
 
             /**
               Print body.
             */
-            stream << Helper::Menu::get_separator_thin() << L"\n\n"
+            stream << Helper::Snippets::separator_thin << L"\n\n"
                 << L" Drucker: " << name << L"\n"
-                << Helper::Menu::get_separator_thin() << L"\n\n"
+                << Helper::Snippets::separator_thin << L"\n\n"
                 << dsdriver << L"\n"
                 << dsspooler << L"\n"
                 << pnpdata << L"\n"
@@ -163,21 +157,20 @@ namespace Registry {
         RegCloseKey(hkey);
     }
 
-    void Printer::show_cu_printers(std::wostream &stream) {
+    void Printer::show_cu_printers(std::wostream& stream) {
         /**
           Check if key is openable.
         */
         HKEY hkey;
-        const std::wstring registry_pfad =
-            L"Software\\Microsoft\\Windows NT\\CurrentVersion\\PrinterPorts";
         LSTATUS result_reg_open_key = RegOpenKeyExW(
-            HKEY_CURRENT_USER, registry_pfad.c_str(), NULL, KEY_READ, &hkey);
+            HKEY_CURRENT_USER, currentuser_reg_path, NULL, KEY_READ, &hkey);
 
         if (result_reg_open_key != ERROR_SUCCESS) {
             stream << Helper::Format::error_message(result_reg_open_key) << L"\n";
             return;
         }
 
+        // Number of Entries/Printers
         DWORD num_values;
         RegQueryInfoKeyW(hkey, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
             &num_values, nullptr, nullptr, nullptr, nullptr);
@@ -185,36 +178,46 @@ namespace Registry {
         /**
           Print header.
         */
-        stream << Helper::Menu::get_separator_thick() << L"\n\n"
+        stream << Helper::Snippets::separator_thick << L"\n\n"
             << L" REGISTRY\n"
-            << L" HKEY_CURRENT_USER\\" << registry_pfad << L"\n"
-            << Helper::Menu::get_separator_thin() << L"\n\n";
+            << L" HKEY_CURRENT_USER\\" << currentuser_reg_path << L"\n"
+            << Helper::Snippets::separator_thin << L"\n\n";
 
         /**
           Read value_data from subkey.
         */
-        for (unsigned index = 0; index < num_values; ++index) {
-            TCHAR value_name_buffer[max_value_name];
-            DWORD value_name_buffer_size = max_value_name;
-            TCHAR value_data_buffer[max_value_name];
-            DWORD value_data_buffer_size = max_value_name;
 
-            LSTATUS result_reg_enum_value = RegEnumValueW(
-                hkey, index, value_name_buffer, &value_name_buffer_size, nullptr,
-                nullptr, reinterpret_cast<LPBYTE>(value_data_buffer),
-                &value_data_buffer_size);
+        for (DWORD idx = 0; idx < num_values; ++idx) {
+            // Get name and data size
+            DWORD buf_value_name_needed = m_max_value_name;
+            DWORD buf_data_needed = 0;
+            auto value_name = std::make_unique<TCHAR[]>(m_max_value_name);
 
-            /**
-              Print body.
-            */
-            if (result_reg_enum_value != ERROR_SUCCESS) {
-                stream << Helper::Format::error_message(result_reg_enum_value) << L"\n";
+            const LSTATUS result_get_size = RegEnumValueW(
+                hkey, idx, value_name.get(), &buf_value_name_needed, nullptr,
+                nullptr, nullptr, &buf_data_needed);
+
+            if (result_get_size != ERROR_SUCCESS && result_get_size != ERROR_MORE_DATA) {
+                stream << Helper::Format::error_message(result_get_size) << L"\n";
                 continue;
             }
 
-            stream << Helper::Format::name_and_value(value_name_buffer,
-                value_data_buffer)
-                << L"\n";
+            // Needs to be increased by 1 to fit null-terminator
+            buf_value_name_needed += 1;
+
+            // Get data
+            auto data = std::make_unique<TCHAR[]>(buf_data_needed);
+
+            const LSTATUS result_get_data = RegEnumValueW(
+                hkey, idx, value_name.get(), &buf_value_name_needed, nullptr,
+                nullptr, reinterpret_cast<LPBYTE>(data.get()), &buf_data_needed);
+
+            if (result_get_data != ERROR_SUCCESS) {
+                stream << Helper::Format::error_message(result_get_data) << L"\n";
+                continue;
+            }
+
+            stream << Helper::Format::name_and_value(value_name.get(), data.get()) << L"\n";
         }
 
         stream << L"\n";
