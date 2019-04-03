@@ -58,12 +58,13 @@ namespace Registry {
         for (std::size_t i = 0; i < SIZE; ++i) {
             DWORD type = 0;
             DWORD size = m_max_value_name;
-            TCHAR data[m_max_value_name] = L"";
+
             std::wstring value_name = value_name_list.at(i);
+            auto data = std::make_unique<TCHAR[]>(m_max_value_name);
 
             const LSTATUS result_get_value =
                 RegGetValueW(hkey_origin, subkeypfad.c_str(), value_name.c_str(),
-                    RRF_RT_ANY, &type, data, &size);
+                    RRF_RT_ANY, &type, data.get(), &size);
 
             if (result_get_value != ERROR_SUCCESS) {
                 full_key_output += Helper::Format::name_and_value(
@@ -75,19 +76,18 @@ namespace Registry {
 
             // REG_SZ
             if (type != REG_MULTI_SZ) {
-                value_data = std::wstring(data);
+                value_data = std::wstring(data.get());
             }
             // REG_MULTI_SZ
             else {
-                value_data = Helper::Format::multi_sz_key(data);
+                value_data = Helper::Format::multi_sz_key(data.get());
             }
 
             if (value_data.length() < 1) {
                 value_data = L"-";
             }
 
-            full_key_output +=
-                Helper::Format::name_and_value(value_name, value_data) + L"\n";
+            full_key_output += Helper::Format::name_and_value(value_name, value_data) + L"\n";
         }
 
         return full_key_output;
@@ -170,6 +170,7 @@ namespace Registry {
             return;
         }
 
+        // Number of Entries/Printers
         DWORD num_values;
         RegQueryInfoKeyW(hkey, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
             &num_values, nullptr, nullptr, nullptr, nullptr);
@@ -185,28 +186,38 @@ namespace Registry {
         /**
           Read value_data from subkey.
         */
+
         for (DWORD idx = 0; idx < num_values; ++idx) {
-            TCHAR value_name_buffer[m_max_value_name];
-            DWORD value_name_buffer_size = m_max_value_name;
-            TCHAR value_data_buffer[m_max_value_name];
-            DWORD value_data_buffer_size = m_max_value_name;
+            // Get name and data size
+            DWORD buf_value_name_needed = m_max_value_name;
+            DWORD buf_data_needed = 0;
+            auto value_name = std::make_unique<TCHAR[]>(m_max_value_name);
 
-            LSTATUS result_reg_enum_value = RegEnumValueW(
-                hkey, idx, value_name_buffer, &value_name_buffer_size, nullptr,
-                nullptr, reinterpret_cast<LPBYTE>(value_data_buffer),
-                &value_data_buffer_size);
+            const LSTATUS result_get_size = RegEnumValueW(
+                hkey, idx, value_name.get(), &buf_value_name_needed, nullptr,
+                nullptr, nullptr, &buf_data_needed);
 
-            /**
-              Print body.
-            */
-            if (result_reg_enum_value != ERROR_SUCCESS) {
-                stream << Helper::Format::error_message(result_reg_enum_value) << L"\n";
+            if (result_get_size != ERROR_SUCCESS && result_get_size != ERROR_MORE_DATA) {
+                stream << Helper::Format::error_message(result_get_size) << L"\n";
                 continue;
             }
 
-            stream << Helper::Format::name_and_value(value_name_buffer,
-                value_data_buffer)
-                << L"\n";
+            // Needs to be increased by 1 to fit null-terminator
+            buf_value_name_needed += 1;
+
+            // Get data
+            auto data = std::make_unique<TCHAR[]>(buf_data_needed);
+
+            const LSTATUS result_get_data = RegEnumValueW(
+                hkey, idx, value_name.get(), &buf_value_name_needed, nullptr,
+                nullptr, reinterpret_cast<LPBYTE>(data.get()), &buf_data_needed);
+
+            if (result_get_data != ERROR_SUCCESS) {
+                stream << Helper::Format::error_message(result_get_data) << L"\n";
+                continue;
+            }
+
+            stream << Helper::Format::name_and_value(value_name.get(), data.get()) << L"\n";
         }
 
         stream << L"\n";
