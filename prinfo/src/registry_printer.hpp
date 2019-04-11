@@ -12,14 +12,14 @@ namespace Registry {
 
          @param &stream Reference of stream which should be used for data output.
        */
-        static void show_lm_printers(std::wostream &stream);
+        static void display_lm_printers(std::wostream &stream);
 
         /**
           Streams data found under CurrentUser to specified output.
 
           @param &stream Reference of stream which should be used for data output.
         */
-        static void show_cu_printers(std::wostream &stream);
+        static void display_cu_printers(std::wostream &stream);
 
     private:
         /**

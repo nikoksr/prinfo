@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-
+#include <sstream>
 
 namespace Helper {
     class Menu {
@@ -38,5 +38,10 @@ namespace Helper {
           TODO: Find out what function does.
         */
         static void undo_back_command(wchar_t *user_input);
+
+        static void display_winapi_printers(std::wostream& wos);
+        static void display_registry_printers(std::wostream& wos);
+        static void display_system(std::wostream& wos);
+        static void display_default(std::wostream& wos);
     };  // class Menu
 }  // namespace Helper

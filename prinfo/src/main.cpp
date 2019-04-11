@@ -17,17 +17,7 @@
 int wmain() {
     // Set local to german
     std::setlocale(LC_ALL, "de_DE.UTF-8");
-    // std::ios_base::sync_with_stdio(false); can increase cout performance
+    // std::ios_base::sync_with_stdio(false); can increase cout performance    
 
-    auto& printers = WinApi::Printer::load_printers();
-    std::wostringstream oss;
-
-    for (auto& printer : printers) {
-        oss << *printer;
-    }
-
-    std::wcout << oss.str();
-    std::wcin.get();
-
-    // Helper::Menu::main_menu();
+    Helper::Menu::main_menu();
 }

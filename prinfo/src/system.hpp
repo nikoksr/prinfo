@@ -12,7 +12,36 @@ namespace WinApi {
 
          @param stream Stream that receives the data.
         */
-        void print_system_info(std::wostream &stream);
+        static void display(std::wostream &stream);
+
+        /**
+          Getter functions
+        */
+        const std::wstring& get_user_name() const;
+        const std::wstring& get_workstation_name() const;
+        const std::wstring& get_offline_files() const;
+        const std::wstring& get_default_printer() const;
+        const std::wstring& get_operating_system() const;
+        const std::wstring& get_processor() const;
+        const std::wstring& get_memory() const;
+
+    private:
+        /**
+         Initialize COM library and configure security
+        */
+        HRESULT prepare_wmi();
+
+        std::wstring m_user_name;
+        std::wstring m_machine_name;
+        std::wstring m_domain;
+        std::wstring m_offline_files;
+        std::wstring m_default_printer;
+        std::wstring m_os_name;
+        std::wstring m_os_version;
+        std::wstring m_os_architecture;
+        std::wstring m_processor;
+        std::wstring m_memory_in_use;
+        std::wstring m_memory_total;
 
         /**
           Sets member user_name. Retrieves data from
@@ -54,34 +83,5 @@ namespace WinApi {
          GlobalMemoryStatusEx function.
         */
         void set_memory();
-
-        /**
-          Getter functions
-        */
-        const std::wstring& get_user_name() const;
-        const std::wstring& get_workstation_name() const;
-        const std::wstring& get_offline_files() const;
-        const std::wstring& get_default_printer() const;
-        const std::wstring& get_operating_system() const;
-        const std::wstring& get_processor() const;
-        const std::wstring& get_memory() const;
-
-    private:
-        /**
-         Initialize COM library and configure security
-        */
-        HRESULT prepare_wmi();
-
-        std::wstring m_user_name;
-        std::wstring m_machine_name;
-        std::wstring m_domain;
-        std::wstring m_offline_files;
-        std::wstring m_default_printer;
-        std::wstring m_os_name;
-        std::wstring m_os_version;
-        std::wstring m_os_architecture;
-        std::wstring m_processor;
-        std::wstring m_memory_in_use;
-        std::wstring m_memory_total;
     };  // class System
 }  // namespace WinApi

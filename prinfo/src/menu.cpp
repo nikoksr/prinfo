@@ -2,6 +2,9 @@
 #include "console.hpp"
 #include "format.hpp"
 #include "snippets.hpp"
+#include "winapi_printer.hpp"
+#include "registry_printer.hpp"
+#include "system.hpp"
 
 #include <conio.h>
 #include <cctype>
@@ -9,9 +12,6 @@
 #include <iostream>
 
 namespace Helper {
-
-
-
     void Menu::main_menu() {
         wchar_t user_input;
 
@@ -37,7 +37,7 @@ namespace Helper {
             */
             switch (user_input) {
             case L'1':
-                // run_default_functions();
+                display_default(std::wcout);
                 user_input = submenu_save_back_quit();
                 if (user_input != 's'); // save_request(&run_default_functions, user_input);
                 break;
@@ -188,5 +188,36 @@ namespace Helper {
         if (*user_input == L'z') {
             *user_input = L' ';
         }
+    }
+
+    /**
+    * Display functions
+    */
+
+    void Menu::display_winapi_printers(std::wostream& wos) {
+        auto& printers = WinApi::Printer::load_printers();
+
+        for (auto& printer : printers) {
+            wos << *printer;
+        }
+    }
+
+    void Menu::display_registry_printers(std::wostream& wos) {
+        Registry::Printer::display_lm_printers(wos);
+        Registry::Printer::display_cu_printers(wos);
+    }
+
+    void Menu::display_system(std::wostream& wos) {
+        WinApi::System::display(wos);
+    }
+
+    void Menu::display_default(std::wostream& wos) {
+        std::wostringstream woss;
+
+        display_system(woss);
+        display_winapi_printers(woss);
+        display_registry_printers(woss);
+
+        wos << woss.str();
     }
 }  // namespace Helper

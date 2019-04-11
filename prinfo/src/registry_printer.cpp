@@ -93,7 +93,7 @@ namespace Registry {
         return full_key_output;
     }
 
-    void Printer::show_lm_printers(std::wostream &stream) {
+    void Printer::display_lm_printers(std::wostream &stream) {
         /**
           Check if key is openable.
         */
@@ -157,7 +157,7 @@ namespace Registry {
         RegCloseKey(hkey);
     }
 
-    void Printer::show_cu_printers(std::wostream& stream) {
+    void Printer::display_cu_printers(std::wostream& stream) {
         /**
           Check if key is openable.
         */

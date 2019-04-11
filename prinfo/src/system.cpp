@@ -8,6 +8,7 @@
 #include <comdef.h>
 #include <cscapi.h>
 #include <iostream>
+#include <sstream>
 
 #pragma comment(lib, "wbemuuid.lib")
 #pragma comment(lib, "netapi32.lib")
@@ -310,17 +311,21 @@ namespace WinApi {
         }
     }
 
-    void System::print_system_info(std::wostream &stream) {
+    void System::display(std::wostream &stream) {
+        std::wostringstream oss;
+
+        oss << Helper::Snippets::separator_thick << L"\n\n"
+            << L" Systeminformationen\n"
+            << Helper::Snippets::separator_thin << L"\n\n";
+
         HRESULT result_prepare_wmi = prepare_wmi();
 
         if (!SUCCEEDED(result_prepare_wmi)) {
             _com_error err(result_prepare_wmi);
             const TCHAR* err_message = err.ErrorMessage();
 
-            stream << Helper::Snippets::separator_thick << L"\n\n"
-                << L" Systeminformationen\n"
-                << Helper::Snippets::separator_thin << L"\n\n"
-                << Helper::Format::name_and_value(L"Fehler", err_message) << L"\n\n";
+            oss << Helper::Format::name_and_value(L"Fehler", err_message) << L"\n\n";
+            stream << oss.str();
             return;
         }
 
@@ -332,10 +337,7 @@ namespace WinApi {
         set_processor();
         set_memory();
 
-        stream << Helper::Snippets::separator_thick << L"\n\n"
-            << L" Systeminformationen\n"
-            << Helper::Snippets::separator_thin << L"\n\n"
-            << Helper::Format::name_and_value(L"Username", m_user_name) << L"\n"
+        oss << Helper::Format::name_and_value(L"Username", m_user_name) << L"\n"
             << Helper::Format::name_and_value(L"Computername", m_machine_name)
             << L"\n"
             << Helper::Format::name_and_value(L"Domain", m_domain) << L"\n\n"
@@ -348,9 +350,10 @@ namespace WinApi {
             << Helper::Format::name_and_value(L"Architektur", m_os_architecture)
             << L"\n\n"
             << Helper::Format::name_and_value(L"Prozessor", m_processor) << L"\n"
-            << Helper::Format::name_and_value(
-                L"RAM Physical", (m_memory_in_use + L"/" + m_memory_total))
+            << Helper::Format::name_and_value(L"RAM Physical", (m_memory_in_use + L"/" + m_memory_total))
             << L" MB\n\n";
+
+        stream << oss.str();
     }
 
     /**
