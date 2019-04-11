@@ -1,21 +1,14 @@
 #include "winapi_printjob.hpp"
-
 #include "format.hpp"
+
 #include <math.h>
 
 namespace WinApi {
 
     /**
-     Static members
-    */
-    DWORD Printjob::m_job_count = 0;
-    std::unique_ptr<JOB_INFO_2[]> Printjob::m_jobs_info_list;
-    std::vector<std::unique_ptr<Printjob>> Printjob::m_job_list(0);
-
-    /**
      Constructor and Destructor
     */
-    Printjob::Printjob(const JOB_INFO_2& job_info) : m_job_info(job_info) {
+    Printjob::Printjob(const _JOB_INFO_2W& job_info) : m_job_info(job_info) {
         init();
     }
 
@@ -25,49 +18,69 @@ namespace WinApi {
     /**
      Function definitions
     */
-    std::vector<std::unique_ptr<Printjob>>* Printjob::load_jobs(const _PRINTER_INFO_2W& printer_info) {
-        if (set_jobs_info_list(printer_info) == FALSE) {
-            return &m_job_list;
+    void Printjob::init() {
+        set_document_name();
+        set_user_name();
+        set_machine_name();
+        set_submitted();
+        set_datatype();
+        set_size();
+        set_status();
+        set_page_count();
+    }
+
+    int Printjob::set_printjobs(Printer* const printer) {
+        // Check printer
+        if (!printer) {
+            return 1;
+        }
+
+        // Clear old printjob list
+        printer->m_printjobs.clear();
+
+        // Load jobs infos
+        std::unique_ptr<_JOB_INFO_2W[]> jobs_info_list;
+        set_jobs_info_list(printer, jobs_info_list);
+        if (!jobs_info_list) {
+            return 2;
         }
 
         // Reserve space for printjobs in vector
-        m_job_list.reserve(m_job_count);
+        printer->m_printjobs.reserve(printer->m_printjobs_count);
 
         // Fill vector with printjobs
-        for (unsigned i = 0; i < m_job_count; ++i) {
-            m_job_list.push_back(std::make_unique<Printjob>(m_jobs_info_list[i]));
+        for (unsigned i = 0; i < printer->m_printjobs_count; ++i) {
+            printer->m_printjobs.emplace_back(jobs_info_list[i]);
         }
 
-        return &m_job_list;
+        return 0;
     }
 
-    BOOL Printjob::set_jobs_info_list(const _PRINTER_INFO_2W& printer_info) {
+    void Printjob::set_jobs_info_list(Printer* const printer, std::unique_ptr<_JOB_INFO_2W[]>& out_jobs_info_list) {
         // Drucker-Handle erstellen
         HANDLE printer_handle;
 
-        if (OpenPrinterW(printer_info.pPrinterName, &printer_handle, NULL) == FALSE) {
+        if (!OpenPrinterW(printer->get_printer_info().pPrinterName, &printer_handle, NULL)) {
             if (printer_handle) {
                 CloseHandle(printer_handle);
             }
-            return FALSE;
+            return;
         }
 
         // Buffer-Größe bestimmen
         DWORD needed_buffer;
+        DWORD needed_structs;
 
-        EnumJobsW(printer_handle, NULL, printer_info.cJobs, 2, NULL, NULL,
-            &needed_buffer, &m_job_count);
+        EnumJobsW(printer_handle, 0, printer->get_printer_info().cJobs, 2, NULL, NULL,
+            &needed_buffer, &needed_structs);
 
-        // Job_info Array anhand von Buffer erstellen
-        const unsigned size = static_cast<const unsigned>(ceil(static_cast<double>(needed_buffer) / sizeof(_PRINTER_INFO_2W)));
-        // m_jobs_info_list = new JOB_INFO_2[size];
-        m_jobs_info_list = std::make_unique<JOB_INFO_2[]>(size);
+        // Job_info Daten abfragen
+        const std::size_t size = static_cast<const std::size_t>(ceil(static_cast<double>(needed_buffer) / sizeof(_JOB_INFO_2W)));
+        out_jobs_info_list = std::make_unique<_JOB_INFO_2W[]>(size);
 
-        BOOL res = EnumJobsW(printer_handle, NULL, printer_info.cJobs, 2,
-            reinterpret_cast<LPBYTE>(m_jobs_info_list.get()),
-            needed_buffer, &needed_buffer, &m_job_count);
-
-        return res;
+        EnumJobsW(printer_handle, NULL, printer->get_printer_info().cJobs, 2,
+            reinterpret_cast<LPBYTE>(out_jobs_info_list.get()),
+            needed_buffer, &needed_buffer, &needed_structs);
     }
 
     void Printjob::set_document_name() { m_document_name = std::wstring(m_job_info.pDocument); }
@@ -106,19 +119,6 @@ namespace WinApi {
         if (m_job_info.Status& JOB_STATUS_RETAINED) { m_status += L"Auftrag wurde nach dem Drucken in der Warteschlange behalten.\n"; }
     }
 
-    void Printjob::init() {
-        set_document_name();
-        set_user_name();
-        set_machine_name();
-        set_submitted();
-        set_datatype();
-        set_size();
-        set_status();
-        set_page_count();
-    }
-
-    unsigned Printjob::get_job_count() { return static_cast<unsigned>(m_job_count); }
-
     const std::wstring& Printjob::get_document_name() const { return m_document_name; }
     const std::wstring& Printjob::get_user_name() const { return m_user_name; }
     const std::wstring& Printjob::get_machine_name() const { return m_machine_name; }
@@ -128,7 +128,7 @@ namespace WinApi {
     const std::wstring& Printjob::get_status() const { return m_status; }
     const std::wstring& Printjob::get_page_count() const { return m_page_count; }
 
-    std::wostream& operator<<(std::wostream& stream, const WinApi::Printjob& job) {
+    std::wostream& operator<<(std::wostream& stream, const Printjob& job) {
         using namespace Helper;
 
         stream << Format::name_and_value(L"Dokument", job.m_document_name) << '\n'

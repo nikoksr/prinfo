@@ -1,6 +1,7 @@
 #include "winapi_printer.hpp"
 #include "format.hpp"
 #include "snippets.hpp"
+
 #include <stdexcept>
 #include <math.h>
 
@@ -27,6 +28,11 @@ namespace WinApi {
       Functions
     */
     const std::vector<std::unique_ptr<Printer>>& Printer::load_printers() {
+        // Clear old list
+        m_printer_list.clear();
+        m_number_printers = 0;
+
+        // Load infos lists
         if (set_printer_info_list() == FALSE) {
             return m_printer_list;
         }
@@ -78,6 +84,7 @@ namespace WinApi {
         set_duplex();
         set_keep_printjobs();
         set_status();
+        set_printjobs_count();
         set_printjobs();
     }
 
@@ -85,6 +92,9 @@ namespace WinApi {
       Setter functions
     */
     void Printer::set_name() { m_name = m_printer_info.pPrinterName; }
+    void Printer::set_driver() { m_driver = m_printer_info.pDriverName; }
+    void Printer::set_printprocessor() { m_printprocessor = m_printer_info.pPrintProcessor; }
+    void Printer::set_datatype() { m_datatype = m_printer_info.pDatatype; }
 
     void Printer::set_type() {
         if (m_printer_info.Attributes & PRINTER_ATTRIBUTE_LOCAL) {
@@ -125,10 +135,6 @@ namespace WinApi {
             m_terminalserver = L"Nein";
         }
     }
-
-    void Printer::set_driver() { m_driver = m_printer_info.pDriverName; }
-    void Printer::set_printprocessor() { m_printprocessor = m_printer_info.pPrintProcessor; }
-    void Printer::set_datatype() { m_datatype = m_printer_info.pDatatype; }
 
     void Printer::set_duplex() {
         switch (m_printer_info.pDevMode->dmDuplex) {
@@ -185,12 +191,18 @@ namespace WinApi {
         if (m_printer_info.Status & PRINTER_STATUS_WARMING_UP) { m_status += L"Aufwärmen\n"; }
     }
 
-    void Printer::set_printjobs() {
-        // Load printjobs        
-        m_printjobs = Printjob::load_jobs(m_printer_info);
+    void Printer::set_printjobs_count() {
+        m_printjobs_count = static_cast<unsigned>(m_printer_info.cJobs);
+    }
 
-        // Set number of printjobs
-        m_number_printjobs = std::to_wstring(Printjob::get_job_count());
+    void Printer::set_printjobs() {
+        // Check if there are queued printjobs
+        if (m_printjobs_count < 1) {
+            return;
+        }
+
+        // Load printjobs  
+        if (Printjob::set_printjobs(this) != 0) {}
     }
 
     /**
@@ -213,8 +225,7 @@ namespace WinApi {
     const std::wstring& Printer::get_keep_printjobs() const { return m_keep_printjobs; }
     const std::wstring& Printer::get_status() const { return m_status; }
 
-
-    std::wostream& operator<<(std::wostream& stream, WinApi::Printer& printer) {
+    std::wostream& operator<<(std::wostream& stream, Printer& printer) {
         using namespace Helper;
 
         stream << Snippets::separator_thin << L"\n\n"
@@ -232,11 +243,11 @@ namespace WinApi {
             << Format::name_and_value(L"Duplex", printer.m_duplex) << L"\n"
             << Format::name_and_value(L"Status", printer.m_status) << L"\n"
             << Format::name_and_value(L"Druckaufträge", printer.m_keep_printjobs) << L"\n"
-            << Format::name_and_value(L"Anzahl Druckaufträge", printer.m_number_printjobs) << L"\n"
+            << Format::name_and_value(L"Anzahl Druckaufträge", std::to_wstring(printer.m_printjobs_count)) << L"\n"
             << Format::name_and_value(L"Druckaufträge", L"", L' ') << L"\n";
 
-        for (auto& job : *(printer.m_printjobs)) {
-            stream << '\n' << *job;
+        for (auto& job : printer.m_printjobs) {
+            stream << '\n' << job;
         }
 
         return stream;
