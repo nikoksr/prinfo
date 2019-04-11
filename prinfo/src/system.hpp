@@ -7,16 +7,12 @@
 namespace WinApi {
     class System {
     public:
-        /**
-         Formatted output of all data to specified stream.
+        System();
+        System(const std::wstring& system_name);
 
-         @param stream Stream that receives the data.
-        */
-        static void display(std::wostream &stream);
+        void refresh();
 
-        /**
-          Getter functions
-        */
+        const std::wstring& get_system_name() const;
         const std::wstring& get_user_name() const;
         const std::wstring& get_workstation_name() const;
         const std::wstring& get_offline_files() const;
@@ -25,12 +21,14 @@ namespace WinApi {
         const std::wstring& get_processor() const;
         const std::wstring& get_memory() const;
 
-    private:
-        /**
-         Initialize COM library and configure security
-        */
-        HRESULT prepare_wmi();
+        friend std::wostream& operator<<(std::wostream& stream, const System& system);
 
+    private:
+
+        static HRESULT prepare_wmi();
+        static bool is_wmi_prepared;
+
+        std::wstring m_system_name;
         std::wstring m_user_name;
         std::wstring m_machine_name;
         std::wstring m_domain;
@@ -42,6 +40,8 @@ namespace WinApi {
         std::wstring m_processor;
         std::wstring m_memory_in_use;
         std::wstring m_memory_total;
+
+        void init();
 
         /**
           Sets member user_name. Retrieves data from

@@ -208,7 +208,8 @@ namespace Helper {
     }
 
     void Menu::display_system(std::wostream& wos) {
-        WinApi::System::display(wos);
+        WinApi::System system(L"local system");
+        wos << system;
     }
 
     void Menu::display_default(std::wostream& wos) {
