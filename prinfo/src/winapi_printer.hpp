@@ -24,6 +24,12 @@ namespace WinApi {
     class Printer {
     public:
         /**
+        * Friends
+        */
+        friend class Printjob;
+        friend std::wostream& operator<<(std::wostream& stream, Printer& printer);
+
+        /**
          Constructor for Printer class.
          Calls init() function.
 
@@ -67,15 +73,9 @@ namespace WinApi {
         const std::wstring& get_keep_printjobs() const;
         const std::wstring& get_status() const;
 
-        friend std::wostream& operator<<(std::wostream& stream, WinApi::Printer& printer);
+        int m_test_test;
 
     private:
-        /**
-         Defines all attributes of printer object with the values found in
-         the printer_info structure.
-        */
-        void init();
-
         /**
           Points an array of printer_info structures to
           static member printer_info_list.
@@ -111,6 +111,17 @@ namespace WinApi {
         */
         _PRINTER_INFO_2W m_printer_info;
 
+        // Printjobs
+        unsigned m_printjobs_count;
+
+        std::vector<Printjob> m_printjobs;
+
+        /**
+         Defines all attributes of printer object with the values found in
+         the printer_info structure.
+        */
+        void init();
+
         /**
           Setter functions
         */
@@ -125,8 +136,9 @@ namespace WinApi {
         void set_printprocessor();
         void set_datatype();
         void set_duplex();
-        void set_keep_printjobs();
         void set_status();
+        void set_keep_printjobs();
+        void set_printjobs_count();
         void set_printjobs();
 
         /**
@@ -193,10 +205,5 @@ namespace WinApi {
           Defines the printer's current status. Works only on specific printers.
         */
         std::wstring m_status;
-
-        std::wstring m_number_printjobs;
-
-        std::vector<std::unique_ptr<Printjob>>* m_printjobs = nullptr;
-
     };  // class Printer
 }  // namespace WinApi

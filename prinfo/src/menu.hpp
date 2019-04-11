@@ -23,9 +23,6 @@ namespace Helper {
         static wchar_t submenu_back_quit();
         static wchar_t submenu_save_back_quit();
 
-
-
-
         /**
           Save functionality.
 

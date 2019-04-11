@@ -12,8 +12,6 @@
 
 #include <clocale>
 #include <iostream>
-#include <memory>
-#include <string>
 #include <sstream>
 
 int wmain() {
