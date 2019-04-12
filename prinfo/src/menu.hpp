@@ -43,5 +43,6 @@ namespace Helper {
         static void display_registry_printers(std::wostream& wos);
         static void display_system(std::wostream& wos);
         static void display_default(std::wostream& wos);
+        static void display_help(std::wostream& wos);
     };  // class Menu
 }  // namespace Helper

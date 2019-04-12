@@ -45,7 +45,7 @@ namespace Helper {
                 user_input = functions_menu();
                 break;
             case L'3':
-                // run_help();
+                display_help(std::wcout);
                 user_input = submenu_back_quit();
                 break;
             default:
@@ -83,19 +83,19 @@ namespace Helper {
             */
             switch (user_input) {
             case L'1':
-                // run_winapi_printer();
+                display_winapi_printers(std::wcout);
                 user_input = submenu_save_back_quit();
                 // save_request(&run_winapi_printer, user_input);
                 undo_back_command(&user_input);
                 break;
             case L'2':
-                // run_registry_printer();
+                display_registry_printers(std::wcout);
                 user_input = submenu_save_back_quit();
                 // save_request(&run_registry_printer, user_input);
                 undo_back_command(&user_input);
                 break;
             case L'3':
-                // run_system_info();
+                display_system(std::wcout);
                 user_input = submenu_save_back_quit();
                 // save_request(&run_system_info, user_input);
                 undo_back_command(&user_input);
@@ -220,5 +220,9 @@ namespace Helper {
         display_registry_printers(woss);
 
         wos << woss.str();
+    }
+
+    void Menu::display_help(std::wostream& wos) {
+        wos << Snippets::help;
     }
 }  // namespace Helper
