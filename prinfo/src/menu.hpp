@@ -39,9 +39,12 @@ namespace Helper {
         */
         static void undo_back_command(wchar_t *user_input);
 
+        // Display functions
         static void display_winapi_printers(std::wostream& wos);
         static void display_registry_printers(std::wostream& wos);
         static void display_system(std::wostream& wos);
         static void display_default(std::wostream& wos);
+        static void display_help(std::wostream& wos);
+
     };  // class Menu
 }  // namespace Helper

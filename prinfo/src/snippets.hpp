@@ -3,19 +3,19 @@
 #include <string>
 
 namespace Helper {
-    class Snippets {
-    public:
+    namespace Snippets {
+
         /**
         * Default console screen header.
         * Includes Copyright, Edit date, Creator, Contact email.
         */
-        static constexpr wchar_t program_head[] =
-            L" Prinfo v0.3        01.04.2019        http://192.168.10.250/admins/prinfo        koeserniko@gmail.com";
+        constexpr wchar_t program_head[] =
+            L"\n Prinfo v0.3        01.04.2019        http://192.168.10.250/admins/prinfo        koeserniko@gmail.com";
 
         /**
         * Help text.
         */
-        static constexpr wchar_t help[] =
+        constexpr wchar_t help[] =
             L" Prinfo\n\n"
             L"  Dieses Programm wird unter der GNU GPLv3 veröffentlicht.\n"
             L"  Ich entwickle dieses Projekt in meiner Freizeit und garantiere\n"
@@ -31,21 +31,21 @@ namespace Helper {
             L"  - Gewisse Funktionen brauchen eventuell Admin-Rechte.\n\n"
             L"  - Bei Formatierungsproblemen der gespeicherten Daten in Notepad:\n"
             L"    Schriftart auf 'Consolas', Schriftschnitt auf 'Standard' und\n"
-            L"    Schriftgröße auf '11' umstellen.\n";
+            L"    Schriftgröße auf '11' umstellen.\n\n";
 
         /**
         * A thick visual separator line.
         */
-        static constexpr wchar_t separator_thick[] =
+        constexpr wchar_t separator_thick[] =
             L"===================================================================="
             L"=================================================";
 
         /**
         * A thin visual separator line.
         */
-        static constexpr wchar_t separator_thin[] =
+        constexpr wchar_t separator_thin[] =
             L"____________________________________________________________________"
             L"_________________________________________________";
 
-    };  // class Snippets
+    }  // namespace Snippets
 }  // namespace Helper

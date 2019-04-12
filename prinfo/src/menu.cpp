@@ -45,7 +45,7 @@ namespace Helper {
                 user_input = functions_menu();
                 break;
             case L'3':
-                // run_help();
+                display_help(std::wcout);
                 user_input = submenu_back_quit();
                 break;
             default:
@@ -71,7 +71,8 @@ namespace Helper {
                 << L" [5] Löschen aller Druckaufträge (Admin-Rechte)\n\n";
             user_input = submenu_back_quit();
             Console::clear_screen();
-            std::wcout << Snippets::program_head << L"\n\n";
+            std::wcout << Snippets::program_head << L"\n\n"
+                << Snippets::separator_thick << L"\n\n";
 
             /**
               Interpret user input.
@@ -83,19 +84,19 @@ namespace Helper {
             */
             switch (user_input) {
             case L'1':
-                // run_winapi_printer();
+                display_winapi_printers(std::wcout);
                 user_input = submenu_save_back_quit();
                 // save_request(&run_winapi_printer, user_input);
                 undo_back_command(&user_input);
                 break;
             case L'2':
-                // run_registry_printer();
+                display_registry_printers(std::wcout);
                 user_input = submenu_save_back_quit();
                 // save_request(&run_registry_printer, user_input);
                 undo_back_command(&user_input);
                 break;
             case L'3':
-                // run_system_info();
+                display_system(std::wcout);
                 user_input = submenu_save_back_quit();
                 // save_request(&run_system_info, user_input);
                 undo_back_command(&user_input);
@@ -208,7 +209,8 @@ namespace Helper {
     }
 
     void Menu::display_system(std::wostream& wos) {
-        WinApi::System::display(wos);
+        WinApi::System system(L"local system");
+        wos << system;
     }
 
     void Menu::display_default(std::wostream& wos) {
@@ -219,5 +221,9 @@ namespace Helper {
         display_registry_printers(woss);
 
         wos << woss.str();
+    }
+
+    void Menu::display_help(std::wostream& wos) {
+        wos << Snippets::help;
     }
 }  // namespace Helper

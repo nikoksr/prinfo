@@ -15,7 +15,17 @@
 #pragma comment(lib, "CscApi.lib")
 
 namespace WinApi {
+    bool System::is_wmi_prepared = false;
+
+    System::System() : m_system_name(L"unnamed") { init(); }
+    System::System(const std::wstring& system_name) : m_system_name(system_name) { init(); }
+
     HRESULT System::prepare_wmi() {
+        // Check if wmi is already prepared
+        if (is_wmi_prepared) {
+            return ERROR_SUCCESS;
+        }
+
         /**
           Initialize the COM library.
         */
@@ -32,6 +42,7 @@ namespace WinApi {
             nullptr, -1, nullptr, nullptr, RPC_C_AUTHN_LEVEL_CONNECT,
             RPC_C_IMP_LEVEL_IMPERSONATE, nullptr, EOAC_NONE, nullptr);
 
+        is_wmi_prepared = true;
         return result_init_security;
     }
 
@@ -311,21 +322,8 @@ namespace WinApi {
         }
     }
 
-    void System::display(std::wostream &stream) {
-        std::wostringstream oss;
-
-        oss << Helper::Snippets::separator_thick << L"\n\n"
-            << L" Systeminformationen\n"
-            << Helper::Snippets::separator_thin << L"\n\n";
-
-        HRESULT result_prepare_wmi = prepare_wmi();
-
-        if (!SUCCEEDED(result_prepare_wmi)) {
-            _com_error err(result_prepare_wmi);
-            const TCHAR* err_message = err.ErrorMessage();
-
-            oss << Helper::Format::name_and_value(L"Fehler", err_message) << L"\n\n";
-            stream << oss.str();
+    void System::init() {
+        if (prepare_wmi() != ERROR_SUCCESS) {
             return;
         }
 
@@ -336,29 +334,67 @@ namespace WinApi {
         set_operating_system();
         set_processor();
         set_memory();
+    }
 
-        oss << Helper::Format::name_and_value(L"Username", m_user_name) << L"\n"
-            << Helper::Format::name_and_value(L"Computername", m_machine_name)
+    void System::refresh() {
+        if (prepare_wmi() != ERROR_SUCCESS) {
+            return;
+        }
+
+        m_system_name = L"";
+        m_user_name = L"";
+        m_machine_name = L"";
+        m_domain = L"";
+        m_offline_files = L"";
+        m_default_printer = L"";
+        m_os_name = L"";
+        m_os_version = L"";
+        m_os_architecture = L"";
+        m_processor = L"";
+        m_memory_in_use = L"";
+        m_memory_total = L"";
+
+        init();
+    }
+
+    std::wostream& operator<<(std::wostream& stream, const System& system) {
+        stream << Helper::Snippets::separator_thick << L"\n\n"
+            << L" Systeminformationen\n"
+            << Helper::Snippets::separator_thin << L"\n\n";
+
+        HRESULT result_prepare_wmi = System::prepare_wmi();
+
+        if (!SUCCEEDED(result_prepare_wmi)) {
+            _com_error err(result_prepare_wmi);
+            const TCHAR* err_message = err.ErrorMessage();
+
+            stream << Helper::Format::name_and_value(L"Fehler", err_message) << L"\n\n";
+            return stream;
+        }
+
+        stream << Helper::Format::name_and_value(L"Username", system.m_user_name) << L"\n"
+            << Helper::Format::name_and_value(L"Computername", system.m_machine_name)
             << L"\n"
-            << Helper::Format::name_and_value(L"Domain", m_domain) << L"\n\n"
-            << Helper::Format::name_and_value(L"Standarddrucker", m_default_printer)
+            << Helper::Format::name_and_value(L"Domain", system.m_domain) << L"\n\n"
+            << Helper::Format::name_and_value(L"Standarddrucker", system.m_default_printer)
             << L"\n"
-            << Helper::Format::name_and_value(L"Offlinedateien", m_offline_files)
+            << Helper::Format::name_and_value(L"Offlinedateien", system.m_offline_files)
             << L"\n\n"
-            << Helper::Format::name_and_value(L"Betriebssystem", m_os_name) << L"\n"
-            << Helper::Format::name_and_value(L"Version", m_os_version) << L"\n"
-            << Helper::Format::name_and_value(L"Architektur", m_os_architecture)
+            << Helper::Format::name_and_value(L"Betriebssystem", system.m_os_name) << L"\n"
+            << Helper::Format::name_and_value(L"Version", system.m_os_version) << L"\n"
+            << Helper::Format::name_and_value(L"Architektur", system.m_os_architecture)
             << L"\n\n"
-            << Helper::Format::name_and_value(L"Prozessor", m_processor) << L"\n"
-            << Helper::Format::name_and_value(L"RAM Physical", (m_memory_in_use + L"/" + m_memory_total))
+            << Helper::Format::name_and_value(L"Prozessor", system.m_processor) << L"\n"
+            << Helper::Format::name_and_value(L"RAM Physical", (system.m_memory_in_use + L"/" + system.m_memory_total))
             << L" MB\n\n";
 
-        stream << oss.str();
+        return stream;
     }
 
     /**
      Getter functions
     */
+    const std::wstring& System::get_system_name() const { return m_system_name; }
     const std::wstring& System::get_user_name() const { return m_user_name; }
     const std::wstring& System::get_workstation_name() const { return m_machine_name; }
     const std::wstring& System::get_offline_files() const { return m_offline_files; }
@@ -367,3 +403,4 @@ namespace WinApi {
     const std::wstring& System::get_processor() const { return m_processor; }
     const std::wstring& System::get_memory() const { return m_memory_total; }
 }  // namespace WinApi
+
