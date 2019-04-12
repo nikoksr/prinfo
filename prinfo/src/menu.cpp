@@ -71,7 +71,8 @@ namespace Helper {
                 << L" [5] Löschen aller Druckaufträge (Admin-Rechte)\n\n";
             user_input = submenu_back_quit();
             Console::clear_screen();
-            std::wcout << Snippets::program_head << L"\n\n";
+            std::wcout << Snippets::program_head << L"\n\n"
+                << Snippets::separator_thick << L"\n\n";
 
             /**
               Interpret user input.
