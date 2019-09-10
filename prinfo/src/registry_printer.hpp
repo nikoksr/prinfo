@@ -25,20 +25,20 @@ namespace Registry {
         /**
           Defines max length of registry key.
         */
-        constexpr static DWORD m_max_key_length = 255;
+        static constexpr DWORD max_key_length = 255;
 
         /**
           Defines max length of registry-entry name.
         */
-        constexpr static DWORD m_max_value_name = 16383;
+        static constexpr DWORD max_value_name = 16383;
 
         /**
           Defines values-names to search for in specific registry-entry.
         */
-        static const std::array<std::wstring, 4> m_dsdriver_values_names;
-        static const std::array<std::wstring, 9> m_dsspooler_values_names;
-        static const std::array<std::wstring, 2> m_pnpdata_values_names;
-        static const std::array<std::wstring, 3> m_printerdriverdata_values_names;
+        static const std::array<std::wstring, 4> dsdriver_values_names;
+        static const std::array<std::wstring, 9> dsspooler_values_names;
+        static const std::array<std::wstring, 2> pnpdata_values_names;
+        static const std::array<std::wstring, 3> printerdriverdata_values_names;
 
         static constexpr wchar_t localmachine_reg_path[] = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Print\\Printers";
         static constexpr wchar_t currentuser_reg_path[] = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\PrinterPorts";
@@ -56,5 +56,6 @@ namespace Registry {
         template<std::size_t SIZE>
         static std::wstring read_key(const HKEY& hkey_origin, const std::wstring& printer_name,
             const std::wstring& subkey, const std::array<std::wstring, SIZE>& value_name_list);
+
     };  // class Printer
 }  // namespace Registry

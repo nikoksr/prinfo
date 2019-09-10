@@ -7,23 +7,23 @@ namespace Registry {
     /**
       Define static members
     */
-    const std::array<std::wstring, 4> Printer::m_dsdriver_values_names = {
+    const std::array<std::wstring, 4> Printer::dsdriver_values_names = {
         L"printLanguage", L"printBinNames", L"printMediaReady",
         L"printOrientationsSupported" };
 
-    const std::array<std::wstring, 9> Printer::m_dsspooler_values_names = {
+    const std::array<std::wstring, 9> Printer::dsspooler_values_names = {
         L"printerName", L"printShareName",  L"portName", L"driverName",
         L"serverName",  L"shortServerName", L"uNCName",  L"url",
         L"description" };
 
-    const std::array<std::wstring, 2> Printer::m_pnpdata_values_names = { L"Manufacturer",
+    const std::array<std::wstring, 2> Printer::pnpdata_values_names = { L"Manufacturer",
                                                           L"HardwareID" };
 
-    const std::array<std::wstring, 3> Printer::m_printerdriverdata_values_names = {
+    const std::array<std::wstring, 3> Printer::printerdriverdata_values_names = {
         L"Model", L"TrayFormQueueProp", L"TrayFormTable" };
 
-    constexpr DWORD Printer::m_max_key_length;
-    constexpr DWORD Printer::m_max_value_name;
+    constexpr DWORD Printer::max_key_length;
+    constexpr DWORD Printer::max_value_name;
     constexpr wchar_t Printer::localmachine_reg_path[];
     constexpr wchar_t Printer::currentuser_reg_path[];
 
@@ -57,10 +57,10 @@ namespace Registry {
         */
         for (std::size_t i = 0; i < SIZE; ++i) {
             DWORD type = 0;
-            DWORD size = m_max_value_name;
+            DWORD size = max_value_name;
 
             std::wstring value_name = value_name_list.at(i);
-            auto data = std::make_unique<TCHAR[]>(m_max_value_name);
+            auto data = std::make_unique<TCHAR[]>(max_value_name);
 
             const LSTATUS result_get_value =
                 RegGetValueW(hkey_origin, subkeypfad.c_str(), value_name.c_str(),
@@ -122,8 +122,8 @@ namespace Registry {
           Read value_data from all subkeys.
         */
         for (DWORD idx = 0; idx < num_printers; ++idx) {
-            TCHAR name[m_max_key_length];
-            DWORD size = m_max_key_length;
+            TCHAR name[max_key_length];
+            DWORD size = max_key_length;
 
             LSTATUS result_reg_enum_key = RegEnumKeyExW(hkey, idx, name, &size, nullptr,
                 nullptr, nullptr, nullptr);
@@ -137,10 +137,10 @@ namespace Registry {
             /**
               Store value_data.
             */
-            std::wstring dsdriver = read_key(hkey, name, L"DsDriver", m_dsdriver_values_names);
-            std::wstring dsspooler = read_key(hkey, name, L"DsSpooler", m_dsspooler_values_names);
-            std::wstring pnpdata = read_key(hkey, name, L"PnPData", m_pnpdata_values_names);
-            std::wstring printerdriverdata = read_key(hkey, name, L"PrinterDriverData", m_printerdriverdata_values_names);
+            std::wstring dsdriver = read_key(hkey, name, L"DsDriver", dsdriver_values_names);
+            std::wstring dsspooler = read_key(hkey, name, L"DsSpooler", dsspooler_values_names);
+            std::wstring pnpdata = read_key(hkey, name, L"PnPData", pnpdata_values_names);
+            std::wstring printerdriverdata = read_key(hkey, name, L"PrinterDriverData", printerdriverdata_values_names);
 
             /**
               Print body.
@@ -189,9 +189,9 @@ namespace Registry {
 
         for (DWORD idx = 0; idx < num_values; ++idx) {
             // Get name and data size
-            DWORD buf_value_name_needed = m_max_value_name;
+            DWORD buf_value_name_needed = max_value_name;
             DWORD buf_data_needed = 0;
-            auto value_name = std::make_unique<TCHAR[]>(m_max_value_name);
+            auto value_name = std::make_unique<TCHAR[]>(max_value_name);
 
             const LSTATUS result_get_size = RegEnumValueW(
                 hkey, idx, value_name.get(), &buf_value_name_needed, nullptr,
