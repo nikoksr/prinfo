@@ -31,8 +31,7 @@ namespace Helper {
           @param user_input Char that user put in console to execute function. Used
             for stability. Check if input was actually a call to save data.
         */
-        static void save_request(void(*function_to_save)(std::wostream &stream),
-            const wchar_t user_input);
+        static void saveToFile(void(*function_to_save)(std::wostream &stream));
 
         /**
           TODO: Find out what function does.
@@ -40,10 +39,10 @@ namespace Helper {
         static void undo_back_command(wchar_t *user_input);
 
         // Display functions
+        static void display_all(std::wostream& wos);
         static void display_winapi_printers(std::wostream& wos);
         static void display_registry_printers(std::wostream& wos);
         static void display_system(std::wostream& wos);
-        static void display_default(std::wostream& wos);
         static void display_help(std::wostream& wos);
 
     };  // class Menu

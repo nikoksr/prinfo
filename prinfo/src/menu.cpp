@@ -37,9 +37,10 @@ namespace Helper {
             */
             switch (user_input) {
             case L'1':
-                display_default(std::wcout);
+                display_all(std::wcout);
                 user_input = submenu_save_back_quit();
-                if (user_input != 's'); // save_request(&run_default_functions, user_input);
+                if (user_input == 's')
+                    saveToFile(&display_all);
                 break;
             case L'2':
                 user_input = functions_menu();
@@ -86,24 +87,26 @@ namespace Helper {
             case L'1':
                 display_winapi_printers(std::wcout);
                 user_input = submenu_save_back_quit();
-                // save_request(&run_winapi_printer, user_input);
+                if (user_input == 's')
+                    saveToFile(&display_winapi_printers);
                 undo_back_command(&user_input);
                 break;
             case L'2':
                 display_registry_printers(std::wcout);
                 user_input = submenu_save_back_quit();
-                // save_request(&run_registry_printer, user_input);
+                if (user_input == 's')
+                    saveToFile(&display_registry_printers);
                 undo_back_command(&user_input);
                 break;
             case L'3':
                 display_system(std::wcout);
                 user_input = submenu_save_back_quit();
-                // save_request(&run_system_info, user_input);
+                if (user_input == 's')
+                    saveToFile(&display_system);
                 undo_back_command(&user_input);
                 break;
             case L'4':
-                // save_request(&run_default_functions, L's');
-                user_input = submenu_back_quit();
+                saveToFile(&display_all);
                 undo_back_command(&user_input);
                 break;
             case L'5':
@@ -134,12 +137,7 @@ namespace Helper {
         return tolower(_getwch());
     }
 
-    void Menu::save_request(void(*function_to_save)(std::wostream &stream),
-        const wchar_t user_input) {
-        if (user_input != L's') {
-            return;
-        }
-
+    void Menu::saveToFile(void(*function_to_save)(std::wostream &stream)) {
         Console::clear_screen();
         std::wcout << Snippets::program_head << L"\n\n"
             << Snippets::separator_thick << L"\n\n Speichern\n"
@@ -213,7 +211,7 @@ namespace Helper {
         wos << system;
     }
 
-    void Menu::display_default(std::wostream& wos) {
+    void Menu::display_all(std::wostream& wos) {
         std::wostringstream woss;
 
         display_system(woss);
