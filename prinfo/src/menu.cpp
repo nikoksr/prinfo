@@ -42,6 +42,7 @@ namespace menu {
             */
             switch (user_input) {
             case L'1':
+                Display::All(std::wcout);
                 user_input = Navigation::SaveBackQuit();
                 if (user_input == 's') { Save::ToFile(&Display::All); }
                 break;
