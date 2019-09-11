@@ -125,4 +125,19 @@ void Format::HandleException(std::exception_ptr exception_pointer) {
             std::rethrow_exception(exception_pointer);
         }
     }
-}  // namespace Helper
+    catch (const std::exception &exc) {
+        std::wcout << L" Ein unerwarteter Fehler ist aufgetreten: \"" << exc.what()
+            << L"\"\n\n"
+            << L" Beliebige Taste drücken...";
+        std::wcin.get();
+    }
+}
+
+bool Format::EndsWith(const std::wstring &mainStr, const std::wstring &toMatch)
+{
+    if (mainStr.size() >= toMatch.size() &&
+        mainStr.compare(mainStr.size() - toMatch.size(), toMatch.size(), toMatch) == 0)
+        return true;
+    else
+        return false;
+}
