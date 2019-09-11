@@ -3,133 +3,141 @@
 #include <math.h>
 #include <string>
 
-namespace Helper {
-    // Static member
-    data_units Format::m_data_units;
 
-    std::wstring Format::name_and_value(const std::wstring& name, const std::wstring& value, const wchar_t replace_empty_with) {
-        constexpr std::size_t max_length = 50;
+// Static member
+Format::data_units Format::m_data_units;
 
-        if (value.length() < max_length) {
-            if (value == L"" || value == L" ") {
-                return (L" " + name + std::wstring(max_length - name.length() - 2, L' ') + replace_empty_with);
-            }
-            return (L" " + name + std::wstring(max_length - name.length() - 2, L' ') + value);
+std::wstring Format::NameValuePair(const std::wstring& name, const std::wstring& value, const wchar_t replace_empty_with) {
+    constexpr std::size_t max_length = 50;
+
+    if (value.length() < max_length) {
+        if (value == L"" || value == L" ") {
+            return (L" " + name + std::wstring(max_length - name.length() - 2, L' ') + replace_empty_with);
         }
-
-        std::vector<std::wstring> lines = line_wrap(value, max_length);
-        std::wstring formatted_value = L"";
-        std::wstring white_space(max_length, L' ');
-        unsigned idx = 0;
-
-        for (const std::wstring& line : lines) {
-            if (idx == lines.size() - 1) {
-                formatted_value += line;
-                break;
-            }
-
-            formatted_value += (line + L'\n' + white_space);
-            idx++;
-        }
-
-        white_space = std::wstring(max_length - name.length() - 2, L' ');
-        return (L' ' + name + white_space + formatted_value);
+        return (L" " + name + std::wstring(max_length - name.length() - 2, L' ') + value);
     }
 
-    std::vector<std::wstring> Format::line_wrap(const std::wstring& line, const std::size_t max_line_length) {
-        if (line.length() < 1) {
-            return {};
+    std::vector<std::wstring> lines = lineWrap(value, max_length);
+    std::wstring formatted_value = L"";
+    std::wstring white_space(max_length, L' ');
+    unsigned idx = 0;
+
+    for (const std::wstring& line : lines) {
+        if (idx == lines.size() - 1) {
+            formatted_value += line;
+            break;
         }
 
-        std::vector<std::wstring> lines;
-        std::wstring line_copy = line;
+        formatted_value += (line + L'\n' + white_space);
+        idx++;
+    }
 
-        while (line_copy.length() > max_line_length) {
-            lines.emplace_back(line_copy.substr(0, max_line_length));
-            line_copy = line_copy.substr(max_line_length, line_copy.length());
-        }
+    white_space = std::wstring(max_length - name.length() - 2, L' ');
+    return (L' ' + name + white_space + formatted_value);
+}
 
+std::vector<std::wstring> Format::lineWrap(const std::wstring& line, const std::size_t max_line_length) {
+    if (line.length() < 1) {
+        return {};
+    }
+
+    std::vector<std::wstring> lines;
+    std::wstring line_copy = line;
+
+    while (line_copy.length() > max_line_length) {
         lines.emplace_back(line_copy.substr(0, max_line_length));
-
-        return lines;
+        line_copy = line_copy.substr(max_line_length, line_copy.length());
     }
 
-    std::wstring Format::multi_sz_key(TCHAR multi_sz_data[]) {
-        std::wstring multi_sz_string = L"";
-        size_t multi_sz_string_length = wcslen(multi_sz_data);
-        unsigned idx = 0;
+    lines.emplace_back(line_copy.substr(0, max_line_length));
 
-        while (multi_sz_string_length > 0) {
-            multi_sz_string += &multi_sz_data[idx];
-            multi_sz_string += L" ";
-            idx += multi_sz_string_length + 1;  // '\0' -> + 1
-            multi_sz_string_length = wcslen(&multi_sz_data[idx]);
-        }
+    return lines;
+}
 
-        return multi_sz_string;
+std::wstring Format::MultiSZKey(TCHAR multi_sz_data[]) {
+    std::wstring multi_sz_string = L"";
+    size_t multi_sz_string_length = wcslen(multi_sz_data);
+    unsigned idx = 0;
+
+    while (multi_sz_string_length > 0) {
+        multi_sz_string += &multi_sz_data[idx];
+        multi_sz_string += L" ";
+        idx += multi_sz_string_length + 1;  // '\0' -> + 1
+        multi_sz_string_length = wcslen(&multi_sz_data[idx]);
     }
 
-    // Size in bytes
-    std::wstring Format::data_unit_conversion(const long double size) {
-        // String that specifies data unit 
-        std::wstring data_unit = L"B";
-        unsigned converted_size = 0;
+    return multi_sz_string;
+}
 
-        // Bigger than 1 TB
-        if (size > m_data_units.TB) {
-            converted_size = static_cast<unsigned>(size / m_data_units.TB);
-            data_unit = L"TB";
-        }
-        // Bigger than 1 GB
-        else if (size > m_data_units.GB) {
-            converted_size = static_cast<unsigned>(size / m_data_units.GB);
-            data_unit = L"GB";
-        }
-        // Bigger than 1 MB
-        else if (size > m_data_units.MB) {
-            converted_size = static_cast<unsigned>(size / m_data_units.MB);
-            data_unit = L"MB";
-        }
-        // Bigger than 1 KB
-        else if (size > m_data_units.KB) {
-            converted_size = static_cast<unsigned>(size / m_data_units.KB);
-            data_unit = L"KB";
-        }
+// Size in bytes
+std::wstring Format::ConvertDataUnit(const long double size) {
+    // String that specifies data unit 
+    std::wstring data_unit = L"B";
+    unsigned converted_size = 0;
 
-        return std::to_wstring(converted_size) + L" " + data_unit;
+    // Bigger than 1 TB
+    if (size > m_data_units.TB) {
+        converted_size = static_cast<unsigned>(size / m_data_units.TB);
+        data_unit = L"TB";
+    }
+    // Bigger than 1 GB
+    else if (size > m_data_units.GB) {
+        converted_size = static_cast<unsigned>(size / m_data_units.GB);
+        data_unit = L"GB";
+    }
+    // Bigger than 1 MB
+    else if (size > m_data_units.MB) {
+        converted_size = static_cast<unsigned>(size / m_data_units.MB);
+        data_unit = L"MB";
+    }
+    // Bigger than 1 KB
+    else if (size > m_data_units.KB) {
+        converted_size = static_cast<unsigned>(size / m_data_units.KB);
+        data_unit = L"KB";
     }
 
-    std::wstring Format::error_message(DWORD error_message_id) {
-        if (error_message_id == 0) {
-            return L"";
-        }
+    return std::to_wstring(converted_size) + L" " + data_unit;
+}
 
-        /**
-          Format error-message-id to wstring.
-        */
-        LPWSTR error_message_buffer = nullptr;
-        const DWORD size = FormatMessageW(
-            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
-            FORMAT_MESSAGE_IGNORE_INSERTS,
-            NULL, error_message_id, LOCALE_USER_DEFAULT,
-            reinterpret_cast<LPWSTR>(&error_message_buffer), 0, NULL);
-
-        std::wstring error_message(error_message_buffer, size);
-        LocalFree(error_message_buffer);
-        return error_message;
+std::wstring Format::ErrorMessage(DWORD error_message_id) {
+    if (error_message_id == 0) {
+        return L"";
     }
 
-    void Format::handle_exception(std::exception_ptr exception_pointer) {
-        try {
-            if (exception_pointer) {
-                std::rethrow_exception(exception_pointer);
-            }
-        }
-        catch (const std::exception &exc) {
-            std::wcout << L" Ein unerwarteter Fehler ist aufgetreten: \"" << exc.what()
-                << L"\"\n\n"
-                << L" Beliebige Taste drücken...";
-            std::wcin.get();
+    /**
+      Format error-message-id to wstring.
+    */
+    LPWSTR error_message_buffer = nullptr;
+    const DWORD size = FormatMessageW(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL, error_message_id, LOCALE_USER_DEFAULT,
+        reinterpret_cast<LPWSTR>(&error_message_buffer), 0, NULL);
+
+    std::wstring error_message(error_message_buffer, size);
+    LocalFree(error_message_buffer);
+    return error_message;
+}
+
+void Format::HandleException(std::exception_ptr exception_pointer) {
+    try {
+        if (exception_pointer) {
+            std::rethrow_exception(exception_pointer);
         }
     }
-}  // namespace Helper
+    catch (const std::exception &exc) {
+        std::wcout << L" Ein unerwarteter Fehler ist aufgetreten: \"" << exc.what()
+            << L"\"\n\n"
+            << L" Beliebige Taste drücken...";
+        std::wcin.get();
+    }
+}
+
+bool Format::EndsWith(const std::wstring &mainStr, const std::wstring &toMatch)
+{
+    if (mainStr.size() >= toMatch.size() &&
+        mainStr.compare(mainStr.size() - toMatch.size(), toMatch.size(), toMatch) == 0)
+        return true;
+    else
+        return false;
+}

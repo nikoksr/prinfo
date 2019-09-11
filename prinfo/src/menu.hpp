@@ -1,45 +1,31 @@
 #pragma once
 
 #include <string>
+#include <sstream>
+#include <memory>
 
+namespace menu {
+    class Functions;
 
-namespace Helper {
-    class Menu {
+    class Main {
     public:
-        /**
-          Main menu.
-        */
-        static void main_menu();
+        virtual wchar_t Show();
+    private:
+        std::unique_ptr<Functions> m_funcMenu;
+    };
 
-        /**
-          Menu for listing all available functions.
-        */
-        static wchar_t functions_menu();
+    class Functions : Main {
+    public:
+        wchar_t Show();
+    };
 
+    class Navigation {
+    public:
         /**
           Submenus for navigating back, quitting and saving data.
         */
-        static wchar_t submenu_quit();
-        static wchar_t submenu_back_quit();
-        static wchar_t submenu_save_back_quit();
-
-
-
-
-        /**
-          Save functionality.
-
-          @param function_to_save Pointer to function which data is wanted to be
-            saved.
-          @param user_input Char that user put in console to execute function. Used
-            for stability. Check if input was actually a call to save data.
-        */
-        static void save_request(void(*function_to_save)(std::wostream &stream),
-            const wchar_t user_input);
-
-        /**
-          TODO: Find out what function does.
-        */
-        static void undo_back_command(wchar_t *user_input);
-    };  // class Menu
-}  // namespace Helper
+        static wchar_t Quit();
+        static wchar_t BackQuit();
+        static wchar_t SaveBackQuit();
+    };
+}

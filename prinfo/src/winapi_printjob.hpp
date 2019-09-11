@@ -1,37 +1,39 @@
 #pragma once
 
+#include "winapi_printer.hpp"
+
 #include <Windows.h>
 #include <string>
 #include <vector>
 #include <memory>
+#include <winspool.h>
 
-namespace WinApi {
-    class Printjob
-    {
+namespace winapi {
+
+    class Printer;
+
+    class Printjob {
     public:
-        Printjob(const JOB_INFO_2& job_info);
+        friend std::wostream& operator<<(std::wostream& stream, const Printjob& job);
+
+        Printjob(const _JOB_INFO_2W& job_info);
         ~Printjob();
 
-        static std::vector<std::unique_ptr<Printjob>>* load_jobs(const _PRINTER_INFO_2W& printer_info);
-        static unsigned get_job_count();
+        static int SetPrintjobs(Printer* const printer);
 
-        const std::wstring& get_document_name() const;
-        const std::wstring& get_user_name() const;
-        const std::wstring& get_machine_name() const;
-        const std::wstring& get_submitted() const;
-        const std::wstring& get_datatype() const;
-        const std::wstring& get_size() const;
-        const std::wstring& get_status() const;
-        const std::wstring& get_page_count() const;
-
-        friend std::wostream& operator<<(std::wostream& stream, const WinApi::Printjob& job);
+        const std::wstring& DocumentName() const;
+        const std::wstring& UserName() const;
+        const std::wstring& MachineName() const;
+        const std::wstring& Submitted() const;
+        const std::wstring& DataType() const;
+        const std::wstring& Size() const;
+        const std::wstring& Status() const;
+        const std::wstring& PageCount() const;
 
     private:
-        static DWORD m_job_count;
-        static std::unique_ptr<JOB_INFO_2[]> m_jobs_info_list;
-        static std::vector<std::unique_ptr<Printjob>> m_job_list;
+        static void setJobsInfoList(Printer* const printer, std::unique_ptr<_JOB_INFO_2W[]>& out_jobs_info_list);
 
-        JOB_INFO_2 m_job_info;
+        _JOB_INFO_2W m_job_info;
         std::wstring m_document_name;
         std::wstring m_user_name;
         std::wstring m_machine_name;
@@ -41,16 +43,14 @@ namespace WinApi {
         std::wstring m_status;
         std::wstring m_page_count;
 
-        static BOOL set_jobs_info_list(const _PRINTER_INFO_2W& printer_info);
-
-        void set_document_name();
-        void set_user_name();
-        void set_machine_name();
-        void set_submitted();
-        void set_datatype();
-        void set_size();
-        void set_status();
-        void set_page_count();
         void init();
+        void setDocumentName();
+        void setUserName();
+        void setMachineName();
+        void setSubmitted();
+        void setDataType();
+        void setSize();
+        void setStatus();
+        void setPageCount();
     };
 }
