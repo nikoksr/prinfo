@@ -34,6 +34,7 @@ namespace winapi {
 
         // Load infos lists
         if (setPrinterInfoList() == FALSE) {
+            throw std::invalid_argument("could't set printerinfo list");
             return m_printer_list;
         }
 
@@ -91,10 +92,38 @@ namespace winapi {
     /**
       Setter functions
     */
-    void Printer::setName() { m_name = m_printer_info.pPrinterName; }
-    void Printer::setDriver() { m_driver = m_printer_info.pDriverName; }
-    void Printer::setPrintProcessor() { m_printprocessor = m_printer_info.pPrintProcessor; }
-    void Printer::setDataType() { m_datatype = m_printer_info.pDatatype; }
+    void Printer::setName() {
+        if (m_printer_info.pPrinterName) {
+            m_name = m_printer_info.pPrinterName;
+        }
+        else {
+            m_name = L"";
+        }
+    }
+    void Printer::setDriver() {
+        if (m_printer_info.pDriverName) {
+            m_driver = m_printer_info.pDriverName;
+        }
+        else {
+            m_driver = L"";
+        }
+    }
+    void Printer::setPrintProcessor() {
+        if (m_printer_info.pPrintProcessor) {
+            m_printprocessor = m_printer_info.pPrintProcessor;
+        }
+        else {
+            m_printprocessor = L"";
+        }
+    }
+    void Printer::setDataType() {
+        if (m_printer_info.pDatatype) {
+            m_datatype = m_printer_info.pDatatype;
+        }
+        else {
+            m_datatype = L"";
+        }
+    }
 
     void Printer::setType() {
         if (m_printer_info.Attributes & PRINTER_ATTRIBUTE_LOCAL) {
@@ -105,7 +134,14 @@ namespace winapi {
         }
     }
 
-    void Printer::setPort() { m_port = m_printer_info.pPortName; }
+    void Printer::setPort() {
+        if (m_printer_info.pPortName) {
+            m_port = m_printer_info.pPortName;
+        }
+        else {
+            m_port = L"";
+        }
+    }
 
     void Printer::setIsShared() {
         if (m_printer_info.Attributes & PRINTER_ATTRIBUTE_SHARED) {
@@ -116,10 +152,17 @@ namespace winapi {
         }
     }
 
-    void Printer::setShareName() { m_share_name = m_printer_info.pShareName; }
+    void Printer::setShareName() {
+        if (m_printer_info.pShareName) {
+            m_share_name = m_printer_info.pShareName;
+        }
+        else {
+            m_share_name = L"";
+        }
+    }
 
     void Printer::setServerName() {
-        if (m_printer_info.pServerName != NULL) {
+        if (m_printer_info.pServerName) {
             m_server_name = m_printer_info.pServerName;
         }
         else {
@@ -137,6 +180,11 @@ namespace winapi {
     }
 
     void Printer::setDuplex() {
+        if (!m_printer_info.pDevMode) {
+            m_duplex = L"Status unbekannt";
+            return;
+        }
+
         switch (m_printer_info.pDevMode->dmDuplex) {
         case DMDUP_SIMPLEX:
             m_duplex = L"Nicht aktiv";

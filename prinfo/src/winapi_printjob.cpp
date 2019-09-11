@@ -83,12 +83,49 @@ namespace winapi {
             needed_buffer, &needed_buffer, &needed_structs);
     }
 
-    void Printjob::setDocumentName() { m_document_name = std::wstring(m_job_info.pDocument); }
-    void Printjob::setUserName() { m_user_name = std::wstring(m_job_info.pUserName); }
-    void Printjob::setMachineName() { m_machine_name = std::wstring(m_job_info.pMachineName); }
-    void Printjob::setDataType() { m_datatype = std::wstring(m_job_info.pDatatype); }
-    void Printjob::setSize() { m_size = std::wstring(Format::ConvertDataUnit(m_job_info.Size)); }
-    void Printjob::setPageCount() { m_page_count = std::to_wstring(m_job_info.TotalPages); }
+    void Printjob::setDocumentName() {
+        if (m_job_info.pDocument) {
+            m_document_name = std::wstring(m_job_info.pDocument);
+        }
+        else {
+            m_document_name = L"";
+        }
+    }
+
+    void Printjob::setUserName() {
+        if (m_job_info.pUserName) {
+            m_user_name = std::wstring(m_job_info.pUserName);
+        }
+        else {
+            m_user_name = L"";
+        }
+    }
+
+    void Printjob::setMachineName() {
+        if (m_job_info.pMachineName) {
+            m_machine_name = std::wstring(m_job_info.pMachineName);
+        }
+        else {
+            m_machine_name = L"";
+        }
+    }
+
+    void Printjob::setDataType() {
+        if (m_job_info.pDatatype) {
+            m_datatype = std::wstring(m_job_info.pDatatype);
+        }
+        else {
+            m_datatype = L"";
+        }
+    }
+
+    void Printjob::setSize() {
+        m_size = std::wstring(Format::ConvertDataUnit(m_job_info.Size));
+    }
+
+    void Printjob::setPageCount() {
+        m_page_count = std::to_wstring(m_job_info.TotalPages);
+    }
 
     void Printjob::setSubmitted() {
         SYSTEMTIME submitted_time = m_job_info.Submitted;
