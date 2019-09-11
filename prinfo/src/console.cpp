@@ -5,8 +5,8 @@
 
 #pragma comment(lib, "Kernel32.lib")
 
-namespace Helper {
-    void Console::clear_screen() {
+namespace console {
+    void Console::clear() {
         const HANDLE console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 
         if (console_handle == INVALID_HANDLE_VALUE) {
@@ -36,4 +36,4 @@ namespace Helper {
         */
         SetConsoleCursorPosition(console_handle, home_coords);
     }
-}  // namespace Helper
+}
