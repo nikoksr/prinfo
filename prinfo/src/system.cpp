@@ -14,15 +14,15 @@
 #pragma comment(lib, "netapi32.lib")
 #pragma comment(lib, "CscApi.lib")
 
-namespace WinApi {
-    bool System::is_wmi_prepared = false;
+namespace winapi {
+    bool System::isWMIPrepared = false;
 
     System::System() : m_system_name(L"unnamed") { init(); }
     System::System(const std::wstring& system_name) : m_system_name(system_name) { init(); }
 
-    HRESULT System::prepare_wmi() {
+    HRESULT System::prepareWMI() {
         // Check if wmi is already prepared
-        if (is_wmi_prepared) {
+        if (isWMIPrepared) {
             return ERROR_SUCCESS;
         }
 
@@ -42,31 +42,31 @@ namespace WinApi {
             nullptr, -1, nullptr, nullptr, RPC_C_AUTHN_LEVEL_CONNECT,
             RPC_C_IMP_LEVEL_IMPERSONATE, nullptr, EOAC_NONE, nullptr);
 
-        is_wmi_prepared = true;
+        isWMIPrepared = true;
         return result_init_security;
     }
 
-    void System::set_username() {
+    void System::setUsername() {
         DWORD username_buffer_size = 255;
         wchar_t temp_username[255];
 
         BOOL result_username = GetUserNameW(temp_username, &username_buffer_size);
 
         if (result_username == 0) {
-            m_user_name = Helper::Format::error_message(GetLastError());
+            m_user_name = Format::ErrorMessage(GetLastError());
         }
         else {
             m_user_name = std::wstring(temp_username);
         }
     }
 
-    void System::set_workstation() {
+    void System::setWorkstation() {
         PWKSTA_INFO_102 wksta_info;
         DWORD result_wksta =
             NetWkstaGetInfo(nullptr, 102, reinterpret_cast<LPBYTE *>(&wksta_info));
 
         if (result_wksta != NERR_Success) {
-            std::wstring err = Helper::Format::error_message(result_wksta);
+            std::wstring err = Format::ErrorMessage(result_wksta);
             m_machine_name = err;
             m_domain = err;
         }
@@ -78,7 +78,7 @@ namespace WinApi {
         NetApiBufferFree(wksta_info);
     }
 
-    void System::set_default_printer() {
+    void System::setDefaultPrinter() {
         DWORD default_printer_buffer_size = 255;
         wchar_t temp_default_printer[255];
 
@@ -86,20 +86,20 @@ namespace WinApi {
             GetDefaultPrinterW(temp_default_printer, &default_printer_buffer_size);
 
         if (result_default_printer == 0) {
-            m_default_printer = Helper::Format::error_message(GetLastError());
+            m_default_printer = Format::ErrorMessage(GetLastError());
         }
         else {
             m_default_printer = std::wstring(temp_default_printer);
         }
     }
 
-    void System::set_offline_files() {
+    void System::setOfflineFiles() {
         BOOL offline_files_active;
         DWORD result_offline_files =
             OfflineFilesQueryStatus(&offline_files_active, nullptr);
 
         if (result_offline_files != ERROR_SUCCESS) {
-            m_offline_files = Helper::Format::error_message(result_offline_files);
+            m_offline_files = Format::ErrorMessage(result_offline_files);
         }
         else {
             switch (offline_files_active) {
@@ -116,7 +116,7 @@ namespace WinApi {
         }
     }
 
-    void System::set_operating_system() {
+    void System::setOperatingSystem() {
         /**
           Create a single uninitialized object of the class on the local system.
         */
@@ -222,7 +222,7 @@ namespace WinApi {
         VariantClear(&value);
     }
 
-    void System::set_processor() {
+    void System::setProcessor() {
         /**
           Create a single uninitialized object of the class on the local system
         */
@@ -303,7 +303,7 @@ namespace WinApi {
         VariantClear(&value);
     }
 
-    void System::set_memory() {
+    void System::setMemory() {
         constexpr unsigned mebibyte = 1024 * 1024;
         MEMORYSTATUSEX statex;
         statex.dwLength = sizeof(statex);
@@ -316,28 +316,28 @@ namespace WinApi {
             m_memory_in_use = std::to_wstring(mpiu);
         }
         else {
-            std::wstring err = Helper::Format::error_message(GetLastError());
+            std::wstring err = Format::ErrorMessage(GetLastError());
             m_memory_total = err;
             m_memory_in_use = err;
         }
     }
 
     void System::init() {
-        if (prepare_wmi() != ERROR_SUCCESS) {
+        if (prepareWMI() != ERROR_SUCCESS) {
             return;
         }
 
-        set_username();
-        set_workstation();
-        set_default_printer();
-        set_offline_files();
-        set_operating_system();
-        set_processor();
-        set_memory();
+        setUsername();
+        setWorkstation();
+        setDefaultPrinter();
+        setOfflineFiles();
+        setOperatingSystem();
+        setProcessor();
+        setMemory();
     }
 
-    void System::refresh() {
-        if (prepare_wmi() != ERROR_SUCCESS) {
+    void System::Refresh() {
+        if (prepareWMI() != ERROR_SUCCESS) {
             return;
         }
 
@@ -358,34 +358,34 @@ namespace WinApi {
     }
 
     std::wostream& operator<<(std::wostream& stream, const System& system) {
-        stream << Helper::Snippets::separator_thick << L"\n\n"
+        stream << snippets::k_separator_thick << L"\n\n"
             << L" Systeminformationen\n"
-            << Helper::Snippets::separator_thin << L"\n\n";
+            << snippets::k_separator_thin << L"\n\n";
 
-        HRESULT result_prepare_wmi = System::prepare_wmi();
+        HRESULT result_prepare_wmi = System::prepareWMI();
 
         if (!SUCCEEDED(result_prepare_wmi)) {
             _com_error err(result_prepare_wmi);
             const TCHAR* err_message = err.ErrorMessage();
 
-            stream << Helper::Format::name_and_value(L"Fehler", err_message) << L"\n\n";
+            stream << Format::NameValuePair(L"Fehler", err_message) << L"\n\n";
             return stream;
         }
 
-        stream << Helper::Format::name_and_value(L"Username", system.m_user_name) << L"\n"
-            << Helper::Format::name_and_value(L"Computername", system.m_machine_name)
+        stream << Format::NameValuePair(L"Username", system.m_user_name) << L"\n"
+            << Format::NameValuePair(L"Computername", system.m_machine_name)
             << L"\n"
-            << Helper::Format::name_and_value(L"Domain", system.m_domain) << L"\n\n"
-            << Helper::Format::name_and_value(L"Standarddrucker", system.m_default_printer)
+            << Format::NameValuePair(L"Domain", system.m_domain) << L"\n\n"
+            << Format::NameValuePair(L"Standarddrucker", system.m_default_printer)
             << L"\n"
-            << Helper::Format::name_and_value(L"Offlinedateien", system.m_offline_files)
+            << Format::NameValuePair(L"Offlinedateien", system.m_offline_files)
             << L"\n\n"
-            << Helper::Format::name_and_value(L"Betriebssystem", system.m_os_name) << L"\n"
-            << Helper::Format::name_and_value(L"Version", system.m_os_version) << L"\n"
-            << Helper::Format::name_and_value(L"Architektur", system.m_os_architecture)
+            << Format::NameValuePair(L"Betriebssystem", system.m_os_name) << L"\n"
+            << Format::NameValuePair(L"Version", system.m_os_version) << L"\n"
+            << Format::NameValuePair(L"Architektur", system.m_os_architecture)
             << L"\n\n"
-            << Helper::Format::name_and_value(L"Prozessor", system.m_processor) << L"\n"
-            << Helper::Format::name_and_value(L"RAM Physical", (system.m_memory_in_use + L"/" + system.m_memory_total))
+            << Format::NameValuePair(L"Prozessor", system.m_processor) << L"\n"
+            << Format::NameValuePair(L"RAM Physical", (system.m_memory_in_use + L"/" + system.m_memory_total))
             << L" MB\n\n";
 
         return stream;
@@ -394,13 +394,13 @@ namespace WinApi {
     /**
      Getter functions
     */
-    const std::wstring& System::get_system_name() const { return m_system_name; }
-    const std::wstring& System::get_user_name() const { return m_user_name; }
-    const std::wstring& System::get_workstation_name() const { return m_machine_name; }
-    const std::wstring& System::get_offline_files() const { return m_offline_files; }
-    const std::wstring& System::get_default_printer() const { return m_default_printer; }
-    const std::wstring& System::get_operating_system() const { return m_os_name; }
-    const std::wstring& System::get_processor() const { return m_processor; }
-    const std::wstring& System::get_memory() const { return m_memory_total; }
+    const std::wstring& System::SystemName() const { return m_system_name; }
+    const std::wstring& System::UserName() const { return m_user_name; }
+    const std::wstring& System::WorkstationName() const { return m_machine_name; }
+    const std::wstring& System::OfflineFiles() const { return m_offline_files; }
+    const std::wstring& System::DefaultPrinter() const { return m_default_printer; }
+    const std::wstring& System::OperatingSystem() const { return m_os_name; }
+    const std::wstring& System::Processor() const { return m_processor; }
+    const std::wstring& System::Memory() const { return m_memory_total; }
 }  // namespace WinApi
 
