@@ -4,29 +4,29 @@
 #include <iostream>
 #include <string>
 
-namespace WinApi {
+namespace winapi {
     class System {
     public:
         System();
         System(const std::wstring& system_name);
 
-        void refresh();
+        void Refresh();
 
-        const std::wstring& get_system_name() const;
-        const std::wstring& get_user_name() const;
-        const std::wstring& get_workstation_name() const;
-        const std::wstring& get_offline_files() const;
-        const std::wstring& get_default_printer() const;
-        const std::wstring& get_operating_system() const;
-        const std::wstring& get_processor() const;
-        const std::wstring& get_memory() const;
+        const std::wstring& SystemName() const;
+        const std::wstring& UserName() const;
+        const std::wstring& WorkstationName() const;
+        const std::wstring& OfflineFiles() const;
+        const std::wstring& DefaultPrinter() const;
+        const std::wstring& OperatingSystem() const;
+        const std::wstring& Processor() const;
+        const std::wstring& Memory() const;
 
         friend std::wostream& operator<<(std::wostream& stream, const System& system);
 
     private:
 
-        static HRESULT prepare_wmi();
-        static bool is_wmi_prepared;
+        static HRESULT prepareWMI();
+        static bool isWMIPrepared;
 
         std::wstring m_system_name;
         std::wstring m_user_name;
@@ -47,41 +47,41 @@ namespace WinApi {
           Sets member user_name. Retrieves data from
           Windows GetUserNameW funcion.
         */
-        void set_username();
+        void setUsername();
 
         /**
           Sets member machine_name and domain. Retrieves data from
           NetWkstaGetInfo function.
         */
-        void set_workstation();
+        void setWorkstation();
 
         /**
           Sets member default_printer. Retrieves data from GetDefaultPrinterW
           function.
         */
-        void set_default_printer();
+        void setDefaultPrinter();
 
         /**
          Sets member offline_files. Retrieves data from OfflineFilesQueryStatus
          function.
         */
-        void set_offline_files();
+        void setOfflineFiles();
 
         /**
          Sets member os_name, os_version and os_architecture. Retrieves data through
          DCOM from a WMI namespace.
         */
-        void set_operating_system();
+        void setOperatingSystem();
 
         /**
          Sets member processor. Retrieves data through DCOM from a WMI namespace.
         */
-        void set_processor();
+        void setProcessor();
 
         /**
          Sets member memory_in_use and memory_total. Retrieves data
          GlobalMemoryStatusEx function.
         */
-        void set_memory();
+        void setMemory();
     };  // class System
 }  // namespace WinApi

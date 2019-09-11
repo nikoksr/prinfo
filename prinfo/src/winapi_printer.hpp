@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-namespace WinApi {
+namespace winapi {
 
     /**
       Class to represent a printer.
@@ -48,32 +48,30 @@ namespace WinApi {
 
           @return The total number of printers.
         */
-        static int get_number_printers();
+        static int NumberOfPrinters();
 
         /**
           Fills the printer_list vector with printer objects.
         */
-        static const std::vector<std::unique_ptr<Printer>>& load_printers();
+        static const std::vector<std::unique_ptr<Printer>>& LoadPrinters();
 
         /**
           Getter functions
         */
-        const _PRINTER_INFO_2W& get_printer_info() const;
-        const std::wstring& get_name() const;
-        const std::wstring& get_type() const;
-        const std::wstring& get_port() const;
-        const std::wstring& get_is_shared() const;
-        const std::wstring& get_sharename() const;
-        const std::wstring& get_server_name() const;
-        const std::wstring& get_terminalserver() const;
-        const std::wstring& get_driver() const;
-        const std::wstring& get_printprocessor() const;
-        const std::wstring& get_datatype() const;
-        const std::wstring& get_duplex() const;
-        const std::wstring& get_keep_printjobs() const;
-        const std::wstring& get_status() const;
-
-        int m_test_test;
+        const _PRINTER_INFO_2W& PrinterInfo() const;
+        const std::wstring& Name() const;
+        const std::wstring& Type() const;
+        const std::wstring& Port() const;
+        const std::wstring& IsShared() const;
+        const std::wstring& ShareName() const;
+        const std::wstring& ServerName() const;
+        const std::wstring& TerminalServer() const;
+        const std::wstring& Driver() const;
+        const std::wstring& PrintProcessor() const;
+        const std::wstring& DataType() const;
+        const std::wstring& Duplex() const;
+        const std::wstring& KeepsPrintjobs() const;
+        const std::wstring& Status() const;
 
     private:
         /**
@@ -82,7 +80,7 @@ namespace WinApi {
 
           @return Returns bool result if retrieving printer_info_list was successful
         */
-        static BOOL set_printer_info_list();
+        static BOOL setPrinterInfoList();
 
         /**
          Object counter
@@ -125,21 +123,21 @@ namespace WinApi {
         /**
           Setter functions
         */
-        void set_name();
-        void set_type();
-        void set_port();
-        void set_is_shared();
-        void set_sharename();
-        void set_server_name();
-        void set_terminalserver();
-        void set_driver();
-        void set_printprocessor();
-        void set_datatype();
-        void set_duplex();
-        void set_status();
-        void set_keep_printjobs();
-        void set_printjobs_count();
-        void set_printjobs();
+        void setName();
+        void setType();
+        void setPort();
+        void setIsShared();
+        void setShareName();
+        void setServerName();
+        void setTerminalServer();
+        void setDriver();
+        void setPrintProcessor();
+        void setDataType();
+        void setDuplex();
+        void setStatus();
+        void setKeepsPrintjobs();
+        void setPrintjobsCount();
+        void setPrintjobs();
 
         /**
           The printer's name.

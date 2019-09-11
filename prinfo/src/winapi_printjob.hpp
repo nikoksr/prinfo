@@ -8,7 +8,7 @@
 #include <memory>
 #include <winspool.h>
 
-namespace WinApi {
+namespace winapi {
 
     class Printer;
 
@@ -19,19 +19,19 @@ namespace WinApi {
         Printjob(const _JOB_INFO_2W& job_info);
         ~Printjob();
 
-        static int set_printjobs(Printer* const printer);
+        static int SetPrintjobs(Printer* const printer);
 
-        const std::wstring& get_document_name() const;
-        const std::wstring& get_user_name() const;
-        const std::wstring& get_machine_name() const;
-        const std::wstring& get_submitted() const;
-        const std::wstring& get_datatype() const;
-        const std::wstring& get_size() const;
-        const std::wstring& get_status() const;
-        const std::wstring& get_page_count() const;
+        const std::wstring& DocumentName() const;
+        const std::wstring& UserName() const;
+        const std::wstring& MachineName() const;
+        const std::wstring& Submitted() const;
+        const std::wstring& DataType() const;
+        const std::wstring& Size() const;
+        const std::wstring& Status() const;
+        const std::wstring& PageCount() const;
 
     private:
-        static void set_jobs_info_list(Printer* const printer, std::unique_ptr<_JOB_INFO_2W[]>& out_jobs_info_list);
+        static void setJobsInfoList(Printer* const printer, std::unique_ptr<_JOB_INFO_2W[]>& out_jobs_info_list);
 
         _JOB_INFO_2W m_job_info;
         std::wstring m_document_name;
@@ -44,13 +44,13 @@ namespace WinApi {
         std::wstring m_page_count;
 
         void init();
-        void set_document_name();
-        void set_user_name();
-        void set_machine_name();
-        void set_submitted();
-        void set_datatype();
-        void set_size();
-        void set_status();
-        void set_page_count();
+        void setDocumentName();
+        void setUserName();
+        void setMachineName();
+        void setSubmitted();
+        void setDataType();
+        void setSize();
+        void setStatus();
+        void setPageCount();
     };
 }

@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <math.h>
 
-namespace WinApi {
+namespace winapi {
 
     /**
     * Static member initialization
@@ -27,13 +27,13 @@ namespace WinApi {
     /**
       Functions
     */
-    const std::vector<std::unique_ptr<Printer>>& Printer::load_printers() {
+    const std::vector<std::unique_ptr<Printer>>& Printer::LoadPrinters() {
         // Clear old list
         m_printer_list.clear();
         m_number_printers = 0;
 
         // Load infos lists
-        if (set_printer_info_list() == FALSE) {
+        if (setPrinterInfoList() == FALSE) {
             return m_printer_list;
         }
 
@@ -48,7 +48,7 @@ namespace WinApi {
         return m_printer_list;
     }
 
-    BOOL Printer::set_printer_info_list() {
+    BOOL Printer::setPrinterInfoList() {
         DWORD needed_buffer;
 
         EnumPrintersW(PRINTER_ENUM_LOCAL | PRINTER_ENUM_CONNECTIONS | PRINTER_ENUM_CATEGORY_ALL,
@@ -71,32 +71,32 @@ namespace WinApi {
     }
 
     void Printer::init() {
-        set_name();
-        set_type();
-        set_port();
-        set_is_shared();
-        set_sharename();
-        set_server_name();
-        set_terminalserver();
-        set_driver();
-        set_printprocessor();
-        set_datatype();
-        set_duplex();
-        set_keep_printjobs();
-        set_status();
-        set_printjobs_count();
-        set_printjobs();
+        setName();
+        setType();
+        setPort();
+        setIsShared();
+        setShareName();
+        setServerName();
+        setTerminalServer();
+        setDriver();
+        setPrintProcessor();
+        setDataType();
+        setDuplex();
+        setKeepsPrintjobs();
+        setStatus();
+        setPrintjobsCount();
+        setPrintjobs();
     }
 
     /**
       Setter functions
     */
-    void Printer::set_name() { m_name = m_printer_info.pPrinterName; }
-    void Printer::set_driver() { m_driver = m_printer_info.pDriverName; }
-    void Printer::set_printprocessor() { m_printprocessor = m_printer_info.pPrintProcessor; }
-    void Printer::set_datatype() { m_datatype = m_printer_info.pDatatype; }
+    void Printer::setName() { m_name = m_printer_info.pPrinterName; }
+    void Printer::setDriver() { m_driver = m_printer_info.pDriverName; }
+    void Printer::setPrintProcessor() { m_printprocessor = m_printer_info.pPrintProcessor; }
+    void Printer::setDataType() { m_datatype = m_printer_info.pDatatype; }
 
-    void Printer::set_type() {
+    void Printer::setType() {
         if (m_printer_info.Attributes & PRINTER_ATTRIBUTE_LOCAL) {
             m_type = L"Lokaler Drucker";
         }
@@ -105,9 +105,9 @@ namespace WinApi {
         }
     }
 
-    void Printer::set_port() { m_port = m_printer_info.pPortName; }
+    void Printer::setPort() { m_port = m_printer_info.pPortName; }
 
-    void Printer::set_is_shared() {
+    void Printer::setIsShared() {
         if (m_printer_info.Attributes & PRINTER_ATTRIBUTE_SHARED) {
             m_is_shared = L"Drucker ist freigegeben";
         }
@@ -116,9 +116,9 @@ namespace WinApi {
         }
     }
 
-    void Printer::set_sharename() { m_share_name = m_printer_info.pShareName; }
+    void Printer::setShareName() { m_share_name = m_printer_info.pShareName; }
 
-    void Printer::set_server_name() {
+    void Printer::setServerName() {
         if (m_printer_info.pServerName != NULL) {
             m_server_name = m_printer_info.pServerName;
         }
@@ -127,7 +127,7 @@ namespace WinApi {
         }
     }
 
-    void Printer::set_terminalserver() {
+    void Printer::setTerminalServer() {
         if (m_printer_info.Attributes & PRINTER_ATTRIBUTE_TS) {
             m_terminalserver = L"Ja";
         }
@@ -136,7 +136,7 @@ namespace WinApi {
         }
     }
 
-    void Printer::set_duplex() {
+    void Printer::setDuplex() {
         switch (m_printer_info.pDevMode->dmDuplex) {
         case DMDUP_SIMPLEX:
             m_duplex = L"Nicht aktiv";
@@ -153,7 +153,7 @@ namespace WinApi {
         }
     }
 
-    void Printer::set_keep_printjobs() {
+    void Printer::setKeepsPrintjobs() {
         if (m_printer_info.Attributes & PRINTER_ATTRIBUTE_KEEPPRINTEDJOBS) {
             m_keep_printjobs = L"nach dem Drucken nicht löschen";
         }
@@ -162,7 +162,7 @@ namespace WinApi {
         }
     }
 
-    void Printer::set_status() {
+    void Printer::setStatus() {
         m_status = L"";
 
         if (m_printer_info.Status & PRINTER_STATUS_OFFLINE) { m_status += L"Offline\n"; }
@@ -191,60 +191,58 @@ namespace WinApi {
         if (m_printer_info.Status & PRINTER_STATUS_WARMING_UP) { m_status += L"Aufwärmen\n"; }
     }
 
-    void Printer::set_printjobs_count() {
+    void Printer::setPrintjobsCount() {
         m_printjobs_count = static_cast<unsigned>(m_printer_info.cJobs);
     }
 
-    void Printer::set_printjobs() {
+    void Printer::setPrintjobs() {
         // Check if there are queued printjobs
         if (m_printjobs_count < 1) {
             return;
         }
 
         // Load printjobs  
-        if (Printjob::set_printjobs(this) != 0) {}
+        if (Printjob::SetPrintjobs(this) != 0) {}
     }
 
     /**
       Getter functions
     */
-    int Printer::get_number_printers() { return m_number_printers; }
+    int Printer::NumberOfPrinters() { return m_number_printers; }
 
-    const _PRINTER_INFO_2W& Printer::get_printer_info() const { return m_printer_info; }
-    const std::wstring& Printer::get_name() const { return m_name; }
-    const std::wstring& Printer::get_type() const { return m_type; }
-    const std::wstring& Printer::get_port() const { return m_port; }
-    const std::wstring& Printer::get_is_shared() const { return m_is_shared; }
-    const std::wstring& Printer::get_sharename() const { return m_share_name; }
-    const std::wstring& Printer::get_server_name() const { return m_server_name; }
-    const std::wstring& Printer::get_terminalserver() const { return m_terminalserver; }
-    const std::wstring& Printer::get_driver() const { return m_driver; }
-    const std::wstring& Printer::get_printprocessor() const { return m_printprocessor; }
-    const std::wstring& Printer::get_datatype() const { return m_datatype; }
-    const std::wstring& Printer::get_duplex() const { return m_duplex; }
-    const std::wstring& Printer::get_keep_printjobs() const { return m_keep_printjobs; }
-    const std::wstring& Printer::get_status() const { return m_status; }
+    const _PRINTER_INFO_2W& Printer::PrinterInfo() const { return m_printer_info; }
+    const std::wstring& Printer::Name() const { return m_name; }
+    const std::wstring& Printer::Type() const { return m_type; }
+    const std::wstring& Printer::Port() const { return m_port; }
+    const std::wstring& Printer::IsShared() const { return m_is_shared; }
+    const std::wstring& Printer::ShareName() const { return m_share_name; }
+    const std::wstring& Printer::ServerName() const { return m_server_name; }
+    const std::wstring& Printer::TerminalServer() const { return m_terminalserver; }
+    const std::wstring& Printer::Driver() const { return m_driver; }
+    const std::wstring& Printer::PrintProcessor() const { return m_printprocessor; }
+    const std::wstring& Printer::DataType() const { return m_datatype; }
+    const std::wstring& Printer::Duplex() const { return m_duplex; }
+    const std::wstring& Printer::KeepsPrintjobs() const { return m_keep_printjobs; }
+    const std::wstring& Printer::Status() const { return m_status; }
 
     std::wostream& operator<<(std::wostream& stream, Printer& printer) {
-        using namespace Helper;
-
-        stream << Snippets::separator_thin << L"\n\n"
+        stream << snippets::k_separator_thin << L"\n\n"
             << L" " << printer.m_name << L"\n"
-            << Snippets::separator_thin << L"\n\n"
-            << Format::name_and_value(L"Typ", printer.m_type) << L"\n"
-            << Format::name_and_value(L"Port", printer.m_port) << L"\n"
-            << Format::name_and_value(L"Freigabe", printer.m_is_shared) << L"\n"
-            << Format::name_and_value(L"Sharename", printer.m_share_name) << L"\n"
-            << Format::name_and_value(L"Servername", printer.m_server_name) << L"\n"
-            << Format::name_and_value(L"Über Terminal Server verbunden", printer.m_terminalserver) << L"\n"
-            << Format::name_and_value(L"Treiber", printer.m_driver) << L"\n"
-            << Format::name_and_value(L"Printprocessor", printer.m_printprocessor) << L"\n"
-            << Format::name_and_value(L"Datentyp", printer.m_datatype) << L"\n"
-            << Format::name_and_value(L"Duplex", printer.m_duplex) << L"\n"
-            << Format::name_and_value(L"Status", printer.m_status) << L"\n"
-            << Format::name_and_value(L"Druckaufträge", printer.m_keep_printjobs) << L"\n"
-            << Format::name_and_value(L"Anzahl Druckaufträge", std::to_wstring(printer.m_printjobs_count)) << L"\n"
-            << Format::name_and_value(L"Druckaufträge", L"", L' ') << L"\n";
+            << snippets::k_separator_thin << L"\n\n"
+            << Format::NameValuePair(L"Typ", printer.m_type) << L"\n"
+            << Format::NameValuePair(L"Port", printer.m_port) << L"\n"
+            << Format::NameValuePair(L"Freigabe", printer.m_is_shared) << L"\n"
+            << Format::NameValuePair(L"Sharename", printer.m_share_name) << L"\n"
+            << Format::NameValuePair(L"Servername", printer.m_server_name) << L"\n"
+            << Format::NameValuePair(L"Über Terminal Server verbunden", printer.m_terminalserver) << L"\n"
+            << Format::NameValuePair(L"Treiber", printer.m_driver) << L"\n"
+            << Format::NameValuePair(L"Printprocessor", printer.m_printprocessor) << L"\n"
+            << Format::NameValuePair(L"Datentyp", printer.m_datatype) << L"\n"
+            << Format::NameValuePair(L"Duplex", printer.m_duplex) << L"\n"
+            << Format::NameValuePair(L"Status", printer.m_status) << L"\n"
+            << Format::NameValuePair(L"Druckaufträge", printer.m_keep_printjobs) << L"\n"
+            << Format::NameValuePair(L"Anzahl Druckaufträge", std::to_wstring(printer.m_printjobs_count)) << L"\n"
+            << Format::NameValuePair(L"Druckaufträge", L"", L' ') << L"\n";
 
         for (auto& job : printer.m_printjobs) {
             stream << '\n' << job;

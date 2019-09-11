@@ -4,7 +4,7 @@
 #include <iostream>
 #include <array>
 
-namespace Registry {
+namespace registry {
     class Printer {
     public:
         /**
@@ -12,36 +12,36 @@ namespace Registry {
 
          @param &stream Reference of stream which should be used for data output.
        */
-        static void display_lm_printers(std::wostream &stream);
+        static void DisplayLMPrinters(std::wostream &stream);
 
         /**
           Streams data found under CurrentUser to specified output.
 
           @param &stream Reference of stream which should be used for data output.
         */
-        static void display_cu_printers(std::wostream &stream);
+        static void DisplayCUPrinters(std::wostream &stream);
 
     private:
         /**
           Defines max length of registry key.
         */
-        static constexpr DWORD max_key_length = 255;
+        static constexpr DWORD k_max_key_length = 255;
 
         /**
           Defines max length of registry-entry name.
         */
-        static constexpr DWORD max_value_name = 16383;
+        static constexpr DWORD k_max_value_name = 16383;
 
         /**
           Defines values-names to search for in specific registry-entry.
         */
-        static const std::array<std::wstring, 4> dsdriver_values_names;
-        static const std::array<std::wstring, 9> dsspooler_values_names;
-        static const std::array<std::wstring, 2> pnpdata_values_names;
-        static const std::array<std::wstring, 3> printerdriverdata_values_names;
+        static const std::array<std::wstring, 4> k_dsdriver_keys;
+        static const std::array<std::wstring, 9> k_dsspooler_keys;
+        static const std::array<std::wstring, 2> k_pnpdata_keys;
+        static const std::array<std::wstring, 3> k_printerdriverdata_keys;
 
-        static constexpr wchar_t localmachine_reg_path[] = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Print\\Printers";
-        static constexpr wchar_t currentuser_reg_path[] = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\PrinterPorts";
+        static constexpr wchar_t k_localmachine_path[] = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Print\\Printers";
+        static constexpr wchar_t k_currentuser_path[] = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\PrinterPorts";
 
         /**
           Reads specified registry key and filters out the results for
@@ -54,7 +54,7 @@ namespace Registry {
           @pararm list_size Size of the subkey_values_names.
         */
         template<std::size_t SIZE>
-        static std::wstring read_key(const HKEY& hkey_origin, const std::wstring& printer_name,
+        static std::wstring readKey(const HKEY& hkey_origin, const std::wstring& printer_name,
             const std::wstring& subkey, const std::array<std::wstring, SIZE>& value_name_list);
 
     };  // class Printer

@@ -19,5 +19,6 @@ int wmain() {
     std::setlocale(LC_ALL, "de_DE.UTF-8");
     // std::ios_base::sync_with_stdio(false); can increase cout performance    
 
-    Helper::Menu::main_menu();
+    auto menu = std::make_unique<menu::Main>();
+    menu->Show();
 }
