@@ -24,6 +24,7 @@ namespace menu {
           Main loop.
         */
         do {
+            user_input = L' ';
             Console::clear();
             std::wcout << snippets::k_program_head << L"\n\n"
                 << snippets::k_separator_thick << L"\n\n"
@@ -68,6 +69,7 @@ namespace menu {
           Second main loop.
         */
         do {
+            user_input = L' ';
             Console::clear();
             std::wcout << snippets::k_program_head << L"\n\n"
                 << snippets::k_separator_thick << L"\n\n"
@@ -123,16 +125,19 @@ namespace menu {
 
     wchar_t Navigation::Quit() {
         std::wcout << snippets::k_separator_thick << L"\n [B]eenden";
+        FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
         return tolower(_getwch());
     }
 
     wchar_t Navigation::BackQuit() {
         std::wcout << snippets::k_separator_thick << L"\n [Z]urück  [B]eenden";
+        FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
         return tolower(_getwch());
     }
 
     wchar_t Navigation::SaveBackQuit() {
         std::wcout << snippets::k_separator_thick << L"\n [S]peichern  [Z]urück  [B]eenden";
+        FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
         return tolower(_getwch());
     }
 }
