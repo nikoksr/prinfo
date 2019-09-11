@@ -15,9 +15,8 @@
 #include <sstream>
 
 int wmain() {
-    // Set local to german
     std::setlocale(LC_ALL, "de_DE.UTF-8");
-    // std::ios_base::sync_with_stdio(false); can increase cout performance    
+    std::ios_base::sync_with_stdio(false);
 
     auto menu = std::make_unique<menu::Main>();
     menu->Show();
