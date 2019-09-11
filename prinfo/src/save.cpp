@@ -21,6 +21,7 @@ namespace data {
         */
         std::wstring file_name;
         std::wcout << " Dateiname: ";
+        std::wcin.clear();
         std::getline(std::wcin, file_name);
 
         if (file_name.empty()) {
@@ -33,6 +34,7 @@ namespace data {
 
         std::wstring comment;
         std::wcout << " Kommentar: ";
+        std::wcin.clear();
         std::getline(std::wcin, comment);
         std::wcout << L"\n";
 
