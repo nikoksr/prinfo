@@ -12,7 +12,7 @@
 namespace analyze {
 
     // File
-    File::File(fs::path path, uintmax_t size, fs::file_time_type last_write_time) :
+    File::File(std::filesystem::path path, uintmax_t size, std::filesystem::file_time_type last_write_time) :
         m_path(path),
         m_size(size),
         m_last_write_time(last_write_time) {}
@@ -22,9 +22,9 @@ namespace analyze {
         return stream;
     }
 
-    const fs::path File::Path() const { return m_path; }
+    const std::filesystem::path File::Path() const { return m_path; }
     const uintmax_t File::Size() const { return m_size; }
-    const fs::file_time_type File::LastWriteTime() const { return m_last_write_time; }
+    const std::filesystem::file_time_type File::LastWriteTime() const { return m_last_write_time; }
 
     // PrintersFolder
     PrintersFolder::PrintersFolder() {
@@ -44,13 +44,13 @@ namespace analyze {
         return stream;
     }
 
-    std::size_t PrintersFolder::countFiles(fs::path path) {
-        using fs::directory_iterator;
-        using fp = bool(*)(const fs::path&);
-        return static_cast<std::size_t>(std::count_if(directory_iterator(path), directory_iterator{}, static_cast<fp>(fs::is_regular_file)));
+    std::size_t PrintersFolder::countFiles(std::filesystem::path path) {
+        using std::filesystem::directory_iterator;
+        using fp = bool(*)(const std::filesystem::path&);
+        return static_cast<std::size_t>(std::count_if(directory_iterator(path), directory_iterator{}, static_cast<fp>(std::filesystem::is_regular_file)));
     }
 
-    void PrintersFolder::getFiles(fs::path path) {
+    void PrintersFolder::getFiles(std::filesystem::path path) {
         m_spool_files.clear();
         m_total_num_files = countFiles(path);
 
@@ -60,7 +60,7 @@ namespace analyze {
 
         m_spool_files.reserve(m_total_num_files);
 
-        for (const auto& entry : fs::directory_iterator(path)) {
+        for (const auto& entry : std::filesystem::directory_iterator(path)) {
             // Spooler file
             if (Format::EndsWith(entry.path(), L".SHD")
                 || Format::EndsWith(entry.path(), L".SPL")) {
