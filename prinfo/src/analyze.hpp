@@ -14,19 +14,19 @@ namespace analyze {
 
     public:
 
-        File(fs::path path, uintmax_t size, fs::file_time_type last_write_time);
+        File(std::filesystem::path path, uintmax_t size, std::filesystem::file_time_type last_write_time);
 
         friend std::wostream& operator<<(std::wostream& stream, const File& file);
 
-        const fs::path Path() const;
+        const std::filesystem::path Path() const;
         const uintmax_t Size() const;
-        const fs::file_time_type LastWriteTime() const;
+        const std::filesystem::file_time_type LastWriteTime() const;
 
     private:
 
-        fs::path m_path;
+        std::filesystem::path m_path;
         uintmax_t m_size;
-        fs::file_time_type m_last_write_time;
+        std::filesystem::file_time_type m_last_write_time;
     };
 
     class PrintersFolder {
@@ -49,7 +49,7 @@ namespace analyze {
         static constexpr wchar_t path[] = L"C:\\Windows\\System32\\spool\\PRINTERS";
 
         // Count the number of files in the folder
-        std::size_t countFiles(fs::path path);
-        void getFiles(fs::path path);
+        std::size_t countFiles(std::filesystem::path path);
+        void getFiles(std::filesystem::path path);
     };
 }
