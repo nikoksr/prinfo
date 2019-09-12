@@ -72,9 +72,13 @@ namespace menu {
                 << L" [1] Win-API Drucker\n"
                 << L" [2] Registry Drucker\n"
                 << L" [3] Systeminfo\n"
-                << L" [4] Speichern aller gefundenen Infos\n\n";
-            // << L" [5] Löschen aller Druckaufträge (Admin-Rechte)\n\n";
+                << L" [4] Analyse\n"
+                << L" [5] Speichern aller gefundenen Infos\n\n";
             user_input = Navigation::BackQuit();
+
+            if (user_input == L'z' || user_input == L'b') {
+                return user_input;
+            }
 
             // Prepare output for chosen function
             Console::Clear();
@@ -106,18 +110,17 @@ namespace menu {
                 if (user_input == 's') { Save::ToFile(&Display::System); }
                 break;
             case L'4':
-                Save::ToFile(&Display::All);
+                Display::Analyze(std::wcout);
+                user_input = Navigation::SaveBackQuit();
+                if (user_input == 's') { Save::ToFile(&Display::Analyze); }
                 break;
             case L'5':
-                // delete_print_jobs();
-                user_input = Navigation::BackQuit();
+                Save::ToFile(&Display::All);
                 break;
-            case L'b':
             case L'z':
-                quit_loop = true;
                 break;
             }
-        } while (!quit_loop);
+        } while (user_input != L'b');
         return user_input;
     }
 
