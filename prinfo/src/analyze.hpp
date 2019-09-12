@@ -4,16 +4,14 @@
 #include <sstream>
 #include <vector>
 #include <memory>
+#include <iostream>
 
 namespace analyze {
-
-    namespace fs = std::filesystem;
 
     class File {
         // File represents a file in the filesystem. Mostly used to hold critical data of files.
 
     public:
-
         File(std::filesystem::path path, uintmax_t size, std::filesystem::file_time_type last_write_time);
 
         friend std::wostream& operator<<(std::wostream& stream, const File& file);
