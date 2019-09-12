@@ -11,7 +11,7 @@ namespace data {
     using namespace console;
 
     void Save::ToFile(displayFn df) {
-        Console::clear();
+        Console::Clear();
         std::wcout << snippets::k_program_head << L"\n\n"
             << snippets::k_separator_thick << L"\n\n Speichern\n"
             << snippets::k_separator_thin << L"\n\n";
