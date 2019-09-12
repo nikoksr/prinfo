@@ -110,8 +110,8 @@ namespace registry {
           Print header.
         */
         stream << snippets::k_separator_thick << L"\n\n"
-            << L" REGISTRY\n"
-            << L" HKEY_LOCAL_MACHINE\\" << k_localmachine_path << L"\n";
+            << L" REGISTRY\n" << L" HKEY_LOCAL_MACHINE\\" << k_localmachine_path << L"\n"
+            << snippets::k_separator_thin << L"\n\n";
 
         // Number of entries/printers
         DWORD num_printers;
@@ -145,13 +145,13 @@ namespace registry {
             /**
               Print body.
             */
-            stream << snippets::k_separator_thin << L"\n\n"
-                << L" Drucker: " << name << L"\n"
+            stream << L" Drucker: " << name << L"\n"
                 << snippets::k_separator_thin << L"\n\n"
                 << dsdriver << L"\n"
                 << dsspooler << L"\n"
                 << pnpdata << L"\n"
-                << printerdriverdata << L"\n";
+                << printerdriverdata << L"\n"
+                << snippets::k_separator_thin << L"\n\n";
         }
 
         RegCloseKey(hkey);
@@ -179,8 +179,7 @@ namespace registry {
           Print header.
         */
         stream << snippets::k_separator_thick << L"\n\n"
-            << L" REGISTRY\n"
-            << L" HKEY_CURRENT_USER\\" << k_currentuser_path << L"\n"
+            << L" REGISTRY\n" << L" HKEY_CURRENT_USER\\" << k_currentuser_path << L"\n"
             << snippets::k_separator_thin << L"\n\n";
 
         /**

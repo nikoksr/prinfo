@@ -8,10 +8,11 @@
 
 class Format {
     typedef const struct _dataUnits {
-        const double KB = 1024.0;
-        const double MB = pow(1024, 2);
-        const double GB = pow(1024, 3);
-        const double TB = pow(1024, 4);
+        const uintmax_t KB = 1024;
+        const uintmax_t MB = 1048576;
+        const uintmax_t GB = 1073741824;
+        const uintmax_t TB = 1099511627776;
+        const uintmax_t PB = 1125899906842624;
     } data_units;
 
 public:
@@ -37,7 +38,7 @@ public:
 
       @param job_size The number to be converted.
     */
-    static std::wstring ConvertDataUnit(const long double size);
+    static std::wstring ConvertDataUnit(const uintmax_t size);
 
     /**
       Formats a system error code in a readable error string.

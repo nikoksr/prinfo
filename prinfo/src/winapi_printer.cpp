@@ -273,7 +273,7 @@ namespace winapi {
     const std::wstring& Printer::KeepsPrintjobs() const { return m_keep_printjobs; }
     const std::wstring& Printer::Status() const { return m_status; }
 
-    std::wostream& operator<<(std::wostream& stream, Printer& printer) {
+    std::wostream& operator<<(std::wostream& stream, const Printer& printer) {
         stream << snippets::k_separator_thin << L"\n\n"
             << L" " << printer.m_name << L"\n"
             << snippets::k_separator_thin << L"\n\n"

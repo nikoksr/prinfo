@@ -6,7 +6,7 @@
 #pragma comment(lib, "Kernel32.lib")
 
 namespace console {
-    void Console::clear() {
+    void Console::Clear() {
         const HANDLE console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 
         if (console_handle == INVALID_HANDLE_VALUE) {

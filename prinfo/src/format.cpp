@@ -2,7 +2,7 @@
 
 #include <math.h>
 #include <string>
-
+#include <iomanip>
 
 // Static member
 Format::data_units Format::m_data_units;
@@ -70,33 +70,38 @@ std::wstring Format::MultiSZKey(TCHAR multi_sz_data[]) {
 }
 
 // Size in bytes
-std::wstring Format::ConvertDataUnit(const long double size) {
-    // String that specifies data unit 
+std::wstring Format::ConvertDataUnit(const uintmax_t size) {
     std::wstring data_unit = L"B";
-    unsigned converted_size = 0;
+    long double d_size = static_cast<long double>(size);
+    long double converted_size = 0.0;
 
-    // Bigger than 1 TB
-    if (size > m_data_units.TB) {
-        converted_size = static_cast<unsigned>(size / m_data_units.TB);
+    // Petabyte
+    if (size > m_data_units.PB) {
+        converted_size = ceil(d_size / m_data_units.PB);
+        data_unit = L"PB";
+    }
+    // Terrabyte
+    else if (size > m_data_units.TB) {
+        converted_size = ceil(d_size / m_data_units.TB);
         data_unit = L"TB";
     }
-    // Bigger than 1 GB
+    // Gigabyte
     else if (size > m_data_units.GB) {
-        converted_size = static_cast<unsigned>(size / m_data_units.GB);
+        converted_size = ceil(d_size / m_data_units.GB);
         data_unit = L"GB";
     }
-    // Bigger than 1 MB
+    // Megabyte
     else if (size > m_data_units.MB) {
-        converted_size = static_cast<unsigned>(size / m_data_units.MB);
+        converted_size = ceil(d_size / m_data_units.MB);
         data_unit = L"MB";
     }
-    // Bigger than 1 KB
+    // Kilobyte
     else if (size > m_data_units.KB) {
-        converted_size = static_cast<unsigned>(size / m_data_units.KB);
+        converted_size = ceil(d_size / m_data_units.KB);
         data_unit = L"KB";
     }
 
-    return std::to_wstring(converted_size) + L" " + data_unit;
+    return std::to_wstring(static_cast<uintmax_t>(converted_size)) + L" " + data_unit;
 }
 
 std::wstring Format::ErrorMessage(DWORD error_message_id) {

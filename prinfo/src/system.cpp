@@ -361,7 +361,6 @@ namespace winapi {
         stream << snippets::k_separator_thick << L"\n\n"
             << L" Systeminformationen\n"
             << snippets::k_separator_thin << L"\n\n";
-
         HRESULT result_prepare_wmi = System::prepareWMI();
 
         if (!SUCCEEDED(result_prepare_wmi)) {

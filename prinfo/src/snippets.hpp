@@ -10,7 +10,7 @@ namespace snippets {
     * Includes Copyright, Edit date, Creator, Contact email.
     */
     constexpr wchar_t k_program_head[] =
-        L"\n Prinfo v0.2.0        11.09.2019        https://github.com/nikoksr/prinfo        koeserniko@gmail.com";
+        L"\n Prinfo v0.2.2        12.09.2019        https://github.com/nikoksr/prinfo        koeserniko@gmail.com";
 
     /**
     * Help text.
