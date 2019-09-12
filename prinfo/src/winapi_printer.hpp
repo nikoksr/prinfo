@@ -27,7 +27,7 @@ namespace winapi {
         * Friends
         */
         friend class Printjob;
-        friend std::wostream& operator<<(std::wostream& stream, Printer& printer);
+        friend std::wostream& operator<<(std::wostream& stream, const Printer& printer);
 
         /**
          Constructor for Printer class.

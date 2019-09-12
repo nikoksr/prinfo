@@ -3,6 +3,7 @@
 #include "registry_printer.hpp"
 #include "system.hpp"
 #include "snippets.hpp"
+#include "analyze.hpp"
 
 namespace data {
     void Display::WinApiPrinters(std::wostream& wos) {
@@ -23,13 +24,16 @@ namespace data {
         wos << system;
     }
 
+    void Display::Analyze(std::wostream& wos) {
+        analyze::PrintersFolder p_folder;
+        wos << p_folder;
+    }
+
     void Display::All(std::wostream& wos) {
         std::wostringstream woss;
-
         System(woss);
         WinApiPrinters(woss);
-        RegistryPrinters(woss);
-
+        Analyze(woss);
         wos << woss.str();
     }
 
