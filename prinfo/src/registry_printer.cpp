@@ -109,9 +109,7 @@ namespace registry {
         /**
           Print header.
         */
-        stream << snippets::k_separator_thick << L"\n\n"
-            << L" REGISTRY\n"
-            << L" HKEY_LOCAL_MACHINE\\" << k_localmachine_path << L"\n";
+        stream << L" REGISTRY\n" << L" HKEY_LOCAL_MACHINE\\" << k_localmachine_path << L"\n";
 
         // Number of entries/printers
         DWORD num_printers;
@@ -178,9 +176,7 @@ namespace registry {
         /**
           Print header.
         */
-        stream << snippets::k_separator_thick << L"\n\n"
-            << L" REGISTRY\n"
-            << L" HKEY_CURRENT_USER\\" << k_currentuser_path << L"\n"
+        stream << L" REGISTRY\n" << L" HKEY_CURRENT_USER\\" << k_currentuser_path << L"\n"
             << snippets::k_separator_thin << L"\n\n";
 
         /**
