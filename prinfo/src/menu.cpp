@@ -20,19 +20,18 @@ namespace menu {
         }
         wchar_t user_input;
 
-        /**
-          Main loop.
-        */
         do {
-            user_input = L' ';
-            Console::clear();
+            // Read user choice
+            Console::Clear();
             std::wcout << snippets::k_program_head << L"\n\n"
                 << snippets::k_separator_thick << L"\n\n"
                 << L" [1] Ausgabe aller gefundenen Informationen\n"
                 << L" [2] Funktionen\n"
                 << L" [3] Hilfe\n\n";
             user_input = Navigation::Quit();
-            Console::clear();
+
+            // Prepare output for chosen function
+            Console::Clear();
             std::wcout << snippets::k_program_head << L"\n\n";
 
             /**
@@ -65,21 +64,20 @@ namespace menu {
         wchar_t user_input;
         bool quit_loop = false;
 
-        /**
-          Second main loop.
-        */
         do {
-            user_input = L' ';
-            Console::clear();
+            // Read user choice
+            Console::Clear();
             std::wcout << snippets::k_program_head << L"\n\n"
                 << snippets::k_separator_thick << L"\n\n"
                 << L" [1] Win-API Drucker\n"
                 << L" [2] Registry Drucker\n"
                 << L" [3] Systeminfo\n"
-                << L" [4] Speichern aller gefundenen Infos\n";
+                << L" [4] Speichern aller gefundenen Infos\n\n";
             // << L" [5] Löschen aller Druckaufträge (Admin-Rechte)\n\n";
             user_input = Navigation::BackQuit();
-            Console::clear();
+
+            // Prepare output for chosen function
+            Console::Clear();
             std::wcout << snippets::k_program_head << L"\n\n"
                 << snippets::k_separator_thick << L"\n\n";
 
