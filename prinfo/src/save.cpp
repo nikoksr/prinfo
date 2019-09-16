@@ -50,6 +50,7 @@ namespace data {
         if (!save_file.is_open()) {
             std::wcout << L" Fehler: " << Format::ErrorMessage(GetLastError())
                 << L"\n\n";
+            return;
         }
 
         save_file << snippets::k_program_head << L"\n\n"
