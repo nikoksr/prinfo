@@ -9,31 +9,71 @@ Format::data_units Format::m_data_units;
 
 std::wstring Format::NameValuePair(const std::wstring& name, const std::wstring& value, const wchar_t replace_empty_with) {
     constexpr std::size_t max_length = 50;
+    std::wstring name_ = name;
+    std::wstring value_ = value;
 
-    if (value.length() < max_length) {
-        if (value == L"" || value == L" ") {
-            return (L" " + name + std::wstring(max_length - name.length() - 2, L' ') + replace_empty_with);
-        }
-        return (L" " + name + std::wstring(max_length - name.length() - 2, L' ') + value);
+    // Format name if too long
+    if (name_.length() > max_length) {
+        name_ = Format::longName(name_, max_length);
     }
 
-    std::vector<std::wstring> lines = lineWrap(value, max_length);
-    std::wstring formatted_value = L"";
-    std::wstring white_space(max_length, L' ');
-    unsigned idx = 0;
+    // Format value if too long
+    if (value_.length() > max_length) {
+        value_ = Format::longValue(value_, max_length);
+    }
+
+    // Replace value with char if empty
+    if (value_ == L"" || value_ == L" ") {
+        value_ = replace_empty_with;
+    }
+
+    // Calculate space
+    unsigned int num_spaces = 0;
+    std::size_t name_len = name.length();
+    if (name_len > max_length) {
+        num_spaces = max_length - (name_len % max_length);
+    }
+    else {
+        num_spaces = max_length - name_len;
+    }
+
+    // Set final string together
+    std::wstring name_space = std::wstring(num_spaces + 2, L' ');
+    return L" " + name_ + name_space + value_;
+}
+
+std::wstring Format::longName(const std::wstring& name, const std::size_t max_line_length) {
+    std::vector<std::wstring> lines = lineWrap(name, max_line_length);
+    std::wstring name_ = L"";
+    unsigned int idx = 0;
 
     for (const std::wstring& line : lines) {
         if (idx == lines.size() - 1) {
-            formatted_value += line;
+            name_ += line;
+            break;
+        }
+        name_ += (line + L"\n ");
+        idx++;
+    }
+    return name_;
+}
+
+std::wstring Format::longValue(const std::wstring& value, const std::size_t max_line_length) {
+    std::vector<std::wstring> lines = lineWrap(value, max_line_length);
+    std::wstring value_ = L"";
+    std::wstring white_space(max_line_length, L' ');
+    unsigned int idx = 0;
+
+    for (const std::wstring& line : lines) {
+        if (idx == lines.size() - 1) {
+            value_ += line;
             break;
         }
 
-        formatted_value += (line + L'\n' + white_space);
+        value_ += (line + L"\n " + white_space);
         idx++;
     }
-
-    white_space = std::wstring(max_length - name.length() - 2, L' ');
-    return (L' ' + name + white_space + formatted_value);
+    return value_;
 }
 
 std::vector<std::wstring> Format::lineWrap(const std::wstring& line, const std::size_t max_line_length) {
@@ -42,15 +82,16 @@ std::vector<std::wstring> Format::lineWrap(const std::wstring& line, const std::
     }
 
     std::vector<std::wstring> lines;
-    std::wstring line_copy = line;
+    std::size_t num_of_lines = static_cast<std::size_t>(ceil(line.length() / max_line_length));
+    lines.reserve(num_of_lines);
+    std::wstring line_ = line;
 
-    while (line_copy.length() > max_line_length) {
-        lines.emplace_back(line_copy.substr(0, max_line_length));
-        line_copy = line_copy.substr(max_line_length, line_copy.length());
+    while (line_.length() > max_line_length) {
+        lines.emplace_back(line_.substr(0, max_line_length));
+        line_ = line_.substr(max_line_length, line_.length());
     }
 
-    lines.emplace_back(line_copy.substr(0, max_line_length));
-
+    lines.emplace_back(line_.substr(0, max_line_length));
     return lines;
 }
 

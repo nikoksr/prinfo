@@ -67,5 +67,9 @@ private:
     */
     static std::vector<std::wstring> lineWrap(const std::wstring& line, const std::size_t max_line_length);
 
+    static std::wstring longName(const std::wstring& name, const std::size_t max_line_length);
+
+    static std::wstring longValue(const std::wstring& value, const std::size_t max_line_length);
+
     static data_units m_data_units;
 };  // class Format
