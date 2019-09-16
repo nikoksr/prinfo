@@ -61,7 +61,7 @@ std::wstring Format::longName(const std::wstring& name, const std::size_t max_li
 std::wstring Format::longValue(const std::wstring& value, const std::size_t max_line_length) {
     std::vector<std::wstring> lines = lineWrap(value, max_line_length);
     std::wstring value_ = L"";
-    std::wstring white_space(max_line_length, L' ');
+    std::wstring white_space(max_line_length + 2, L' ');
     unsigned int idx = 0;
 
     for (const std::wstring& line : lines) {
