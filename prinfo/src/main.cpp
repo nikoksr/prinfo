@@ -10,12 +10,17 @@
 #include "menu.hpp"
 #include "snippets.hpp"
 
-#include <clocale>
 #include <iostream>
 #include <sstream>
+#include <io.h>
+#include <fcntl.h>
 
 int wmain() {
-    std::setlocale(LC_ALL, "de_DE.UTF-8");
+    // Set translation mode
+    _setmode(_fileno(stdout), 0x00020000);
+    _setmode(_fileno(stdin), 0x00020000);
+
+    // Stop io sync
     std::ios_base::sync_with_stdio(false);
 
     auto menu = std::make_unique<menu::Main>();
