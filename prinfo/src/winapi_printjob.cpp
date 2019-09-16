@@ -19,6 +19,7 @@ namespace winapi {
      Function definitions
     */
     void Printjob::init() {
+        setID();
         setDocumentName();
         setUserName();
         setMachineName();
@@ -83,6 +84,10 @@ namespace winapi {
             needed_buffer, &needed_buffer, &needed_structs);
     }
 
+    void Printjob::setID() {
+        m_id = std::to_wstring(m_job_info.JobId);
+    }
+
     void Printjob::setDocumentName() {
         if (m_job_info.pDocument) {
             m_document_name = std::wstring(m_job_info.pDocument);
@@ -140,22 +145,23 @@ namespace winapi {
     void Printjob::setStatus() {
         m_status = L"";
 
-        if (m_job_info.Status& JOB_STATUS_BLOCKED_DEVQ) { m_status += L"Der Treiber kann den Auftrag nicht drucken.\n"; }
-        if (m_job_info.Status& JOB_STATUS_DELETED) { m_status += L"Auftrag wurde gelöscht.\n"; }
-        if (m_job_info.Status& JOB_STATUS_DELETING) { m_status += L"Auftrag wird gelöscht.\n"; }
-        if (m_job_info.Status& JOB_STATUS_ERROR) { m_status += L"In dem Auftrag ist ein Fehler aufgetreten.\n"; }
-        if (m_job_info.Status& JOB_STATUS_OFFLINE) { m_status += L"Drucker ist offline.\n"; }
-        if (m_job_info.Status& JOB_STATUS_PAPEROUT) { m_status += L"Drucker hat kein Papier mehr.\n"; }
-        if (m_job_info.Status& JOB_STATUS_PAUSED) { m_status += L"Auftrag wurde pausiert.\n"; }
-        if (m_job_info.Status& JOB_STATUS_PRINTED) { m_status += L"Auftrag wurde gedruckt.\n"; }
-        if (m_job_info.Status& JOB_STATUS_PRINTING) { m_status += L"Auftrag wird gedruckt.\n"; }
-        if (m_job_info.Status& JOB_STATUS_RESTART) { m_status += L"Auftrag wurde neugestartet.\n"; }
-        if (m_job_info.Status& JOB_STATUS_SPOOLING) { m_status += L"Auftrag wird gespoolt.\n"; }
-        if (m_job_info.Status& JOB_STATUS_USER_INTERVENTION) { m_status += L"Drucker hat einen Fehler der eine Benutzer Intervention benötigt.\n"; }
-        if (m_job_info.Status& JOB_STATUS_COMPLETE) { m_status += L"Auftrag wurde an Drucker gesendet; wohlmöglich noch nicht gedruckt.\n"; }
-        if (m_job_info.Status& JOB_STATUS_RETAINED) { m_status += L"Auftrag wurde nach dem Drucken in der Warteschlange behalten.\n"; }
+        if (m_job_info.Status& JOB_STATUS_BLOCKED_DEVQ) { m_status += L"Der Treiber kann den Auftrag nicht drucken. "; }
+        if (m_job_info.Status& JOB_STATUS_DELETED) { m_status += L"Auftrag wurde gelöscht. "; }
+        if (m_job_info.Status& JOB_STATUS_DELETING) { m_status += L"Auftrag wird gelöscht. "; }
+        if (m_job_info.Status& JOB_STATUS_ERROR) { m_status += L"In dem Auftrag ist ein Fehler aufgetreten. "; }
+        if (m_job_info.Status& JOB_STATUS_OFFLINE) { m_status += L"Drucker ist offline. "; }
+        if (m_job_info.Status& JOB_STATUS_PAPEROUT) { m_status += L"Drucker hat kein Papier mehr. "; }
+        if (m_job_info.Status& JOB_STATUS_PAUSED) { m_status += L"Auftrag wurde pausiert. "; }
+        if (m_job_info.Status& JOB_STATUS_PRINTED) { m_status += L"Auftrag wurde gedruckt. "; }
+        if (m_job_info.Status& JOB_STATUS_PRINTING) { m_status += L"Auftrag wird gedruckt. "; }
+        if (m_job_info.Status& JOB_STATUS_RESTART) { m_status += L"Auftrag wurde neugestartet. "; }
+        if (m_job_info.Status& JOB_STATUS_SPOOLING) { m_status += L"Auftrag wird gespoolt. "; }
+        if (m_job_info.Status& JOB_STATUS_USER_INTERVENTION) { m_status += L"Drucker hat einen Fehler der eine Benutzer Intervention benötigt. "; }
+        if (m_job_info.Status& JOB_STATUS_COMPLETE) { m_status += L"Auftrag wurde an Drucker gesendet; wohlmöglich noch nicht gedruckt. "; }
+        if (m_job_info.Status& JOB_STATUS_RETAINED) { m_status += L"Auftrag wurde nach dem Drucken in der Warteschlange behalten. "; }
     }
 
+    const std::wstring& Printjob::ID() const { return m_id; }
     const std::wstring& Printjob::DocumentName() const { return m_document_name; }
     const std::wstring& Printjob::UserName() const { return m_user_name; }
     const std::wstring& Printjob::MachineName() const { return m_machine_name; }
@@ -167,6 +173,7 @@ namespace winapi {
 
     std::wostream& operator<<(std::wostream& stream, const Printjob& job) {
         stream << Format::NameValuePair(L"Dokument", job.m_document_name) << '\n'
+            << Format::NameValuePair(L"ID", job.m_id) << '\n'
             << Format::NameValuePair(L"User", job.m_user_name) << '\n'
             << Format::NameValuePair(L"Maschine", job.m_machine_name) << '\n'
             << Format::NameValuePair(L"Zeit", job.m_submitted) << '\n'

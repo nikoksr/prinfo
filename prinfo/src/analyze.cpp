@@ -31,7 +31,9 @@ namespace analyze {
         getFiles(path);
     }
 
-    const std::size_t PrintersFolder::NumSpoolFiles() const { return m_num_spool_files; }
+    const std::size_t PrintersFolder::NumSpoolFiles() const {
+        return m_spool_files.size();
+    }
 
     std::wostream& operator<<(std::wostream& stream, const PrintersFolder& p_folder) {
         stream << snippets::k_separator_thick << L"\n\n"
@@ -39,8 +41,16 @@ namespace analyze {
             << snippets::k_separator_thin << L"\n\n";
 
         stream << Format::NameValuePair(L"Dateien Gesamt", std::to_wstring(p_folder.m_total_num_files)) << L"\n"
-            << Format::NameValuePair(L"Spool Dateien", std::to_wstring(p_folder.m_num_spool_files)) << L"\n"
-            << Format::NameValuePair(L"Junk Dateien", std::to_wstring(p_folder.m_num_junk_files)) << L"\n\n";
+            << Format::NameValuePair(L"Spool Dateien", std::to_wstring(p_folder.m_spool_files.size())) << L"\n"
+            << Format::NameValuePair(L"Junk Dateien", std::to_wstring(p_folder.m_num_junk_files)) << L"\n"
+            << snippets::k_separator_thin << L"\n\n"
+            << L" Beschädigte Dateien: " << std::to_wstring(p_folder.m_damaged_spool_files.size()) << L"\n" << snippets::k_separator_thin << L"\n\n";
+
+        for (auto& file : p_folder.m_damaged_spool_files) {
+            stream << Format::NameValuePair(file->Path(), L"") << L"\n";
+        }
+
+        stream << L"\n";
         return stream;
     }
 
@@ -52,20 +62,26 @@ namespace analyze {
 
     void PrintersFolder::getFiles(std::filesystem::path path) {
         m_spool_files.clear();
+        m_damaged_spool_files.clear();
         m_total_num_files = countFiles(path);
+        m_num_junk_files = 0;
 
         if (m_total_num_files < 1) {
             return;
         }
 
         m_spool_files.reserve(m_total_num_files);
+        m_damaged_spool_files.reserve(m_total_num_files);
 
         for (const auto& entry : std::filesystem::directory_iterator(path)) {
             // Spooler file
             if (Format::EndsWith(entry.path(), L".SHD")
                 || Format::EndsWith(entry.path(), L".SPL")) {
-                m_spool_files.push_back(std::make_unique<File>(entry.path(), entry.file_size(), entry.last_write_time()));
-                m_num_spool_files += 1;
+                m_spool_files.push_back(std::make_shared<File>(entry.path(), entry.file_size(), entry.last_write_time()));
+
+                if (entry.file_size() == 0) {
+                    m_damaged_spool_files.push_back(m_spool_files.back());
+                }
                 continue;
             }
 

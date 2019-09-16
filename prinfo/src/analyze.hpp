@@ -40,9 +40,9 @@ namespace analyze {
 
     private:
         std::size_t m_total_num_files;
-        std::size_t m_num_spool_files;
         std::size_t m_num_junk_files;
-        std::vector<std::unique_ptr<File>> m_spool_files;
+        std::vector<std::shared_ptr<File>> m_spool_files;
+        std::vector<std::shared_ptr<File>> m_damaged_spool_files;
 
         static constexpr wchar_t path[] = L"C:\\Windows\\System32\\spool\\PRINTERS";
 

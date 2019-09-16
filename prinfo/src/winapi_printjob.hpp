@@ -21,6 +21,7 @@ namespace winapi {
 
         static int SetPrintjobs(Printer* const printer);
 
+        const std::wstring& ID() const;
         const std::wstring& DocumentName() const;
         const std::wstring& UserName() const;
         const std::wstring& MachineName() const;
@@ -34,6 +35,7 @@ namespace winapi {
         static void setJobsInfoList(Printer* const printer, std::unique_ptr<_JOB_INFO_2W[]>& out_jobs_info_list);
 
         _JOB_INFO_2W m_job_info;
+        std::wstring m_id;
         std::wstring m_document_name;
         std::wstring m_user_name;
         std::wstring m_machine_name;
@@ -44,6 +46,7 @@ namespace winapi {
         std::wstring m_page_count;
 
         void init();
+        void setID();
         void setDocumentName();
         void setUserName();
         void setMachineName();
