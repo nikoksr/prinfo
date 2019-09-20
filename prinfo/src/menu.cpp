@@ -135,19 +135,19 @@ namespace menu {
     }
 
     wchar_t Navigation::Quit() {
-        std::wcout << snippets::k_separator_thick << L"\n [B]eenden";
+        std::wcout << snippets::k_separator_thick << L"\n [B]eenden\n";
         FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
         return tolower(_getwch());
     }
 
     wchar_t Navigation::BackQuit() {
-        std::wcout << snippets::k_separator_thick << L"\n [Z]urück  [B]eenden";
+        std::wcout << snippets::k_separator_thick << L"\n [Z]urück  [B]eenden\n";
         FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
         return tolower(_getwch());
     }
 
     wchar_t Navigation::SaveBackQuit() {
-        std::wcout << snippets::k_separator_thick << L"\n [S]peichern  [Z]urück  [B]eenden";
+        std::wcout << snippets::k_separator_thick << L"\n [S]peichern  [Z]urück  [B]eenden\n";
         FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
         return tolower(_getwch());
     }
