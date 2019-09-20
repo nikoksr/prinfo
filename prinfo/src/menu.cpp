@@ -42,9 +42,9 @@ namespace menu {
             */
             switch (user_input) {
             case L'1':
-                Display::All(std::wcout);
+                Display::Overview(std::wcout);
                 user_input = Navigation::SaveBackQuit();
-                if (user_input == 's') { Save::ToFile(&Display::All); }
+                if (user_input == 's') { Save::ToFile(&Display::Overview); }
                 break;
             case L'2':
                 user_input = m_funcMenu->Show();
@@ -110,12 +110,12 @@ namespace menu {
                 if (user_input == 's') { Save::ToFile(&Display::System); }
                 break;
             case L'4':
+                Save::ToFile(&Display::Overview);
+                break;
+            case L'5':
                 Display::Analyze(std::wcout);
                 user_input = Navigation::SaveBackQuit();
                 if (user_input == 's') { Save::ToFile(&Display::Analyze); }
-                break;
-            case L'5':
-                Save::ToFile(&Display::All);
                 break;
             case L'z':
                 break;
