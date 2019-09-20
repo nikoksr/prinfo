@@ -10,6 +10,8 @@
 #include <fstream>
 #include <iostream>
 
+#include <shlobj_core.h>
+
 using namespace console;
 using namespace data;
 
@@ -25,8 +27,8 @@ namespace menu {
             Console::Clear();
             std::wcout << snippets::k_program_head << L"\n\n"
                 << snippets::k_separator_thick << L"\n\n"
-                << L" [1] Ausgabe aller gefundenen Informationen\n"
-                << L" [2] Funktionen\n"
+                << L" [1] Überblick\n"
+                << L" [2] Weitere Funktionen\n"
                 << L" [3] Hilfe\n\n";
             user_input = Navigation::Quit();
 
@@ -36,7 +38,7 @@ namespace menu {
 
             /**
               Interpret user input.
-                * 1: Default functions
+                * 1: Overview
                 * 2: Functions menu
                 * 3: Help
             */
@@ -65,15 +67,23 @@ namespace menu {
         bool quit_loop = false;
 
         do {
-            // Read user choice
             Console::Clear();
+
+            // User functions
             std::wcout << snippets::k_program_head << L"\n\n"
                 << snippets::k_separator_thick << L"\n\n"
                 << L" [1] Win-API Drucker\n"
                 << L" [2] Registry Drucker\n"
                 << L" [3] Systeminfo\n"
-                << L" [4] Analyse\n"
-                << L" [5] Speichern aller gefundenen Infos\n\n";
+                << L" [4] Überblick speichern\n";
+
+            // Admin functions
+            if (IsUserAnAdmin()) {
+                std::wcout << L" [5] Analyse\n";
+            }
+
+            // Final linebreak
+            std::wcout << L"\n";
             user_input = Navigation::BackQuit();
 
             if (user_input == L'z' || user_input == L'b') {
@@ -90,8 +100,8 @@ namespace menu {
                 * 1: WinApi data
                 * 2: Registry data
                 * 3: System data
-                * 4: Save all data
-                * 5: Delete all printjobs
+                * 4: Save overview
+                * 5: Analyze
             */
             switch (user_input) {
             case L'1':

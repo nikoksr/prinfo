@@ -33,7 +33,6 @@ namespace data {
         std::wostringstream woss;
         System(woss);
         WinApiPrinters(woss);
-        Analyze(woss);
         wos << woss.str();
     }
 
