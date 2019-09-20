@@ -29,11 +29,10 @@ namespace data {
         wos << p_folder;
     }
 
-    void Display::All(std::wostream& wos) {
+    void Display::Overview(std::wostream& wos) {
         std::wostringstream woss;
         System(woss);
         WinApiPrinters(woss);
-        Analyze(woss);
         wos << woss.str();
     }
 
