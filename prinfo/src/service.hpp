@@ -45,7 +45,7 @@ namespace winapi {
         bool isStopPending();
         bool isTimedOut();
         DWORD setWaitTime();
-        void setStatus();
+        bool setStatus();
         void close();
         bool stopDependentServices();
     };

@@ -31,7 +31,9 @@ namespace winapi {
             CloseServiceHandle(m_scmanager_hdl);
             return false;
         }
-        return true;
+
+        // Set the status
+        return setStatus();
     }
 
     bool Service::start() {
@@ -141,7 +143,9 @@ namespace winapi {
             return false;
         }
 
-        setStatus();
+        if (!setStatus()) {
+            return false;
+        }
 
         // Check if the service is already running
         if (m_status->dwCurrentState == SERVICE_RUNNING) {
@@ -155,7 +159,9 @@ namespace winapi {
             return false;
         }
 
-        setStatus();
+        if (!setStatus()) {
+            return false;
+        }
 
         // Check if the service is already running
         if (m_status->dwCurrentState == SERVICE_START_PENDING) {
@@ -169,7 +175,9 @@ namespace winapi {
             return false;
         }
 
-        setStatus();
+        if (!setStatus()) {
+            return false;
+        }
 
         // Check if the service is already running
         if (m_status->dwCurrentState == SERVICE_PAUSED) {
@@ -183,7 +191,9 @@ namespace winapi {
             return false;
         }
 
-        setStatus();
+        if (!setStatus()) {
+            return false;
+        }
 
         // Check if the service is already running
         if (m_status->dwCurrentState == SERVICE_PAUSE_PENDING) {
@@ -197,7 +207,9 @@ namespace winapi {
             return false;
         }
 
-        setStatus();
+        if (!setStatus()) {
+            return false;
+        }
 
         // Check if the service is already running
         if (m_status->dwCurrentState == SERVICE_STOPPED) {
@@ -211,7 +223,9 @@ namespace winapi {
             return false;
         }
 
-        setStatus();
+        if (!setStatus()) {
+            return false;
+        }
 
         // Check if the service is already running
         if (m_status->dwCurrentState == SERVICE_STOP_PENDING) {
@@ -221,16 +235,16 @@ namespace winapi {
     }
 
 
-    void Service::setStatus() {
-        if (!m_service_hdl) {
-            return;
+    bool Service::setStatus() {
+        if (!isConnected()) {
+            return false;
         }
 
         DWORD buf_size;
-
-        if (!QueryServiceStatusEx(m_service_hdl, SC_STATUS_PROCESS_INFO, reinterpret_cast<LPBYTE> (&m_status), sizeof(SERVICE_STATUS_PROCESS), &buf_size)) {
-            close();
+        if (!QueryServiceStatusEx(m_service_hdl, SC_STATUS_PROCESS_INFO, reinterpret_cast<LPBYTE>(m_status.get()), sizeof(SERVICE_STATUS_PROCESS), &buf_size)) {
+            return false;
         }
+        return true;
     }
 
     bool Service::isTimedOut() {
