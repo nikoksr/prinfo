@@ -6,7 +6,7 @@ namespace winapi {
         m_name(name),
         m_scmanager_hdl(nullptr),
         m_service_hdl(nullptr),
-        m_status(nullptr),
+        m_status(std::make_unique<SERVICE_STATUS_PROCESS>()),
         m_start_time(GetTickCount64()) {}
 
     Service::~Service() {
@@ -73,11 +73,12 @@ namespace winapi {
             if (!stopDependentServices()) {
                 return false;
             }
-            if (!ControlService(m_service_hdl, SERVICE_CONTROL_STOP, reinterpret_cast<LPSERVICE_STATUS>(&m_status))) {
+
+            if (!ControlService(m_service_hdl, SERVICE_CONTROL_STOP, reinterpret_cast<LPSERVICE_STATUS>(m_status.get()))) {
                 return false;
             }
-            if (m_status != NO_ERROR) {
-                return false;
+            if (m_status->dwCurrentState == SERVICE_STOPPED) {
+                return true;
             }
         }
 
@@ -91,7 +92,7 @@ namespace winapi {
                 return false;
             }
         }
-        return true;
+        return isStopped();
     }
 
     bool Service::kill() {
@@ -270,6 +271,7 @@ namespace winapi {
     void Service::close() {
         if (m_scmanager_hdl) { CloseServiceHandle(m_scmanager_hdl); }
         if (m_service_hdl) { CloseServiceHandle(m_service_hdl); }
+        if (m_status) { m_status.release(); }
     }
 
     bool Service::stopDependentServices() {
@@ -289,7 +291,7 @@ namespace winapi {
             return false; // Unexpected error
         }
 
-        dependencies = std::make_unique<ENUM_SERVICE_STATUSW[]>(dep_count);
+        dependencies = std::make_unique<ENUM_SERVICE_STATUSW[]>(buf_size);
 
         if (!dependencies) {
             return false;
