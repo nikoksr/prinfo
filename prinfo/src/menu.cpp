@@ -101,7 +101,9 @@ namespace menu {
                 * 2: Registry data
                 * 3: System data
                 * 4: Save overview
+                ----
                 * 5: Analyze
+                * 6: Restart printerspooler
             */
             switch (user_input) {
             case L'1':
@@ -148,6 +150,12 @@ namespace menu {
 
     wchar_t Navigation::SaveBackQuit() {
         std::wcout << snippets::k_separator_thick << L"\n [S]peichern  [Z]urück  [B]eenden\n";
+        FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
+        return tolower(_getwch());
+    }
+
+    wchar_t Navigation::YesNo() {
+        std::wcout << snippets::k_separator_thick << L"\n [J]a  [N]ein\n";
         FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
         return tolower(_getwch());
     }
