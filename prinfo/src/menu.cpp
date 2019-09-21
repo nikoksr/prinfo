@@ -79,7 +79,7 @@ namespace menu {
 
             // Admin functions
             if (IsUserAnAdmin()) {
-                std::wcout << L" [5] Analyse\n";
+                std::wcout << L" [5] Analyse\n" << L" [6] Druckerwarteschlange neustarten\n";
             }
 
             // Final linebreak
