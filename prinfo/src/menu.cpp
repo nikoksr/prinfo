@@ -129,6 +129,17 @@ namespace menu {
                 user_input = Navigation::SaveBackQuit();
                 if (user_input == 's') { Save::ToFile(&Display::Analyze); }
                 break;
+            case L'6':
+                Display::Warning(std::wcout, snippets::k_warn_spooler);
+                user_input = Navigation::YesNo();
+                if (user_input == 'j') {
+                    Console::Clear();
+                    std::wcout << snippets::k_program_head << L"\n\n"
+                        << snippets::k_separator_thick << L"\n\n";
+                    Display::RestartSpooler(std::wcout);
+                    user_input = Navigation::BackQuit();
+                }
+                break;
             case L'z':
                 break;
             }
