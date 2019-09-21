@@ -29,6 +29,11 @@ namespace data {
         wos << p_folder;
     }
 
+
+    void Display::Warning(std::wostream& wos, const std::wstring& warning) {
+        wos << L" Warnung\n\n" << warning << L" Möchten Sie trotzdem fortfahren?\n\n";
+    }
+
     void Display::Overview(std::wostream& wos) {
         std::wostringstream woss;
         System(woss);
