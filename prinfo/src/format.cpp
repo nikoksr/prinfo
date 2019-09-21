@@ -161,7 +161,9 @@ std::wstring Format::ErrorMessage(DWORD error_message_id) {
         reinterpret_cast<LPWSTR>(&error_message_buffer), 0, NULL);
 
     std::wstring error_message(error_message_buffer, size);
-    LocalFree(error_message_buffer);
+    if (error_message_buffer) {
+        LocalFree(error_message_buffer);
+    }
     return error_message;
 }
 
@@ -171,7 +173,7 @@ void Format::HandleException(std::exception_ptr exception_pointer) {
             std::rethrow_exception(exception_pointer);
         }
     }
-    catch (const std::exception &exc) {
+    catch (const std::exception& exc) {
         std::wcout << L" Ein unerwarteter Fehler ist aufgetreten: \"" << exc.what()
             << L"\"\n\n"
             << L" Beliebige Taste drücken...";
@@ -179,7 +181,7 @@ void Format::HandleException(std::exception_ptr exception_pointer) {
     }
 }
 
-bool Format::EndsWith(const std::wstring &mainStr, const std::wstring &toMatch)
+bool Format::EndsWith(const std::wstring& mainStr, const std::wstring& toMatch)
 {
     if (mainStr.size() >= toMatch.size() &&
         mainStr.compare(mainStr.size() - toMatch.size(), toMatch.size(), toMatch) == 0)

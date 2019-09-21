@@ -47,4 +47,8 @@ namespace snippets {
         L"____________________________________________________________________"
         L"_________________________________________________";
 
+    constexpr wchar_t k_warn_spooler[] =
+        L" Sie sind im Begriff die Druckerwarteschlange neuzustarten.\n"
+        L" <Hier Begründung>\n\n";
+
 }  // namespace Snippets

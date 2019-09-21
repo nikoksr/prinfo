@@ -27,5 +27,6 @@ namespace menu {
         static wchar_t Quit();
         static wchar_t BackQuit();
         static wchar_t SaveBackQuit();
+        static wchar_t YesNo();
     };
 }

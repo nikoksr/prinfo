@@ -4,6 +4,8 @@
 #include "system.hpp"
 #include "snippets.hpp"
 #include "analyze.hpp"
+#include "service.hpp"
+#include "format.hpp"
 
 namespace data {
     void Display::WinApiPrinters(std::wostream& wos) {
@@ -27,6 +29,36 @@ namespace data {
     void Display::Analyze(std::wostream& wos) {
         analyze::PrintersFolder p_folder;
         wos << p_folder;
+    }
+
+    void Display::RestartSpooler(std::wostream& wos) {
+        auto service = std::make_unique<winapi::Service>(L"Spooler");
+
+        if (!service) {
+            wos << L" Error: Konnte Service nicht erzeugen.\n ";
+            wos << Format::ErrorMessage(GetLastError());
+            return;
+        }
+
+        if (!service->connect()) {
+            wos << L" Error: Konnte Service nicht mit WinApi verbinden.\n ";
+            wos << Format::ErrorMessage(GetLastError());
+            return;
+        }
+
+        wos << L" Druckerwarteschlange wird neugestartet...";
+
+        if (!service->restart()) {
+            wos << L"\n\n Error: Konnte Service nicht neustarten.\n ";
+            wos << Format::ErrorMessage(GetLastError());
+            return;
+        }
+
+        wos << L"Erledigt.\n\n";
+    }
+
+    void Display::Warning(std::wostream& wos, const std::wstring& warning) {
+        wos << L" Warnung\n\n" << warning << L" Möchten Sie trotzdem fortfahren?\n\n";
     }
 
     void Display::Overview(std::wostream& wos) {
