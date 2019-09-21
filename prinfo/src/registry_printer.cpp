@@ -38,8 +38,7 @@ namespace registry {
         */
         HKEY hkey_copy = hkey_origin;
         const std::wstring subkeypfad = printer_name + L"\\" + subkey;
-        const LSTATUS result_reg_open_key =
-            RegOpenKeyExW(hkey_copy, subkeypfad.c_str(), NULL, KEY_READ, &hkey_copy);
+        const LSTATUS result_reg_open_key = RegOpenKeyExW(hkey_copy, subkeypfad.c_str(), NULL, KEY_READ, &hkey_copy);
         std::wstring full_key_output = L"";
 
         if (result_reg_open_key != ERROR_SUCCESS) {
@@ -93,7 +92,7 @@ namespace registry {
         return full_key_output;
     }
 
-    void Printer::DisplayLMPrinters(std::wostream &stream) {
+    void Printer::DisplayLMPrinters(std::wostream& stream) {
         /**
           Check if key is openable.
         */

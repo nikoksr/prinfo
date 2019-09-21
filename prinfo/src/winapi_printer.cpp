@@ -293,11 +293,12 @@ namespace winapi {
             << Format::NameValuePair(L"Druckaufträge", L"", L' ') << L"\n";
 
         for (auto& job : printer.m_printjobs) {
-            stream << '\n' << job;
+            stream << L"\n" << job;
         }
 
+        stream << L"\n";
         return stream;
     }
 
-}  // namespace WinApi
+}
 
