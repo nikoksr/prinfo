@@ -6,6 +6,7 @@
 #include "analyze.hpp"
 #include "service.hpp"
 #include "format.hpp"
+#include <shlobj_core.h>
 
 namespace data {
     void Display::WinApiPrinters(std::wostream& wos) {
@@ -65,6 +66,12 @@ namespace data {
         std::wostringstream woss;
         System(woss);
         WinApiPrinters(woss);
+
+        if (IsUserAnAdmin()) {
+            analyze::PrintersFolder p_folder;
+            woss << p_folder;
+        }
+
         wos << woss.str();
     }
 
