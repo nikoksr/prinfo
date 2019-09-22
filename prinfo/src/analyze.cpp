@@ -61,7 +61,8 @@ namespace analyze {
     }
 
     std::wostream& operator<<(std::wostream& stream, const PrintersFolder& p_folder) {
-        stream << L" Analyse " << p_folder.path << "\n" << snippets::k_separator_thin << L"\n\n";
+        stream << snippets::k_separator_thin << L"\n\n" << L" Analyse " << p_folder.path
+            << "\n" << snippets::k_separator_thin << L"\n\n";
 
         stream << Format::NameValuePair(L"Dateien Gesamt", std::to_wstring(p_folder.m_total_num_files)) << L"\n"
             << Format::NameValuePair(L"Spool Dateien", std::to_wstring(p_folder.m_spool_files.size())) << L"\n"
