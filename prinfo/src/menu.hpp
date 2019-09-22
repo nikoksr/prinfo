@@ -9,9 +9,12 @@ namespace menu {
 
     class Main {
     public:
+        Main();
         virtual wchar_t Show();
+        const bool isAdmin() const;
     private:
-        std::unique_ptr<Functions> m_funcMenu;
+        bool m_is_admin;
+        std::unique_ptr<Functions> m_func_menu;
     };
 
     class Functions : Main {
