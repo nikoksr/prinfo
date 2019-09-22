@@ -41,19 +41,25 @@ Download the latest [release](https://github.com/nikoksr/prinfo/releases) for yo
 
 ## Usage <a name="usage"></a>
 
+### Main menu
 Using prinfo is pretty straight forward. Executing it, you're greated by a simple but classy cli menu.
 
-<p align="center">
+<p align="left">
   <a href="" rel="noopener">
- <img width=100px height=125px src="" alt="prinfo main menu"></a>
+ <img src="assets/images/main-menu.png" alt="prinfo main menu"></a>
 </p>
 
 - Option 1 gives a you a quick overview of the printers in your network.
 - Option 2 opens a new menu that includes a variety of printer-related functions.
+- Option 3 displays the help.
 
-<p align="center">
+### Functions menu
+
+A list of functions that either gather and display informations or try to analyze and help you identify potential problems.
+
+<p align="left">
   <a href="" rel="noopener">
- <img width=100px height=125px src="" alt="prinfo functions menu"></a>
+ <img src="assets/images/functions-menu.png" alt="prinfo functions menu"></a>
 </p>
 
 Those are the functions that are executable by the **regular user**.
@@ -68,14 +74,4 @@ Here begins the **admin area**. It's is hidden from the regular user by default.
 - Option 5 analyzes the printers folder. Check for empty spooler files and incomplete file pairs and show files that shouldn't be in there. A lot of printer problems originate from here. Broken, empty and incomplete spooler files can prevent the spooler from working properly.
 - Option 6 quickly restarts the spooler service.
 
-<p align="center">
-  <a href="" rel="noopener">
- <img width=100px height=125px src="" alt="prinfo functions menu"></a>
-</p>
-
 By default every information displaying function includes the option to save the results to a file.
-
-<p align="center">
-  <a href="" rel="noopener">
- <img width=100px height=125px src="" alt="prinfo save option"></a>
-</p>
