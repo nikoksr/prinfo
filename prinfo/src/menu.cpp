@@ -16,9 +16,15 @@ using namespace console;
 using namespace data;
 
 namespace menu {
+    Main::Main() : m_is_admin(IsUserAnAdmin()) {}
+
+    const bool Main::isAdmin() const {
+        return m_is_admin;
+    }
+
     wchar_t Main::Show() {
-        if (!m_funcMenu) {
-            m_funcMenu = std::make_unique<Functions>();
+        if (!m_func_menu) {
+            m_func_menu = std::make_unique<Functions>();
         }
         wchar_t user_input;
 
@@ -49,7 +55,7 @@ namespace menu {
                 if (user_input == 's') { Save::ToFile(&Display::Overview); }
                 break;
             case L'2':
-                user_input = m_funcMenu->Show();
+                user_input = m_func_menu->Show();
                 break;
             case L'3':
                 Display::Help(std::wcout);
@@ -78,11 +84,11 @@ namespace menu {
                 << L" [4] Überblick speichern\n";
 
             // Admin functions
-            if (IsUserAnAdmin()) {
+            if (isAdmin()) {
                 std::wcout << L" [5] Analyse\n" << L" [6] Druckerwarteschlange neustarten\n";
             }
 
-            // Final linebreak
+            // Final linebreak            
             std::wcout << L"\n";
             user_input = Navigation::BackQuit();
 
@@ -125,11 +131,13 @@ namespace menu {
                 Save::ToFile(&Display::Overview);
                 break;
             case L'5':
+                if (!isAdmin()) { break; }
                 Display::Analyze(std::wcout);
                 user_input = Navigation::SaveBackQuit();
                 if (user_input == 's') { Save::ToFile(&Display::Analyze); }
                 break;
             case L'6':
+                if (!isAdmin()) { break; }
                 Display::Warning(std::wcout, snippets::k_warn_spooler);
                 user_input = Navigation::YesNo();
                 if (user_input == 'j') {
