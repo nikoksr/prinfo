@@ -33,8 +33,7 @@ namespace winapi {
         m_number_printers = 0;
 
         // Load infos lists
-        if (setPrinterInfoList() == FALSE) {
-            throw std::invalid_argument("could't set printerinfo list");
+        if (!setPrinterInfoList()) {
             return m_printer_list;
         }
 
