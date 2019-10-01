@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
- <img width=100px height=125px src="assets/images/prinfo.png" alt="prinfo logo"></a>
+ <img width=150px height=150px src="prinfo/assets/images/prinfo.png" alt="prinfo logo"></a>
 </p>
 
 <h3 align="center">prinfo</h3>
