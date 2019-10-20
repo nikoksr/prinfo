@@ -24,7 +24,7 @@ namespace snippets {
         L" GitHub\n\n"
         L"  https://github.com/nikoksr/prinfo\n\n\n"
         L" Lizens\n\n"
-        L"  GNU GPLv3\n\n\n"
+        L"  MIT\n\n\n"
         L" Kontakt\n\n"
         L"  koeserniko@gmail.com\n\n\n"
         L" Wichtige Hinweise\n\n"
