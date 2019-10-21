@@ -2,6 +2,7 @@
 #include "console.hpp"
 #include "format.hpp"
 #include "snippets.hpp"
+#include "analyze.hpp"
 #include "display.hpp"
 #include "save.hpp"
 
@@ -85,7 +86,9 @@ namespace menu {
 
             // Admin functions
             if (isAdmin()) {
-                std::wcout << L" [5] Analyse\n" << L" [6] Druckerwarteschlange neustarten\n";
+                std::wcout << L" [5] Analyse\n"
+                    << L" [6] Druckerwarteschlange neustarten\n"
+                    << L" [7] PRINTERS Ordner säubern\n";
             }
 
             // Final linebreak            
@@ -110,6 +113,7 @@ namespace menu {
                 ----
                 * 5: Analyze
                 * 6: Restart printerspooler
+                * 7: Clean printers folder
             */
             switch (user_input) {
             case L'1':
@@ -144,7 +148,19 @@ namespace menu {
                     Console::Clear();
                     std::wcout << snippets::k_program_head << L"\n\n"
                         << snippets::k_separator_thick << L"\n\n";
-                    Display::RestartSpooler(std::wcout);
+                    Display::RestartSvc(std::wcout, L"Spooler");
+                    user_input = Navigation::BackQuit();
+                }
+                break;
+            case L'7':
+                if (!isAdmin()) { break; }
+                Display::Warning(std::wcout, snippets::k_warn_clear_printers_folder);
+                user_input = Navigation::YesNo();
+                if (user_input == 'j') {
+                    Console::Clear();
+                    std::wcout << snippets::k_program_head << L"\n\n"
+                        << snippets::k_separator_thick << L"\n\n";
+                    Display::PurgeFolder(std::wcout, analyze::PrintersFolder::path);
                     user_input = Navigation::BackQuit();
                 }
                 break;
