@@ -18,6 +18,7 @@ namespace data {
         static bool StartSvc(std::wostream& wos, const std::wstring& service_name);
         static bool StopSvc(std::wostream& wos, const std::wstring& service_name);
         static bool RestartSvc(std::wostream& wos, const std::wstring& service_name);
+        static void PurgeFolder(std::wostream& wos, const std::wstring& folder);
         static void Help(std::wostream& wos);
         static void Warning(std::wostream& wos, const std::wstring& warning);
     };

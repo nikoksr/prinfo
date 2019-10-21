@@ -4,9 +4,9 @@
 #include "system.hpp"
 #include "snippets.hpp"
 #include "analyze.hpp"
-#include "service.hpp"
 #include "format.hpp"
 #include <shlobj_core.h>
+#include <filesystem>
 
 namespace data {
     void Display::WinApiPrinters(std::wostream& wos) {
@@ -101,6 +101,32 @@ namespace data {
         }
 
         wos << L"Erledigt.\n\n";
+        return true;
+    }
+
+    void Display::PurgeFolder(std::wostream& wos, const std::wstring& folder) {
+        const std::wstring svc_name = L"Spooler";
+
+        if (!StopSvc(wos, svc_name)) {
+            return;
+        }
+
+        uintmax_t num_deleted = 0;
+
+        for (auto& p : std::filesystem::directory_iterator(analyze::PrintersFolder::path)) {
+            std::error_code err;
+            num_deleted += std::filesystem::remove_all(p.path(), err);
+
+            if (err) {
+                wos << L" Fehler beim entfernen von " << p.path() << L". " << err.message().c_str() << L"\n";
+            }
+        }
+
+        wos << L" " << num_deleted << " Dateien/Verzeichnisse wurden entfernt.\n\n";
+
+        if (!StartSvc(wos, svc_name)) {
+            return;
+        }
     }
 
     void Display::Warning(std::wostream& wos, const std::wstring& warning) {
