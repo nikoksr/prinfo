@@ -48,11 +48,9 @@ namespace snippets {
         L"_________________________________________________";
 
     constexpr wchar_t k_warn_spooler[] =
-        L" Sie sind im Begriff die Druckerwarteschlange neuzustarten.\n"
-        L" <Hier Begründung>\n\n";
+        L" Sie sind im Begriff die Druckerwarteschlange neuzustarten.\n\n";
 
     constexpr wchar_t k_warn_clear_printers_folder[] =
-        L" Sie sind im Begriff die Druckerwarteschlange neuzustarten und alle Dateien im PRINTERS Ordner zu löschen.\n"
-        L" <Hier Begründung>\n\n";
+        L" Sie sind im Begriff die Druckerwarteschlange neuzustarten und alle Dateien im PRINTERS Ordner zu löschen.\n\n";
 
 }  // namespace Snippets
