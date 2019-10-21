@@ -32,27 +32,72 @@ namespace data {
         wos << p_folder;
     }
 
-    void Display::RestartSpooler(std::wostream& wos) {
-        auto service = std::make_unique<winapi::Service>(L"Spooler");
+    std::unique_ptr<winapi::Service> Display::SetupSvc(std::wostream& wos, const std::wstring& service_name) {
+        auto service = std::make_unique<winapi::Service>(service_name);
 
         if (!service) {
-            wos << L" Error: Konnte Service nicht erzeugen.\n ";
+            wos << L" Error: Konnte Service " << service_name << " nicht erzeugen.\n ";
             wos << Format::ErrorMessage(GetLastError());
-            return;
+            return nullptr;
         }
 
         if (!service->connect()) {
-            wos << L" Error: Konnte Service nicht mit WinApi verbinden.\n ";
+            wos << L" Error: Konnte Service " << service_name << " nicht mit WinApi verbinden.\n ";
             wos << Format::ErrorMessage(GetLastError());
-            return;
+            return nullptr;
         }
 
-        wos << L" Druckerwarteschlange wird neugestartet...";
+        return service;
+    }
+
+    bool Display::StartSvc(std::wostream& wos, const std::wstring& service_name) {
+        auto service = Display::SetupSvc(wos, service_name);
+        if (!service) {
+            return false;
+        }
+
+        wos << L" " << service_name << " wird gestartet...";
+
+        if (!service->start()) {
+            wos << L"\n\n Error: Konnte Service " << service_name << " nicht starten.\n ";
+            wos << Format::ErrorMessage(GetLastError());
+            return false;
+        }
+
+        wos << L"Erledigt.\n\n";
+        return true;
+    }
+
+    bool Display::StopSvc(std::wostream& wos, const std::wstring& service_name) {
+        auto service = Display::SetupSvc(wos, service_name);
+        if (!service) {
+            return false;
+        }
+
+        wos << L" " << service_name << " wird beendet...";
+
+        if (!service->stop()) {
+            wos << L"\n\n Error: Konnte Service " << service_name << " nicht beenden.\n ";
+            wos << Format::ErrorMessage(GetLastError());
+            return false;
+        }
+
+        wos << L"Erledigt.\n\n";
+        return true;
+    }
+
+    bool Display::RestartSvc(std::wostream& wos, const std::wstring& service_name) {
+        auto service = Display::SetupSvc(wos, service_name);
+        if (!service) {
+            return false;
+        }
+
+        wos << L" " << service_name << " wird neugestartet...";
 
         if (!service->restart()) {
-            wos << L"\n\n Error: Konnte Service nicht neustarten.\n ";
+            wos << L"\n\n Error: Konnte Service " << service_name << " nicht neustarten.\n ";
             wos << Format::ErrorMessage(GetLastError());
-            return;
+            return false;
         }
 
         wos << L"Erledigt.\n\n";
