@@ -53,6 +53,8 @@ namespace analyze {
 
         PrintersFolder();
 
+        static constexpr wchar_t path[] = L"C:\\Windows\\System32\\spool\\PRINTERS";
+
         const std::size_t NumSpoolFiles() const;
 
     private:
@@ -62,8 +64,6 @@ namespace analyze {
         std::vector<std::shared_ptr<File>> m_spool_files;
         std::vector<std::shared_ptr<File>> m_damaged_spool_files;
         std::vector<std::shared_ptr<File>> m_single_spool_files;
-
-        static constexpr wchar_t path[] = L"C:\\Windows\\System32\\spool\\PRINTERS";
 
         // Count the number of files in the folder
         std::size_t countFiles(std::filesystem::path path);
