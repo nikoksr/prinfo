@@ -72,6 +72,8 @@ namespace winapi {
         const std::wstring& Duplex() const;
         const std::wstring& KeepsPrintjobs() const;
         const std::wstring& Status() const;
+        const std::wstring& DefaultTray() const;
+        const std::vector<std::wstring> Trays() const;
 
     private:
         /**
@@ -114,6 +116,10 @@ namespace winapi {
 
         std::vector<Printjob> m_printjobs;
 
+        // Trays
+        std::wstring m_default_source;
+        std::vector<std::wstring> m_bins;
+
         /**
          Defines all attributes of printer object with the values found in
          the printer_info structure.
@@ -138,6 +144,7 @@ namespace winapi {
         void setKeepsPrintjobs();
         void setPrintjobsCount();
         void setPrintjobs();
+        void setBins();
 
         /**
           The printer's name.

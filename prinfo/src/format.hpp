@@ -54,7 +54,11 @@ public:
     */
     static void HandleException(std::exception_ptr exception_pointer);
 
-    static bool EndsWith(const std::wstring &mainStr, const std::wstring &toMatch);
+    static bool EndsWith(const std::wstring& mainStr, const std::wstring& toMatch);
+
+    static std::wstring VecToStr(const std::vector<std::wstring>& vec, const std::wstring& separator = L" ");
+
+    static std::wstring RemoveTrailingZeros(const std::wstring& str);
 
 private:
     /**
