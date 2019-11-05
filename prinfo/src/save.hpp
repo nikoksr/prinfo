@@ -17,8 +17,9 @@ namespace data {
     private:
         typedef  void(*displayFn)(std::wostream& wos);
     public:
+        static void AskForFileInfo(File& file, const bool ask_for_comment);
         static void ToFile(displayFn df);
         static void PrintersToCSV();
-        static void AskForFileInfo(File& file, const bool ask_for_comment);
+        static void PrintersToJSON();
     };
 }
