@@ -73,6 +73,8 @@ namespace winapi {
         const std::wstring& KeepsPrintjobs() const;
         const std::wstring& Status() const;
         const std::wstring& DefaultTray() const;
+        const std::wstring NumOfPrintjobs() const;
+        const std::vector<Printjob> Printjobs() const;
         const std::vector<std::wstring> Trays() const;
 
     private:
