@@ -10,6 +10,32 @@ namespace data {
 
     using namespace console;
 
+    void Save::AskForFileInfo(File& file, const bool ask_for_comment) {
+        // Ask for filename and comment.                
+        std::wcout << " Dateiname: ";
+        std::wcin.clear();
+        std::getline(std::wcin, file.name);
+
+        if (file.name.empty()) {
+            file.name = L"prinfo" + file.type;
+        }
+
+        if (!Format::EndsWith(file.name, file.type)) {
+            file.name += file.type;
+        }
+
+        if (ask_for_comment) {
+            std::wcout << " Kommentar: ";
+            std::wcin.clear();
+            std::getline(std::wcin, file.comment);
+            std::wcout << L"\n";
+
+            if (file.comment.empty()) {
+                file.comment = L"-";
+            }
+        }
+    }
+
     void Save::ToFile(displayFn df) {
         Console::Clear();
         std::wcout << snippets::k_program_head << L"\n\n"
@@ -17,31 +43,12 @@ namespace data {
             << snippets::k_separator_thin << L"\n\n";
 
         // Ask for filename and comment.        
-        std::wstring file_name;
-        std::wcout << " Dateiname: ";
-        std::wcin.clear();
-        std::getline(std::wcin, file_name);
-
-        if (file_name.empty()) {
-            file_name = L"prinfo.txt";
-        }
-
-        if (!Format::EndsWith(file_name, L".txt")) {
-            file_name += L".txt";
-        }
-
-        std::wstring comment;
-        std::wcout << " Kommentar: ";
-        std::wcin.clear();
-        std::getline(std::wcin, comment);
-        std::wcout << L"\n";
-
-        if (comment.empty()) {
-            comment = L"-";
-        }
+        File f;
+        f.type = L".txt";
+        AskForFileInfo(f, true);
 
         // Stream data to file.       
-        std::wofstream save_file(file_name, std::ios::out);
+        std::wofstream save_file(f.name, std::ios::out);
 
         if (!save_file.is_open()) {
             std::wcout << L" Fehler: " << Format::ErrorMessage(GetLastError())
@@ -51,7 +58,7 @@ namespace data {
 
         save_file << snippets::k_program_head << L"\n\n"
             << snippets::k_separator_thick << L"\n\n"
-            << Format::NameValuePair(L"Kommentar", comment) << L"\n\n";
+            << Format::NameValuePair(L"Kommentar", f.comment) << L"\n\n";
         std::invoke(df, save_file);
 
         if (save_file.is_open()) {
@@ -67,21 +74,12 @@ namespace data {
             << snippets::k_separator_thin << L"\n\n";
 
         // Ask for filename
-        std::wstring file_name;
-        std::wcout << " Dateiname: ";
-        std::wcin.clear();
-        std::getline(std::wcin, file_name);
-
-        if (file_name.empty()) {
-            file_name = L"prinfo.csv";
-        }
-
-        if (!Format::EndsWith(file_name, L".csv")) {
-            file_name += L".csv";
-        }
+        File f;
+        f.type = L".csv";
+        AskForFileInfo(f, false);
 
         // Open files
-        std::wofstream save_file(file_name, std::ios::out);
+        std::wofstream save_file(f.name, std::ios::out);
 
         if (!save_file.is_open()) {
             std::wcout << L" Fehler: " << Format::ErrorMessage(GetLastError()) << L"\n\n";
