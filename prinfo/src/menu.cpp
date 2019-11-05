@@ -83,13 +83,14 @@ namespace menu {
                 << L" [1] Win-API Drucker\n"
                 << L" [2] Registry Drucker\n"
                 << L" [3] Systeminfo\n"
-                << L" [4] Überblick speichern\n";
+                << L" [4] Überblick speichern\n"
+                << L" [5] Drucker-Infos exportieren\n";
 
             // Admin functions
             if (isAdmin()) {
-                std::wcout << L" [5] Analyse\n"
-                    << L" [6] Druckerwarteschlange neustarten\n"
-                    << L" [7] PRINTERS Ordner säubern\n";
+                std::wcout << L" [6] Analyse\n"
+                    << L" [7] Druckerwarteschlange neustarten\n"
+                    << L" [8] PRINTERS Ordner säubern\n";
             }
 
             // Final linebreak            
@@ -138,7 +139,7 @@ namespace menu {
                 Save::ToFile(&Display::Overview);
                 break;
             case L'5':
-                Save::PrintersToCSV();
+                Display::ExportPrinters(std::wcout);
                 break;
             case L'6':
                 if (!isAdmin()) { break; }

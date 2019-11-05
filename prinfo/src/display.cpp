@@ -5,6 +5,8 @@
 #include "snippets.hpp"
 #include "analyze.hpp"
 #include "format.hpp"
+#include "save.hpp"
+
 #include <shlobj_core.h>
 #include <filesystem>
 
@@ -148,5 +150,28 @@ namespace data {
 
     void Display::Help(std::wostream& wos) {
         wos << snippets::k_help;
+    }
+
+    void Display::ExportPrinters(std::wostream& wos) {
+        wos << L" Drucker-Infos exportieren\n"
+            << snippets::k_separator_thin << L"\n\n"
+            << L" Optionen:\n\n"
+            << L"  1. JSON\n"
+            << L"  2. CSV\n"
+            << L"  3. Abbrechen\n\n"
+            << L" > ";
+
+        wchar_t choice = L'-1';
+        while (choice != L'1' && choice != L'2' && choice != L'3') {
+            FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
+            choice = static_cast<wchar_t>(tolower(_getwch()));
+        }
+
+        if (choice == L'1') {
+            Save::PrintersToJSON();
+        }
+        else if (choice == L'2') {
+            Save::PrintersToCSV();
+        }
     }
 }
