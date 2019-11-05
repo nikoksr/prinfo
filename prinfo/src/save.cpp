@@ -74,7 +74,7 @@ namespace data {
         // Read optional file name
         Console::Clear();
         std::wcout << snippets::k_program_head << L"\n\n"
-            << snippets::k_separator_thick << L"\n\n Exportieren als CSV\n"
+            << snippets::k_separator_thick << L"\n\n Exportiere Drucker als CSV\n"
             << snippets::k_separator_thin << L"\n\n";
 
         // Ask for filename
@@ -130,7 +130,7 @@ namespace data {
         // Read optional file name
         Console::Clear();
         std::wcout << snippets::k_program_head << L"\n\n"
-            << snippets::k_separator_thick << L"\n\n Exportieren als CSV\n"
+            << snippets::k_separator_thick << L"\n\n Exportiere Drucker als JSON\n"
             << snippets::k_separator_thin << L"\n\n";
 
         // Ask for filename
