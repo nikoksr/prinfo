@@ -165,7 +165,7 @@ namespace data {
             << L"  3. Abbrechen\n\n"
             << L" > ";
 
-        wchar_t choice = L'-1';
+        wchar_t choice = L'0';
         while (choice != L'1' && choice != L'2' && choice != L'3') {
             FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
             choice = static_cast<wchar_t>(tolower(_getwch()));
