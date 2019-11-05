@@ -6,6 +6,7 @@
 #include "analyze.hpp"
 #include "format.hpp"
 #include "save.hpp"
+#include "console.hpp"
 
 #include <shlobj_core.h>
 #include <filesystem>
@@ -153,7 +154,10 @@ namespace data {
     }
 
     void Display::ExportPrinters(std::wostream& wos) {
-        wos << L" Drucker-Infos exportieren\n"
+        console::Console::Clear();
+        wos << snippets::k_program_head << L"\n\n"
+            << snippets::k_separator_thick << L"\n\n"
+            << L" Drucker-Infos exportieren\n"
             << snippets::k_separator_thin << L"\n\n"
             << L" Optionen:\n\n"
             << L"  1. JSON\n"
