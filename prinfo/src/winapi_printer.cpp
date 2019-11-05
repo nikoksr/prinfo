@@ -343,7 +343,9 @@ namespace winapi {
     const std::wstring& Printer::Duplex() const { return m_duplex; }
     const std::wstring& Printer::KeepsPrintjobs() const { return m_keep_printjobs; }
     const std::wstring& Printer::Status() const { return m_status; }
+    const std::wstring Printer::NumOfPrintjobs() const { return std::to_wstring(m_printjobs_count); }
     const std::wstring& Printer::DefaultTray() const { return m_default_source; }
+    const std::vector<Printjob> Printer::Printjobs() const { return m_printjobs; }
     const std::vector<std::wstring> Printer::Trays() const { return m_bins; }
 
     std::wostream& operator<<(std::wostream& stream, const Printer& printer) {

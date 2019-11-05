@@ -21,5 +21,6 @@ namespace data {
         static void PurgeFolder(std::wostream& wos, const std::wstring& folder);
         static void Help(std::wostream& wos);
         static void Warning(std::wostream& wos, const std::wstring& warning);
+        static void ExportPrinters(std::wostream& wos);
     };
 }
