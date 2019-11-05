@@ -54,7 +54,7 @@ namespace menu {
                 Display::Overview(std::wcout);
                 user_input = Navigation::SaveExportBackQuit();
                 if (user_input == 's') { Save::ToFile(&Display::Overview); }
-                else if (user_input == 'e') { Save::PrintersToCSV(); }
+                else if (user_input == 'e') { Display::ExportPrinters(std::wcout); }
                 break;
             case L'2':
                 user_input = m_func_menu->Show();
@@ -123,7 +123,7 @@ namespace menu {
                 Display::WinApiPrinters(std::wcout);
                 user_input = Navigation::SaveExportBackQuit();
                 if (user_input == 's') { Save::ToFile(&Display::WinApiPrinters); }
-                else if (user_input == 'e') { Save::PrintersToCSV(); }
+                else if (user_input == 'e') { Display::ExportPrinters(std::wcout); }
                 break;
             case L'2':
                 Display::RegistryPrinters(std::wcout);
