@@ -52,8 +52,9 @@ namespace menu {
             switch (user_input) {
             case L'1':
                 Display::Overview(std::wcout);
-                user_input = Navigation::SaveBackQuit();
+                user_input = Navigation::SaveExportBackQuit();
                 if (user_input == 's') { Save::ToFile(&Display::Overview); }
+                else if (user_input == 'e') { Save::PrintersToCSV(); }
                 break;
             case L'2':
                 user_input = m_func_menu->Show();
@@ -110,16 +111,18 @@ namespace menu {
                 * 2: Registry data
                 * 3: System data
                 * 4: Save overview
+                * 5: Export printers
                 ----
-                * 5: Analyze
-                * 6: Restart printerspooler
-                * 7: Clean printers folder
+                * 6: Analyze
+                * 7: Restart printerspooler
+                * 8: Clean printers folder
             */
             switch (user_input) {
             case L'1':
                 Display::WinApiPrinters(std::wcout);
-                user_input = Navigation::SaveBackQuit();
+                user_input = Navigation::SaveExportBackQuit();
                 if (user_input == 's') { Save::ToFile(&Display::WinApiPrinters); }
+                else if (user_input == 'e') { Save::PrintersToCSV(); }
                 break;
             case L'2':
                 Display::RegistryPrinters(std::wcout);
@@ -135,12 +138,15 @@ namespace menu {
                 Save::ToFile(&Display::Overview);
                 break;
             case L'5':
+                Save::PrintersToCSV();
+                break;
+            case L'6':
                 if (!isAdmin()) { break; }
                 Display::Analyze(std::wcout);
                 user_input = Navigation::SaveBackQuit();
                 if (user_input == 's') { Save::ToFile(&Display::Analyze); }
                 break;
-            case L'6':
+            case L'7':
                 if (!isAdmin()) { break; }
                 Display::Warning(std::wcout, snippets::k_warn_spooler);
                 user_input = Navigation::YesNo();
@@ -152,7 +158,7 @@ namespace menu {
                     user_input = Navigation::BackQuit();
                 }
                 break;
-            case L'7':
+            case L'8':
                 if (!isAdmin()) { break; }
                 Display::Warning(std::wcout, snippets::k_warn_clear_printers_folder);
                 user_input = Navigation::YesNo();
@@ -185,6 +191,12 @@ namespace menu {
 
     wchar_t Navigation::SaveBackQuit() {
         std::wcout << snippets::k_separator_thick << L"\n [S]peichern  [Z]urück  [B]eenden\n";
+        FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
+        return tolower(_getwch());
+    }
+
+    wchar_t Navigation::SaveExportBackQuit() {
+        std::wcout << snippets::k_separator_thick << L"\n [S]peichern [E]xport [Z]urück  [B]eenden\n";
         FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
         return tolower(_getwch());
     }
