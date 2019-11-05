@@ -10,7 +10,7 @@ namespace snippets {
     * Includes Copyright, Edit date, Creator, Contact email.
     */
     constexpr wchar_t k_program_head[] =
-        L"\n Prinfo v0.6.1        https://github.com/nikoksr/prinfo        koeserniko@gmail.com";
+        L"\n Prinfo v0.7.0        https://github.com/nikoksr/prinfo        koeserniko@gmail.com";
 
     /**
     * Help text.
@@ -24,7 +24,7 @@ namespace snippets {
         L" GitHub\n\n"
         L"  https://github.com/nikoksr/prinfo\n\n\n"
         L" Lizens\n\n"
-        L"  GNU GPLv3\n\n\n"
+        L"  MIT\n\n\n"
         L" Kontakt\n\n"
         L"  koeserniko@gmail.com\n\n\n"
         L" Wichtige Hinweise\n\n"
@@ -48,7 +48,9 @@ namespace snippets {
         L"_________________________________________________";
 
     constexpr wchar_t k_warn_spooler[] =
-        L" Sie sind im Begriff die Druckerwarteschlange neuzustarten.\n"
-        L" <Hier Begründung>\n\n";
+        L" Sie sind im Begriff die Druckerwarteschlange neuzustarten.\n\n";
+
+    constexpr wchar_t k_warn_clear_printers_folder[] =
+        L" Sie sind im Begriff die Druckerwarteschlange neuzustarten und alle Dateien im PRINTERS Ordner zu löschen.\n\n";
 
 }  // namespace Snippets

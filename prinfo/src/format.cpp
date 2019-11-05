@@ -189,3 +189,33 @@ bool Format::EndsWith(const std::wstring& mainStr, const std::wstring& toMatch)
     else
         return false;
 }
+
+std::wstring Format::VecToStr(const std::vector<std::wstring>& vec, const std::wstring& separator) {
+    if (vec.size() < 1) {
+        return L"";
+    }
+
+    std::wstring vstr;
+    for (const auto& word : vec) {
+        vstr += word + separator;
+    }
+    return vstr.erase(vstr.length() - separator.length()); // Remove trailing separator
+}
+
+std::wstring Format::RemoveTrailingZeros(const std::wstring& str) {
+    if (str.length() < 1) {
+        return str;
+    }
+
+    auto i = str.end() - 1;
+
+    while (i != str.begin() && *i == '\0') {
+        i--;
+    }
+
+    if (i < str.end() - 1) {
+        i++;
+    }
+
+    return std::wstring(str.begin(), i);
+}

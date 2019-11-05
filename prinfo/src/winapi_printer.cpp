@@ -4,6 +4,8 @@
 
 #include <stdexcept>
 #include <math.h>
+#include <Wingdi.h>
+#include <string>
 
 namespace winapi {
 
@@ -57,7 +59,7 @@ namespace winapi {
 
         const unsigned size = static_cast<const unsigned>(ceil(static_cast<double>(needed_buffer) / sizeof(_PRINTER_INFO_2W)));
 
-        if (m_printer_info_list.get()) {
+        if (m_printer_info_list) {
             m_printer_info_list.reset();
         }
 
@@ -86,6 +88,7 @@ namespace winapi {
         setStatus();
         setPrintjobsCount();
         setPrintjobs();
+        setBins();
     }
 
     /**
@@ -252,11 +255,80 @@ namespace winapi {
         if (Printjob::SetPrintjobs(this) != 0) {}
     }
 
+    void Printer::setBins() {
+        // Determine number of bins
+        size_t num_bins = DeviceCapabilitiesW(
+            m_name.c_str(),
+            m_port.c_str(),
+            DC_BINNAMES,
+            nullptr,
+            nullptr
+        );
+
+        // Get bin names
+        const size_t MAX_NAME_LEN = 24;
+        std::vector<wchar_t> bin_names;
+        bin_names.resize(num_bins * MAX_NAME_LEN);
+
+        num_bins = DeviceCapabilitiesW(
+            m_name.c_str(),
+            m_port.c_str(),
+            DC_BINNAMES,
+            bin_names.data(),
+            nullptr
+        );
+
+        m_bins.clear();
+        m_bins.reserve(num_bins);
+
+        // Return if no bins were found
+        if (num_bins < 1) {
+            m_default_source = L"";
+            return;
+        }
+
+        for (size_t i = 0; i < num_bins; i++) {
+            m_bins.emplace_back(
+                Format::RemoveTrailingZeros(
+                    std::wstring(bin_names.begin() + i * MAX_NAME_LEN, bin_names.begin() + (i + 1) * MAX_NAME_LEN)
+                )
+            );
+        }
+
+        // Default source
+        m_default_source = std::to_wstring(m_printer_info.pDevMode->dmDefaultSource);
+
+        num_bins = DeviceCapabilitiesW(
+            m_name.c_str(),
+            m_port.c_str(),
+            DC_BINS,
+            nullptr,
+            nullptr
+        );
+
+        std::vector<short> bin_buf;
+        bin_buf.resize(num_bins);
+
+        num_bins = DeviceCapabilitiesW(
+            m_name.c_str(),
+            m_port.c_str(),
+            DC_BINS,
+            reinterpret_cast<LPWSTR>(bin_buf.data()),
+            nullptr
+        );
+
+        // Determine actual name of default source
+        for (unsigned i = 0; i < num_bins; i++) {
+            if (std::to_wstring(bin_buf[i]) == m_default_source) {
+                m_default_source = m_bins.at(i);
+            }
+        }
+    }
+
     /**
       Getter functions
     */
     int Printer::NumberOfPrinters() { return m_number_printers; }
-
     const _PRINTER_INFO_2W& Printer::PrinterInfo() const { return m_printer_info; }
     const std::wstring& Printer::Name() const { return m_name; }
     const std::wstring& Printer::Type() const { return m_type; }
@@ -271,6 +343,10 @@ namespace winapi {
     const std::wstring& Printer::Duplex() const { return m_duplex; }
     const std::wstring& Printer::KeepsPrintjobs() const { return m_keep_printjobs; }
     const std::wstring& Printer::Status() const { return m_status; }
+    const std::wstring Printer::NumOfPrintjobs() const { return std::to_wstring(m_printjobs_count); }
+    const std::wstring& Printer::DefaultTray() const { return m_default_source; }
+    const std::vector<Printjob> Printer::Printjobs() const { return m_printjobs; }
+    const std::vector<std::wstring> Printer::Trays() const { return m_bins; }
 
     std::wostream& operator<<(std::wostream& stream, const Printer& printer) {
         stream << snippets::k_separator_thin << L"\n\n"
@@ -278,6 +354,8 @@ namespace winapi {
             << snippets::k_separator_thin << L"\n\n"
             << Format::NameValuePair(L"Typ", printer.m_type) << L"\n"
             << Format::NameValuePair(L"Port", printer.m_port) << L"\n"
+            << Format::NameValuePair(L"Standard Quelle", printer.m_default_source) << L"\n"
+            << Format::NameValuePair(L"Verfügbare Schächte", Format::VecToStr(printer.m_bins, L", ")) << L"\n"
             << Format::NameValuePair(L"Freigabe", printer.m_is_shared) << L"\n"
             << Format::NameValuePair(L"Sharename", printer.m_share_name) << L"\n"
             << Format::NameValuePair(L"Servername", printer.m_server_name) << L"\n"
